@@ -18,10 +18,40 @@
 	<string>1</string>
 	<key>Chrome</key>
 	<dict>
+		<key>Bars</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>bar.html</string>
+				<key>Identifier</key>
+				<string>KS_BAR1</string>
+				<key>Label</key>
+				<string>KitScript</string>
+			</dict>
+		</array>
 		<key>Database Quota</key>
-		<real>5242880</real>
+		<real>10485760</real>
 		<key>Global Page</key>
-		<string>global.html</string>
+		<string>main.html</string>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Command</key>
+				<string>open-tab</string>
+				<key>Identifier</key>
+				<string>KS_BTN1</string>
+				<key>Image</key>
+				<string>images/note.png</string>
+				<key>Label</key>
+				<string>KitScript</string>
+				<key>Menu</key>
+				<string></string>
+				<key>Palette Label</key>
+				<string>KitScript</string>
+				<key>Tool Tip</key>
+				<string>Open KitScript</string>
+			</dict>
+		</array>
 	</dict>
 	<key>Content</key>
 	<dict>
@@ -43,7 +73,7 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>http://kitscript.cyb3r.ca/latest/kitscript.plist</string>
+	<string>http://kitscript.cyb3r.ca/latest/manifest.plist</string>
 	<key>Website</key>
 	<string>http://syr3f.github.com/KitScript</string>
 </dict>
