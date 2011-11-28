@@ -1,4 +1,60 @@
 body {
-    font-family: Georgia, serif;
+    background: transparent url('../images/wood-grain-gray-5544-1440x900.jpg') fixed repeat center top;
+    font-family: "Gill Sans", sans-serif;
+    color: #FFF;
+}
+
+header {
+    padding-top: 50px;
+    color: beige;
+}
+
+#us-list, #us-list tbody tr {
+    border: 1px solid #333;
+    padding: 5px;
+}
+
+#us-list {
+    color: #000;
+    background-color: #BBB;
+    opacity: 0.95;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    -webkit-box-shadow: 0px 10px 15px #777;
+}
+
+#us-list tbody {
+    background-color: #DDD;
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -webkit-border-bottom-left-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+}
+
+#us-list tbody tr {
+    opacity: 1.0;
+    -webkit-border-top-left-radius: 2px;
+    -webkit-border-top-right-radius: 2px;
+    -webkit-border-bottom-left-radius: 2px;
+    -webkit-border-bottom-right-radius: 2px;
+}
+
+#us-list tbody tr.odd {
+    opacity: 0.95;
     background-color: #EEE;
+}
+
+td.icon {
+    text-align: center;
+}
+
+span.us-title {
+    font-size: 1.25 em;
+    font-weight: bold;
+}
+
+button {
+    opacity: 1.0;
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>KitScript Management Panel</title>
+    
+    <!-- = CSS = -->
+    <link rel="stylesheet" href="../stylesheets/blueprintcss/screen-1.0.1.min.css">
+    <link rel="stylesheet" href="../stylesheets/jquery-ui/sunny/jquery-ui-1.8.16.custom.css">
+    <link rel="stylesheet" href="../stylesheets/managementPanel.css">
+    
+    <!-- = jQuery = -->
+    <script src="../scripts/lib/jquery/jquery-1.6.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/lib/jquery/jquery-ui-1.8.16.custom.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- = My Scripts = -->
+    <script src="../scripts/KitScript.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/managementPanel.js" type="text/javascript" charset="utf-8"></script>
+    
+  </head>
+  <body>
+    
+    <div class="container">
+      
+      <header class="span-24 last">
+        <h1>KitScript Management Panel</h>
+      </header>
+
+      <section id="panel" class="span-24 last">
+
+        <table id="us-list" class="prepend-1 span-22 last">
+          <tbody>
+
+            <script type="text/javascript" charset="utf-8" defer>
+              // Get data from localStorage
+              // List registered User Scripts
+            </script>
+
+            <tr id="us-nth" class="odd">
+              <td class="icon span-2">(icon)</td><td class="span-14"><span class="us-title">Title</span><br><span class="us-desc">Description</span></td><td align="center" class="btn span-2"><button type="button" id="btn-settings-nth">Settings</button></td><td align="center" class="btn span-2"><button type="button" id="btn-toggle-enable-nth">Disable</button></td><td align="center" class="btn span-2 last"><button type="button" id="btn-remove-nth">Remove</button></td>
+            </tr>
+            <tr id="us-nth">
+              <td class="icon span-2">(icon)</td><td class="span-14"><span class="us-title">Title</span><br><span class="us-desc">Description</span></td><td align="center" class="btn span-2"><button type="button" id="btn-settings-nth">Settings</button></td><td align="center" class="btn span-2"><button type="button" id="btn-toggle-enable-nth">Disable</button></td><td align="center" class="btn span-2 last"><button type="button" id="btn-remove-nth">Remove</button></td>
+            </tr>
+
+          </tbody>
+        </table>
+
+      </section>
+      
+    </div>
+    
+  </body>
+</html>

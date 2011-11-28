@@ -8,7 +8,7 @@ var ManagementPanel = Class.create({
     open: function (event) {
         
         this._tab = safari.application.activeBrowserWindow.openTab('foreground',-1);
-        this._tab.url = location.href.replace('main.html', 'managementPanel.html');
+        this._tab.url = location.href.replace('main.html', 'markups/managementPanel.html');
         this._url = this._tab.url;
     }
 });
