@@ -22,7 +22,7 @@
 		<array>
 			<dict>
 				<key>Filename</key>
-				<string>bar.html</string>
+				<string>markups/bar.html</string>
 				<key>Identifier</key>
 				<string>KS_BAR1</string>
 				<key>Label</key>
