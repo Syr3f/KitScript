@@ -1,0 +1,15 @@
+
+body {
+    font-family: "Gill Sans", sans-serif;
+    color: #FFF;
+    background-color: #EEE;
+}
+
+header {
+    padding-top: 50px;
+}
+
+.container {
+    margin: 25px;
+    width: 100%;
+}

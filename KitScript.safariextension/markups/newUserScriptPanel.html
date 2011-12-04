@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>KitScript</title>
+    
+    <!-- = CSS = -->
+    <link rel="stylesheet" href="../stylesheets/jquery-ui/south-street/jquery-ui-1.8.16.min.css">
+    <link rel="stylesheet" href="../stylesheets/newUserScriptPanel.css">
+    <link rel="stylesheet" href="../stylesheets/global.css">
+    
+    <!-- = jQuery = -->
+    <!-- script src="../scripts/lib/jquery/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script -->
+    <script src="../scripts/lib/jquery/jquery-1.6.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/lib/jquery/jquery-ui-1.8.16.custom.min.js" type="text/javascript" charset="utf-8"></script>
+    
+    <!-- = My Scripts = -->
+    <script src="../scripts/KitScript.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/newUserScriptPanel.js" type="text/javascript" charset="utf-8"></script>
+    
+  </head>
+  <body>
+    
+    <header>
+      <h1>KitScript New User Script</h1>
+    </header>
+    
+    <section id="" class="">
+      
+      <form accept-charset="utf-8">
+        
+        <label>Name:<br><input type="text" name="userscriptname" value=""></label><br><br>
+        
+        <label>Description:<br><input type="text" name="userscriptdesc" value=""></label><br><br>
+        
+        <label>User Script:<br><textarea name="userscriptcode"></textarea></label><br><br>
+        
+        <input type="button" name="cmd_submit" onclick="ks.newUserScriptPanel.save(this.form)" value="Add User Script">
+        
+      </form>
+      
+    </section>
+    
+  </body>
+</html>

@@ -1,13 +1,3 @@
-body {
-    background: transparent url('../images/wood-grain-gray-5544-1440x900.jpg') fixed repeat center top;
-    font-family: "Gill Sans", sans-serif;
-    color: #FFF;
-}
-
-header {
-    padding-top: 50px;
-    color: beige;
-}
 
 #us-list, #us-list tbody tr {
     border: 1px solid #333;
