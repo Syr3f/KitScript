@@ -1,160 +1,4 @@
 
-var SqlArray = Create.create({
-    
-    initialize: function () {
-        
-        this._sqlArray = new Array();
-    },
-    push: function (sql, arguments, dataHandlerCallback, errorCallback) {
-        
-        this._sqlArray.push(new Array(sql, arguments, dataHandlerCallback, errorCallback));
-    },
-    getArray: function () {
-        
-        return this._sqlArray;
-    }
-});
-
-var Storage = Class.create({
-    
-    initialize: function () {
-        
-        this._DB = null;
-        
-        this._shortName = 'KitScript';
-        this._version = '1.0';
-        this._displayName = 'KitScript';
-        this._maxSize = 10485760; // in bytes
-        
-        this._dbIsCreated = false;
-        
-        try {
-            
-            if (!window.openDatabase) {
-                alert('not supported');
-            } else {
-                this._DB = openDatabase(this._shortName, this._version, this._displayName, this._maxSize);
-            
-                this._dbIsCreated = true;
-            }
-        } catch(e) {
-            
-            // Error handling code goes here.
-            if (e == INVALID_STATE_ERR) {
-                // Version number mismatch.
-                alert("Invalid database version.");
-            } else {
-                alert("Unknown error "+e+".");
-            }
-            
-            return;
-        }
-        
-        if (this._dbIsCreated === false) {
-            
-            this.createTables();
-        }
-    },
-    isExistant: function () {
-        
-        return this._dbIsCreated;
-    },
-    createTables: function () {
-        
-        if (0) {
-            
-            sqlArray = new SqlArray();
-            
-            sqlArray.push('DROP TABLE UserScripts;', [], function () {}, function () { alert("Can't drop UserScripts table.") });
-            //sqlArray.push('DROP TABLE ;');
-            
-            this.transact(sqlArray);
-        }
-        
-        sqlArray = new SqlArray();
-        
-        sqlArray.push('CREATE TABLE IF NOT EXISTS UserScripts (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name VARCHAR(55) NOT NULL, description VARCHAR(155) NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL);', [], function () {}, function () { alert("Can't create UserScripts table.") });
-        
-        this.transact(sqlArray);
-        
-        this._dbIsCreated = true;
-    },
-    transact: function (sqlArray) {
-        
-        this._DB.transaction(function (transaction) {
-            
-            for (var i = 0; i < sqlArray.length; i++) {
-                
-                transaction.executeSql(sqlArray[i][0], sqlArray[i][1], sqlArray[i][2], sqlArray[i][3]);
-            }
-        });
-    }
-});
-
-var UserScript = Class.create({
-    
-    initialize: function (script) {
-        
-        this._script = script;
-    },
-    getIncludes: function () {
-        
-        var _includes = [];
-        
-        var matches = /\/\/[ ]+\@include (.*)/g.exec(this._script);
-        
-        for (var i = 1; i < matches.length; i++) {
-            
-            _includes.push(matches[i]);
-        }
-        
-        return _includes;
-    },
-    getExcludes: function () {
-        
-        
-    },
-    getDescription: function () {
-        
-        
-    },
-    getIcon: function () {
-        
-        
-    },
-    getMatches: function () {
-        
-        
-    },
-    getName: function () {
-        
-        
-    },
-    getNamespace: function () {
-        
-        
-    },
-    getRequires: function () {
-        
-        
-    },
-    getResources: function () {
-        
-        
-    },
-    getRunAt: function () {
-        
-        
-    },
-    hasUnwrap: function () {
-        
-        
-    },
-    getVersion: function () {
-        
-        
-    }
-});
 
 var ManagementPanel = Class.create(KS, {
     
@@ -170,17 +14,21 @@ var ManagementPanel = Class.create(KS, {
         
         $super(this._id);
     },
-    settings: function () {
+    settings: function (id) {
         
-        
+        ks.scriptSettingsPanel.open(id);
     },
-    disable: function () {
+    disable: function (id) {
         
+        db.disableScript(id);
         
+        $('user-script-'+id).addClass('');
     },
-    remove: function () {
+    remove: function (id) {
         
+        db.remove(id);
         
+        $('user-script-'+id).remove();
     }
 });
 
@@ -201,9 +49,17 @@ var NewUserScriptPanel = Class.create(KS, {
     },
     save: function (newUserScriptForm) {
         
-        //newUserScriptForm.userscriptname;
-        //newUserScriptForm.userscriptdesc;
-        //newUserScriptForm.userscriptcode;
+        code = newUserScriptForm.us-code;
+        
+        us = new UserScript(code);
+        
+        name = us.getName();
+        desc = us.getDescription();
+        includes = us.getIncludes().join(",");
+        excludes = us.getExcludes().join(",");
+        disabled = 0;
+        
+        db.create(name, desc, includes, excludes, code, disabled);
     }
 });
 
@@ -214,9 +70,13 @@ var ScriptSettingsPanel = Class.create(KS, {
         
         this._id = "KS_PSS1";
     },
-    open: function ($super) {
+    open: function ($super, scriptId) {
+        
+        this._scriptId = scriptId;
         
         $super(this._id);
+        
+        this.showUserSettings();
     },
     close: function ($super) {
         
@@ -244,6 +104,8 @@ var ScriptSettingsPanel = Class.create(KS, {
 var KS = Class.create({
     
     initialize: function () {
+        
+        this._previousPopoverId = 'KS_PMP1';
         
         this._currentPopoverId = null;
         
@@ -274,6 +136,8 @@ var KS = Class.create({
         
         this._tbItems.showPopover();
         
+        this._previousPopoverId = this._currentPopoverId;
+        
         this._currentPopoverId = popoverId;
     },
     close: function (popoverId) {
@@ -299,21 +163,6 @@ function ksCommandHandler(event) {
             
             ks.managementPanel.open(event);
             break;
-        case "":
-            
-            
-            break;
-        case "":
-            
-            
-            break;
-        case "":
-            
-            
-            break;
-        default:
-            
-            
     }
 }
 
@@ -324,23 +173,8 @@ function ksValidateHandler(event) {
     {
         case "click-btn":
             
-            
+            // 
             break;
-        case "":
-            
-            
-            break;
-        case "":
-            
-            
-            break;
-        case "":
-            
-            
-            break;
-        default:
-            
-            
     }
 }
 

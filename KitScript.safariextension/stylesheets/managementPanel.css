@@ -41,10 +41,15 @@ td.icon {
 }
 
 span.us-title {
-    font-size: 1.25 em;
+    font-size: 1.25em;
     font-weight: bold;
 }
 
 button {
     opacity: 1.0;
+}
+
+#us-list tbody tr.disabled td * {
+    opacity: 0.5;
+    
 }
