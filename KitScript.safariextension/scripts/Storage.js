@@ -1,5 +1,5 @@
 
-var SqlArray = Create.create({
+var SQLStatementArray = Class.create({
     
     initialize: function () {
         
@@ -66,7 +66,6 @@ var Storage = Class.create({
             
             switch (e) {
                 case INVALID_STATE_ERR:
-                    // Version number mismatch\
                     throw new StorageException('Invalid database version.');
                     break;
                 case NOT_SUPPORTED:
@@ -85,14 +84,14 @@ var Storage = Class.create({
         
         if (0) {
             
-            sqlArray = new SqlArray();
+            sqlArray = new SQLStatementArray();
             
             sqlArray.push('DROP TABLE UserScripts;', [], _statementCallback, _errorHandler);
             
             this.transact(sqlArray);
         }
         
-        sqlArray = new SqlArray();
+        sqlArray = new SQLStatementArray();
         
         sqlArray.push('CREATE TABLE IF NOT EXISTS UserScripts (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name VARCHAR(55) NOT NULL, description VARCHAR(155) NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL 0);', [], _statementCallback, _errorHandler);
         
@@ -112,7 +111,7 @@ var Storage = Class.create({
     },
     create: function (name, desc, includes, excludes, code, disabled) {
         
-        sqlArray = new SqlArray();
+        sqlArray = new SQLStatementArray();
         
         sqlArray.push("INSERT INTO UserScripts (name, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?);", [name, desc, includes, excludes, code, disabled], _statementCallback, _errorHandler);
         
@@ -120,7 +119,7 @@ var Storage = Class.create({
     },
     update: function (id, name, desc, includes, excludes, code, disabled) {
         
-        sqlArray = new SqlArray();
+        sqlArray = new SQLStatementArray();
         
         sqlArray.push("UPDATE UserScripts SET name = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, desc, includes, excludes, code, disabled, id], _statementCallback, _errorHandler);
         
@@ -128,7 +127,7 @@ var Storage = Class.create({
     },
     read: function (id) {
         
-        sqlArray = new SqlArray();
+        sqlArray = new SQLStatementArray();
         
         sqlArray.push("SELECT * FROM UserScripts WHERE id = ?;", [id], _statementCallback, _errorHandler);
         
@@ -138,7 +137,7 @@ var Storage = Class.create({
     },
     fetchAll: function (offset, limit) {
         
-        sqlArray = new SqlArray();
+        sqlArray = new SQLStatementArray();
         
         sqlArray.push("SELECT * FROM UserScripts LIMIT ?, ?;", [offset, limit], _statementCallback, _errorHandler);
         
@@ -148,7 +147,7 @@ var Storage = Class.create({
     },
     remove: function (id) {
         
-        sqlArray = new SqlArray();
+        sqlArray = new SQLStatementArray();
         
         sqlArray.push("DELETE FROM UserScripts WHERE id = ?;", [id], _statementCallback, _killTransaction);
         
@@ -156,7 +155,7 @@ var Storage = Class.create({
     },
     disableScript: function (id) {
         
-        sqlArray = new SqlArray();
+        sqlArray = new SQLStatementArray();
         
         sqlArray.push("UPDATE UserScripts SET disabled = 1 WHERE id = ?;", [id], _statementCallback, _errorHandler);
         
@@ -179,8 +178,6 @@ var Storage = Class.create({
         return this._lastResultSet;
     }
 });
-
-var db = new Storage();
 
 var ResultSet = Class.create({
     
@@ -216,6 +213,8 @@ var ResultSet = Class.create({
         return null;
     }
 });
+
+db = new Storage();
 
 function _statementCallback(transaction, resultSet) {
     

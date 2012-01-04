@@ -50,6 +50,5 @@ button {
 }
 
 #us-list tbody tr.disabled td * {
-    opacity: 0.5;
-    
+    color: #CCC;
 }

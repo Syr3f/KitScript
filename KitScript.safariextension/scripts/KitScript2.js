@@ -4,11 +4,12 @@ var ManagementPanel = Class.create(KS, {
     
     initialize: function () {
         
-        this._id = "KS_PMP1";
+        //this._id = "KS_PMP1";
+        this._page = "managementPanel.html";
     },
     open: function ($super) {
         
-        $super(this._id);
+        $super(this._page);
     },
     close: function ($super) {
         
@@ -38,11 +39,12 @@ var NewUserScriptPanel = Class.create(KS, {
     
     initialize: function () {
         
-        this._id = "KS_PNU1";
+        //this._id = "KS_PNU1";
+        this._page = "newUserScriptPanel.html";
     },
     open: function ($super) {
         
-        $super(this._id);
+        $super(this._page);
     },
     close: function ($super) {
         
@@ -69,13 +71,14 @@ var ScriptSettingsPanel = Class.create(KS, {
     
     initialize: function () {
         
-        this._id = "KS_PSS1";
+        //this._id = "KS_PSS1";
+        this._page = "scriptSettingsPanel.html";
     },
     open: function ($super, scriptId) {
         
         this._scriptId = scriptId;
         
-        $super(this._id);
+        $super(this._page);
         
         this.showUserSettings();
     },
@@ -126,53 +129,51 @@ var KS = Class.create({
     
     initialize: function () {
         
-        this._previousPopoverId = null;
-        this._currentPopoverId = 'KS_PMP1';
+        //this._previousPopoverId = null;
+        //this._currentPopoverId = 'KS_PMP1';
         
-        this._popovers = safari.extension.popovers;
+        this.previousPage = null;
+        this.currentPage = 'main.html';
+        
+        //this._popovers = safari.extension.popovers;
         this._tbItems = safari.extension.toolbarItems;
+        
+        this._tab = null;
     },
-    getPopovers: function () {
+    open: function (page) {
         
-        return this._popovers;
-    },
-    getToolbarItems: function () {
+        //this.close(this._currentPopoverId);
         
-        return this._tbItems;
-    },
-    getPreviousPopoverId: function () {
-        
-        return this._previousPopoverId;
-    },
-    getCurrentPopoverId: function () {
-        
-        return this._currentPopoverId;
-    },
-    open: function (popoverId) {
-        
-        this.close(this._currentPopoverId);
-        
-        for (var i = 0; i < this._popovers.length; i++) {
+        /*for (var i = 0; i < this._popovers.length; i++) {
             
             if (popoverId == this._popovers[i].identifier) {
                 
                 this._tbItems[0].popover = this._popovers[i];
             }
+        }*/
+        
+        //this._tbItems[0].showPopover();
+        
+        //this._previousPopoverId = this._currentPopoverId;
+        
+        //this._currentPopoverId = popoverId;
+        
+        this._previousPage = this.currentPage;
+        
+        this._currentPage = page;
+        
+        
+        if (this._tab === null)
+        {
+            this._tab = safari.application.activeBrowserWindow.openTab('foreground',-1);
         }
         
-        this._tbItems[0].showPopover();
-        
-        this._previousPopoverId = this._currentPopoverId;
-        
-        this._currentPopoverId = popoverId;
-        
-        //this._tab = safari.application.activeBrowserWindow.openTab('foreground',-1);
-        //this._tab.url = location.href.replace('main.html', 'markups/managementPanel.html');
+        this._tab.url = location.href.replace(this.previousPage, 'markups/'+this.currentPage);
         //this._url = this._tab.url;
     },
     close: function (popoverId) {
         
-        safari.extension.removePopover(popoverId);
+        //safari.extension.removePopover(popoverId);
     }
 });
 
