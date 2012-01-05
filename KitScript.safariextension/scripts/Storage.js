@@ -1,21 +1,21 @@
 
-var SQLStatementArray = Class.create({
+var SQLStatementsArray = Class.create({
     
     initialize: function () {
         
-        this._sqlArray = new Array();
+        this._sqlStmntsArray = new Array();
     },
     push: function (sql, arguments, statementCallback, errorCallback) {
         
-        this._sqlArray.push(new Array(sql, (arguments.length > 0 ? arguments : null), statementCallback, errorCallback));
+        this._sqlStmntsArray.push(new Array(sql, (arguments.length > 0 ? arguments : null), statementCallback, errorCallback));
     },
     getArray: function () {
         
-        return this._sqlArray;
+        return this._sqlStmntsArray;
     },
     getStatementByIndex: function (index) {
         
-        return this._sqlArray[index];
+        return this._sqlStmntsArray[index];
     }
 });
 
@@ -24,6 +24,8 @@ var StorageException = Class.create({
     initialize: function (message) {
         
         this._message = message;
+        
+        this.NOT_SUPPORTED = 'NOT_SUPPORTED';
     },
     getMessage: function () {
         
@@ -31,7 +33,6 @@ var StorageException = Class.create({
     }
 });
 
-var NOT_SUPPORTED = 'NOT_SUPPORTED';
 
 
 var ResultSet = Class.create({
@@ -89,7 +90,7 @@ var Storage = Class.create({
             
             if (!window.openDatabase) {
                 
-                throw NOT_SUPPORTED;
+                throw StorageException.NOT_SUPPORTED;
             } else {
                 
                 this._DB = window.openDatabase(this._dbName, this._dbVersion, this._dbDisplayName, this._dbSize);
@@ -116,9 +117,9 @@ var Storage = Class.create({
         
         return this._dbIsCreated;
     },
-    transact: function (sqlArray) {
+    transact: function (sqlStmntsArray) {
         
-        var _sqls = sqlArray.getArray();
+        var _sqls = sqlStmntsArray.getArray();
         
         this.setSuccess(false);
         
@@ -130,8 +131,6 @@ var Storage = Class.create({
         }
         
         _js += '});';
-        
-        //console.log(_js);
         
         eval(_js);
     },
@@ -153,101 +152,7 @@ var Storage = Class.create({
     }
 });
 
-var KSStorage = Class.create(Storage, {
-    
-    initialize: function ($super) {
-        
-        this._dbName = 'KitScript';
-        this._dbVersion = '1.0';
-        this._dbDisplayName = 'KitScript';
-        this._dbSize = 10 * 1024 * 1024; // 10 MB in bytes
-        
-        $super(this._dbName, this._dbVersion, this._dbDisplayName, this._dbSize);
-    },
-    connect: function ($super) {
-        
-        return $super();
-    },
-    createTable: function (isDropAllowed) {
-        
-        if (isDropAllowed) {
-            
-            _fH = function () { console.log("Table dropped."); };
-            
-            sqlArray = new SQLStatementArray();
-            
-            sqlArray.push('DROP TABLE UserScripts;', [], _fH, _errorHandler);
-            
-            this.transact(sqlArray);
-        }
-        
-        _fH = function () { console.log("Table created."); };
-        
-        sqlArray = new SQLStatementArray();
-        
-        sqlArray.push('CREATE TABLE IF NOT EXISTS UserScripts (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _fH, _errorHandler);
-        
-        this.transact(sqlArray);
-    },
-    insert: function (name, desc, includes, excludes, code, disabled) {
-        
-        _fH = function () { console.log("Data inserted."); };
-        
-        sqlArray = new SQLStatementArray();
-        
-        sqlArray.push("INSERT INTO UserScripts (name, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?);", [name, desc, includes, excludes, code, disabled], _fH, _errorHandler);
-        
-        this.transact(sqlArray);
-    },
-    update: function (id, name, desc, includes, excludes, code, disabled) {
-        
-        _fH = function () { console.log("Data updated."); };
-        
-        sqlArray = new SQLStatementArray();
-        
-        sqlArray.push("UPDATE UserScripts SET name = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, desc, includes, excludes, code, disabled, id], _fH, _errorHandler);
-        
-        this.transact(sqlArray);
-    },
-    fetch: function (id, fetchCallback) {
-        
-        sqlArray = new SQLStatementArray();
-        
-        sqlArray.push("SELECT * FROM UserScripts WHERE id = ?;", [id], fetchCallback, _errorHandler);
-        
-        this.transact(sqlArray);
-    },
-    fetchAll: function (offset, limit, fetchCallback) {
-        
-        sqlArray = new SQLStatementArray();
-        
-        sqlArray.push("SELECT * FROM UserScripts LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
-        
-        this.transact(sqlArray);
-    },
-    remove: function (id) {
-        
-        _fH = function () { console.log("Data deleted."); };
-        
-        sqlArray = new SQLStatementArray();
-        
-        sqlArray.push("DELETE FROM UserScripts WHERE id = ?;", [id], _fH, _killTransaction);
-        
-        this.transact(sqlArray);
-    },
-    disableScript: function (id) {
-        
-        _fH = function () { console.log("Script disabled."); };
-        
-        sqlArray = new SQLStatementArray();
-        
-        sqlArray.push("UPDATE UserScripts SET disabled = 1 WHERE id = ?;", [id], _fH, _errorHandler);
-        
-        this.transact(sqlArray);
-    }
-});
 
-db = new KSStorage();
 
 function _statementCallback(transaction, resultSet) {
     
