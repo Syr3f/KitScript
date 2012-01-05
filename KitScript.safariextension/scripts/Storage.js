@@ -5,9 +5,9 @@ var SQLStatementsArray = Class.create({
         
         this._sqlStmntsArray = new Array();
     },
-    push: function (sql, arguments, statementCallback, errorCallback) {
+    push: function (dboconn, sql, arguments, statementCallback, errorCallback) {
         
-        this._sqlStmntsArray.push(new Array(sql, (arguments.length > 0 ? arguments : null), statementCallback, errorCallback));
+        this._sqlStmntsArray.push(new Array(dboconn, sql, (arguments.length > 0 ? arguments : null), statementCallback, errorCallback));
     },
     getArray: function () {
         
@@ -82,7 +82,7 @@ var Storage = Class.create({
         this._dbDisplayName = dbDisplayName;
         this._dbSize = dbSize;
         
-        this._dbIsCreated = false;
+        this._isConnected = false;
     },
     connect: function () {
         
@@ -95,7 +95,7 @@ var Storage = Class.create({
                 
                 this._DB = window.openDatabase(this._dbName, this._dbVersion, this._dbDisplayName, this._dbSize);
                 
-                this._dbIsCreated = true;
+                this._isConnected = true;
             }
         } catch(e) {
             
@@ -113,9 +113,9 @@ var Storage = Class.create({
         
         return true;
     },
-    isExistant: function () {
+    isConnected: function () {
         
-        return this._dbIsCreated;
+        return this._isConnected;
     },
     transact: function (sqlStmntsArray) {
         
@@ -123,16 +123,32 @@ var Storage = Class.create({
         
         this.setSuccess(false);
         
-        var _js = 'this._DB.transaction(function (transaction) {';
-            
-        for (var i = 0; i < _sqls.length; i++) {
-            
-            _js += "transaction.executeSql('"+_sqls[i][0]+"', "+(_sqls[i][1] === null ? null : "new Array('"+_sqls[i][1].join("','")+"')")+", "+_sqls[i][2]+', '+_sqls[i][3]+');';
-        }
+        //var _js = 'this._DB.transaction(function (transaction) {';
         
-        _js += '});';
+        //_js += 'transaction.prototype.dboconn = '+_sqls[i][0]+';';
         
-        eval(_js);
+        //for (var i = 0; i < _sqls.length; i++) {
+            
+        //    _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
+        //}
+        
+        //_js += '});';
+        
+        //eval(_js);
+        
+        this._DB.transaction(function (transaction) {
+            
+            transaction.prototype.dboconn = _sqls[i][0];
+            
+            var _js = "";
+            
+            for (var i = 0; i < _sqls.length; i++) {
+                
+                _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
+            }
+            
+            eval(_js);
+        });
     },
     getSuccess: function () {
         
@@ -156,10 +172,12 @@ var Storage = Class.create({
 
 function _statementCallback(transaction, resultSet) {
     
-    db.setResultSet(resultSet);
+    var _db = transaction.dboconn;
+    
+    _db.setResultSet(resultSet);
     
     if (resultSet.rows.length > 0)
-        db.setSuccess(true);
+        _db.setSuccess(true);
 }
 
 function _nullHandler() {
@@ -169,15 +187,15 @@ function _nullHandler() {
 function _successHandler() {
     
     console.log('Successful statement!');
-    
-    db.setSuccess(true);
 }
 
 function _errorHandler(transaction, error) {
     
+    var _db = transaction.dboconn;
+    
     console.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
     
-    db.setSuccess(false);
+    _db.setSuccess(false);
 }
 
 function _killTransaction(transaction, error) {
