@@ -33,7 +33,7 @@ var StorageException = Class.create({
 
 var NOT_SUPPORTED = 'NOT_SUPPORTED';
 
-var Storage = Class.create({
+var KSStorage = Class.create({
     
     initialize: function () {
         
@@ -75,14 +75,16 @@ var Storage = Class.create({
                     throw new StorageException('Unknown error '+e+'.');
             }
         }
+        
+        return true;
     },
     isExistant: function () {
         
         return this._dbIsCreated;
     },
-    createTables: function () {
+    createTables: function (isDropAllowed) {
         
-        if (0) {
+        if (isDropAllowed) {
             
             sqlArray = new SQLStatementArray();
             
@@ -109,7 +111,15 @@ var Storage = Class.create({
             }
         }, _errorHandler, _successCallback);
     },
-    create: function (name, desc, includes, excludes, code, disabled) {
+    setTable: function (tableName) {
+        
+        this._tableName = tableName;
+    },
+    getTable: function () {
+        
+        return this._tableName;
+    },
+    insert: function (name, desc, includes, excludes, code, disabled) {
         
         sqlArray = new SQLStatementArray();
         
@@ -125,7 +135,7 @@ var Storage = Class.create({
         
         this.transact(sqlArray);
     },
-    read: function (id) {
+    fetch: function (id) {
         
         sqlArray = new SQLStatementArray();
         
@@ -214,7 +224,80 @@ var ResultSet = Class.create({
     }
 });
 
-db = new Storage();
+var KSStorageTest = Class.create(Storage, {
+    
+    initialize: function () {
+        
+        this._dbName = "DatabaseTest";
+        this.dbVersion = "1.0";
+    },
+    createStorage: function () {
+        try {
+            this.connect();
+        }
+        catch (e) {
+            this.createTables();
+        }
+        
+    },
+    connect: function ($super) {
+        
+        if ($super() === true) {
+            console.log("Database connected!");
+        }
+    },
+    isExistant: function ($super) {
+        
+        if ($super() === true) {
+            console.log("Database is existant!");
+        }
+    },
+    createTables: function ($super) {
+        
+        console.log("Creating Tables...");
+        $super();
+        this.isExistant();
+    },
+    insert: function ($super, name, desc, includes, excludes, code, disabled) {
+        
+        console.log("");
+        $super(name, desc, includes, excludes, code, disabled);
+        console.log("");
+    },
+    update: function ($super, id, name, desc, includes, excludes, code, disabled) {
+        
+        console.log("");
+        $super(id, name, desc, includes, excludes, code, disabled);
+        console.log("");
+    },
+    fetch: function ($super,id) {
+        
+        console.log("");
+        $super(id);
+        console.log("");
+    },
+    fetchAll: function ($super, offset, limit) {
+        
+        console.log("");
+        $super(offset, limit);
+        
+    },
+    remove: function ($super, id) {
+        
+        console.log("Deleting row "+id+".");
+        $super(id);
+        console.log("Row "+id+" deleted.");
+    },
+    disableScript: function ($super, id) {
+        
+        console.log("Disabling script.");
+        $super(id);
+        console.log("Script disabled.");
+    }
+})
+
+dbTest = new KSStorageTest();
+db = new KSStorage();
 
 function _statementCallback(transaction, resultSet) {
     

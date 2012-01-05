@@ -177,9 +177,20 @@ var KS = Class.create({
     }
 });
 
+var KSStorage = Class.create(Storage, {
+    
+    initialize: function () {
+        
+    },
+    initDb: function () {
+        
+    },
+    
+});
 
 var ks = {
     
+    db: new KSStorage(),
     managementPanel: new ManagementPanel(),
     newUserScriptPanel: new NewUserScriptPanel(),
     scriptSettingsPanel: new ScriptSettingsPanel()
