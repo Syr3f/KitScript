@@ -1,14 +1,23 @@
+/**
+ *  KitScript - A User Script Safari Extension
+ */
 
+
+
+
+
+/**
+ *  KSUtils (KitScript Utilitary Class)
+ */
 var KSUtils = Class.create({
     
-    /**
-     *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
-     *
-     */
     initialize: function () {
         
         this._vl = 0;
     },
+    /**
+     *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
+     */
     setVerboseLevel: function (verboseLevel) {
         
         this._vl = verboseLevel;
@@ -30,19 +39,21 @@ var KSUtils = Class.create({
 });
 
 
-var ManagementPanel = Class.create(KS, {
+
+
+
+/**
+ *  KSManagementPanel (KitScript User Scripts Management Panel Class)
+ */
+var KSManagementPanel = Class.create(KSBase, {
     
     initialize: function () {
         
-        this._page = "managementPanel.html";
+        this._pageName = "managementPanel.html";
     },
-    openPage: function ($super) {
+    openPanel: function () {
         
-        $super(this._page);
-    },
-    close: function ($super) {
-        
-        //$super();
+        this.openPage(this._pageName);
     },
     openSettings: function (id) {
         
@@ -64,7 +75,14 @@ var ManagementPanel = Class.create(KS, {
 });
 
 
-var NewUserScriptPanel = Class.create(KS, {
+
+
+
+/**
+ *  KSNewPanel (KitScript New User Script Panel Class)
+ */
+/*
+var KSNewPanel = Class.create(KSBase, {
     
     initialize: function () {
         
@@ -92,6 +110,7 @@ var NewUserScriptPanel = Class.create(KS, {
         
         db.create(name, desc, includes, excludes, code, disabled);
         */
+        /*
     },
     autoSave: function () {
         
@@ -100,7 +119,14 @@ var NewUserScriptPanel = Class.create(KS, {
 });
 
 
-var ScriptSettingsPanel = Class.create(KS, {
+
+
+
+/**
+ *  KSSettingsPanel (KitScript User Script Settings Panel Class)
+ */
+/*
+var KSSettingsPanel = Class.create(KSBase, {
     
     initialize: function () {
         
@@ -154,11 +180,19 @@ var ScriptSettingsPanel = Class.create(KS, {
         
         db.update(name, desc, includes, excludes, code, disabled, id);
         */
+        /*
     }
 });
+*/
 
 
-var KS = Class.create({
+
+
+
+/**
+ *  KSBase (KitScript Base Object Class)
+ */
+var KSBase = Class.create({
     
     initialize: function () {
         
@@ -168,8 +202,6 @@ var KS = Class.create({
         
         this._previousPage = null;
         this._currentPage = this.defaultPage;
-        
-        this._tbItems = safari.extension.toolbarItems;
         
         this._tab = null;
         this._url = null;
@@ -188,10 +220,10 @@ var KS = Class.create({
     },
     setTabPage: function (page) {
         
-        this._previousPage = this.currentPage;
+        this._previousPage = this._currentPage;
         this._currentPage = page;
         
-        this._tab.url = location.href.replace(this.previousPage, 'markups/'+this.currentPage);
+        this._tab.url = location.href.replace(this._previousPage, 'markups/'+this._currentPage);
         this._url = this._tab.url;
     },
     openTab: function () {
@@ -201,9 +233,12 @@ var KS = Class.create({
     },
     closeTab: function () {
         
-        this._tab.close();
-        
-        this._isTabOpen = false;
+        if (this._tab !== null) {
+            
+            this._tab.close();
+            this._tab = null;
+            this._isTabOpen = false;
+        }
     },
     isTabOpen: function () {
         
@@ -212,19 +247,123 @@ var KS = Class.create({
 });
 
 
+
+
+
+/**
+ *  KSStorage (KitScript Storage Class)
+ *
+var KSStorage = Class.create(Storage, {
+    
+    initialize: function ($super) {
+        
+        this._dbName = 'KitScript';
+        this._dbVersion = '1.0';
+        this._dbDisplayName = 'KitScript';
+        this._dbSize = 10 * 1024 * 1024; // 10 MB in bytes
+        
+        $super(this._dbName, this._dbVersion, this._dbDisplayName, this._dbSize);
+    },
+    connect: function ($super) {
+        
+        return $super();
+    },
+    createTable: function (isDropAllowed) {
+        
+        if (isDropAllowed) {
+            
+            _fH = function () { console.log("Table dropped."); };
+            
+            sqlArray = new SQLStatementsArray();
+            
+            sqlArray.push('DROP TABLE UserScripts;', [], _fH, _errorHandler);
+            
+            this.transact(sqlArray);
+        }
+        
+        _fH = function () { console.log("Table created."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push('CREATE TABLE IF NOT EXISTS UserScripts (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    insert: function (name, desc, includes, excludes, code, disabled) {
+        
+        _fH = function () { console.log("Data inserted."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push("INSERT INTO UserScripts (name, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?);", [name, desc, includes, excludes, code, disabled], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    update: function (id, name, desc, includes, excludes, code, disabled) {
+        
+        _fH = function () { console.log("Data updated."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push("UPDATE UserScripts SET name = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, desc, includes, excludes, code, disabled, id], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    fetch: function (id, fetchCallback) {
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push("SELECT * FROM UserScripts WHERE id = ?;", [id], fetchCallback, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    fetchAll: function (offset, limit, fetchCallback) {
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push("SELECT * FROM UserScripts LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    remove: function (id) {
+        
+        _fH = function () { console.log("Data deleted."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push("DELETE FROM UserScripts WHERE id = ?;", [id], _fH, _killTransaction);
+        
+        this.transact(sqlArray);
+    },
+    disableScript: function (id) {
+        
+        _fH = function () { console.log("Script disabled."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push("UPDATE UserScripts SET disabled = 1 WHERE id = ?;", [id], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    }
+});
+*/
+
+
+
+
+
 var ks = Class.create(KSUtils, {
     
     initialize: function () {
         
         this.setVerboseLevel(1);
     },
-    db: new KSStorage(),
-    panels: {
-        manageUserScripts: new ManagementPanel(),
-        newUserScript: new NewUserScriptPanel(),
-        UserScriptSettings: new ScriptSettingsPanel()
-    }
+    //db: new KSStorage(),
+    manageUserScripts: new KSManagementPanel()//,
+    //newUserScript: new KSNewPanel(),
+    //UserScriptSettings: new KSSettingsPanel()
 });
+
 
 
 function _ksCommandHandler(event) {
@@ -233,7 +372,8 @@ function _ksCommandHandler(event) {
     {
         case "open_main":
             
-            ks.panels.manageUserScripts.openPage();
+            //ks.panels.manageUserScripts.openPage();
+            //ks.manageUserScripts.openPage();
             break;
         case "close":
             
@@ -256,16 +396,17 @@ function _ksCommandHandler(event) {
 }
 
 
+
 function _ksValidateHandler(event) {
     
     switch (event.command)
     {
         case "open_main":
             
-            if (ks.panels.manageUserScripts.isTabOpen() === true) {
+            //if (ks.manageUserScripts.isTabOpen() === true) {
                 
-                ks.panels.manageUserScripts.openPage(ks.panels.manageUserScripts.defaultPage);
-            }
+            //    ks.manageUserScripts.openPage(ks.panels.manageUserScripts.defaultPage);
+            //}
             break;
         case "close":
             
@@ -287,8 +428,8 @@ function _ksValidateHandler(event) {
 }
 
 
-safari.application.addEventListener("command", _ksCommandHandler, false);
 
+safari.application.addEventListener("command", _ksCommandHandler, false);
 safari.application.addEventListener("validate", _ksValidateHandler, false);
 
 
