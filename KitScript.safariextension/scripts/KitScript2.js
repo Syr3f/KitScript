@@ -267,21 +267,62 @@ var KSStorage = Class.create(Storage, {
         this._dbDisplayName = 'KitScript';
         this._dbSize = 10 * 1024 * 1024; // 10 MB in bytes
         
+        this._dbTable = "UserScripts";
+        
+        this._isDbExistant = false;
+        
         $super(this._dbName, this._dbVersion, this._dbDisplayName, this._dbSize);
     },
     connect: function ($super) {
         
-        return $super();
+        _db = $super();
+        
+        this._verifyDb();
+        
+        return _db;
+    },
+    isDbExistant: function () {
+        
+        return this._isDbExistant;
+    },
+    _verifyDb: function () {
+        
+        this._isDbExistant = false;
+        
+        _fH = function (transaction, resultSet) {
+            
+            var _db = transaction.dboconn;
+            
+            _statementCallback(transaction, resultSet);
+            
+            if (resultSet.rows.length > 0) {
+                
+                var _row = resultSet.rows.item(0);
+                
+                if (_row['name'] == _db._dbTable) {
+                    
+                    _db._isDbExistant = true;
+                }
+            }
+            
+            return this._isDbExistant;
+        }
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "SELECT name FROM sqlite_master WHERE type=? AND name=?;", ["table",this._dbTable], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
     },
     createTable: function (isDropAllowed) {
         
-        if (isDropAllowed) {
+        if (isDropAllowed === true) {
             
             _fH = function () { console.log("Table dropped."); };
             
             sqlArray = new SQLStatementsArray();
             
-            sqlArray.push('DROP TABLE UserScripts;', [], _fH, _errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTable+';', [], _fH, _errorHandler);
             
             this.transact(sqlArray);
         }
@@ -290,7 +331,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push('CREATE TABLE IF NOT EXISTS UserScripts (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _fH, _errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTable+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
@@ -300,7 +341,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push("INSERT INTO UserScripts (name, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?);", [name, desc, includes, excludes, code, disabled], _fH, _errorHandler);
+        sqlArray.push(this, "INSERT INTO "+this._dbTable+" (name, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?);", [name, desc, includes, excludes, code, disabled], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
@@ -310,7 +351,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push("UPDATE UserScripts SET name = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, desc, includes, excludes, code, disabled, id], _fH, _errorHandler);
+        sqlArray.push(this, "UPDATE "+this._dbTable+" SET name = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, desc, includes, excludes, code, disabled, id], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
@@ -318,7 +359,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push("SELECT * FROM UserScripts WHERE id = ?;", [id], fetchCallback, _errorHandler);
+        sqlArray.push(this, "SELECT * FROM "+this._dbTable+" WHERE id = ?;", [id], fetchCallback, _errorHandler);
         
         this.transact(sqlArray);
     },
@@ -326,7 +367,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push("SELECT * FROM UserScripts LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
+        sqlArray.push(this, "SELECT * FROM "+this._dbTable+" LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
         
         this.transact(sqlArray);
     },
@@ -336,7 +377,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push("DELETE FROM UserScripts WHERE id = ?;", [id], _fH, _killTransaction);
+        sqlArray.push(this, "DELETE FROM "+this._dbTable+" WHERE id = ?;", [id], _fH, _killTransaction);
         
         this.transact(sqlArray);
     },
@@ -346,7 +387,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push("UPDATE UserScripts SET disabled = 1 WHERE id = ?;", [id], _fH, _errorHandler);
+        sqlArray.push(this, "UPDATE "+this._dbTable+" SET disabled = 1 WHERE id = ?;", [id], _fH, _errorHandler);
         
         this.transact(sqlArray);
     }
@@ -356,25 +397,31 @@ var KSStorage = Class.create(Storage, {
 
 
 
-
 var KitScript = Class.create(KSUtils, {
-//var KitScript = Class.create({
     
     initialize: function ($super) {
+        
+        this.db = new KSStorage();
+        this.$ = jQuery;
+        this.manageUserScripts = new KSManagementPanel();
+        this.newUserScript = new KSNewPanel();
+        this.userScriptSettings = new KSSettingsPanel();
+        
+        try {
+            this.db.connect();
+        } catch (e) {
+            
+            ks.log(e.getMessage());
+        }
         
         $super();
         
         this.setVerboseLevel(1);
-    },
-    $: jQuery,
-    db: new KSStorage(),
-    manageUserScripts: new KSManagementPanel(),
-    newUserScript: new KSNewPanel(),
-    UserScriptSettings: new KSSettingsPanel()
+    }
 });
 
 
-var ks = new KitScript();
+
 
 
 function _ksCommandHandler(event) {
@@ -407,6 +454,8 @@ function _ksCommandHandler(event) {
 
 
 
+
+
 function _ksValidateHandler(event) {
     
     switch (event.command)
@@ -436,6 +485,8 @@ function _ksValidateHandler(event) {
             break;
     }
 }
+
+
 
 
 
