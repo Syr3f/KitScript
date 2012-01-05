@@ -29,7 +29,7 @@
     
     <script type="text/javascript" charset="utf-8">
       
-      // Action here
+      
       
     </script>
     
@@ -39,17 +39,17 @@
     <div class="topbar">
           <div class="fill">
             <div class="container">
-              <a class="brand" href="#">Project name</a>
+              <a class="brand" href="#">KitScript</a>
               <ul class="nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li class="active"><a href="#manage-user-scripts">Manage User Scripts</a></li>
+                <li><a href="#add-user-scripts">Add User Scripts</a></li>
+                <li><a href="#global-settings">Global Settings</a></li>
               </ul>
-              <form action="" class="pull-right">
+              <!-- form action="" class="pull-right">
                 <input class="input-small" type="text" placeholder="Username">
                 <input class="input-small" type="password" placeholder="Password">
                 <button class="btn" type="submit">Sign in</button>
-              </form>
+              </form -->
             </div>
           </div>
         </div>
@@ -58,23 +58,47 @@
 
           <div class="content">
             <div class="page-header">
-              <h1>Page name <small>Supporting text or tagline</small></h1>
+              <h1>Manage KitScript<small> Manage your User Scripts Here</small></h1>
             </div>
             <div class="row">
               <div class="span10">
-                <h2>Main content</h2>
+                <h2>User Scripts</h2>
+                
+                <table id="us-list" class="zebra-striped">
+                  <tbody>
+                    
+                    
+                    
+                  </tbody>
+                </table>
+                
               </div>
               <div class="span4">
-                <h3>Secondary content</h3>
+                <h3>KitScript</h3>
+                
+                <ul class="unstyled">
+                  <li class="active"><a href="#manage-user-scripts">Manage User Scripts</a></li>
+                  <li><a href="#add-user-scripts">Add User Scripts</a></li>
+                  <li><a href="#global-settings">Global Settings</a></li>
+                </ul>
+                
               </div>
             </div>
           </div>
 
           <footer>
-            <p>&copy; Company 2011</p>
+            <p>copyright &copy; 2012 KitScript - All rights reserved.</p>
           </footer>
 
         </div> <!-- /container -->
-    
+        
+        <script type="text/javascript" charset="utf-8">
+
+          jQuery(function () {
+                _listUserScripts();
+          });
+
+        </script>
+        
   </body>
 </html>
