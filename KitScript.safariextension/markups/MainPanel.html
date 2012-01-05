@@ -20,14 +20,24 @@
     <script src="../scripts/lib/prototype/prototype-1.7.0.0.min.js" type="text/javascript" charset="utf-8"></script>
     <!-- script src="../scripts/lib/prototype/prototype-1.6.1.js" type="text/javascript" charset="utf-8"></script -->
     
+    <!-- = Backbone.js = -->
+    <script src="../scripts/lib/backbone/json2-10.20.2011.min.js" type="text/javascript" charset="utf-8"></script>
+    <!-- script src="scripts/lib/backbone/underscore-1.2.2.min.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="scripts/lib/backbone/backbone-0.5.3.min.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="scripts/lib/backbone/backbone-localstorage.js" type="text/javascript" charset="utf-8"></script -->
+    
+    <!-- = Hogan.js = -->
+    <!-- script src="../scripts/lib/hogan.js/hogan.js" type="text/javascript" charset="utf-8"></script -->
+    
     <!-- = My Scripts = -->
     <script src="../scripts/Storage.js" type="text/javascript" charset="utf-8"></script>
     <!-- script src="../scripts/Greasemonkey.js" type="text/javascript" charset="utf-8"></script -->
     <script src="../scripts/KitScript2.js" type="text/javascript" charset="utf-8"></script>
     <script src="../scripts/Global.js" type="text/javascript" charset="utf-8"></script>
-    <script src="../scripts/mainPanel.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/MainPanel.js" type="text/javascript" charset="utf-8"></script>
     
     <script type="text/javascript" charset="utf-8">
+      
       
       
       
@@ -37,65 +47,156 @@
   <body>
     
     <div class="topbar">
-          <div class="fill">
-            <div class="container">
-              <a class="brand" href="#">KitScript</a>
-              <ul class="nav">
-                <li class="active"><a href="#manage">Manage User Scripts</a></li>
-                <li><a href="#new">New User Script</a></li>
-                <li><a href="#global-settings">Global Settings</a></li>
-                <li><a href="#about">About</a></li>
-              </ul>
-            </div>
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="#">KitScript</a>
+          <ul class="nav">
+            <li><a href="#global-settings">KitScript Settings</a></li>
+            <li class="active"><a href="#management">Management</a></li>
+            <li><a href="#new-userscript">New User Script</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+
+
+
+
+      <!-- Management - DEFAULT PANEL -->
+      <div class="content" id="management-content">
+        <div class="page-header">
+          <h1>KitScript's Management<small> Manage Your User Scripts</small></h1>
+        </div>
+        <div class="row">
+          <div class="span10">
+            <h2>User Scripts</h2>
+            
+            <table id="us-list" class="zebra-striped">
+              <tbody>
+                
+                
+                
+              </tbody>
+            </table>
+
+          </div>
+          <div class="span4">
+            <h3>KitScript</h3>
+
+            <ul class="unstyled">
+              <li><a href="#global-settings">KitScript Settings</a></li>
+              <li class="active"><a href="#management">Management</a></li>
+              <li><a href="#new-userscript">New User Script</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+
           </div>
         </div>
+      </div>
 
-        <div class="container">
 
-          <div class="content">
-            <div class="page-header">
-              <h1>Manage<small> User Scripts Management</small></h1>
-            </div>
-            <div class="row">
-              <div class="span10">
-                <h2>User Scripts</h2>
-                
-                <table id="us-list" class="zebra-striped">
-                  <tbody>
-                    
-                    
-                    
-                  </tbody>
-                </table>
-                
-              </div>
-              <div class="span4">
-                <h3>KitScript</h3>
-                
-                <ul class="unstyled">
-                  <li class="active"><a href="#manage">Manage User Scripts</a></li>
-                  <li><a href="#new">New User Scripts</a></li>
-                  <li><a href="#global-settings">Global Settings</a></li>
-                  <li><a href="#about">About</a></li>
-                </ul>
-                
-              </div>
-            </div>
+
+
+
+      <!-- Global Settings -->
+      <div class="content" id="settings-content" style="display:none;">
+        <div class="page-header">
+          <h1>KitScript's Settings<small> Tweak KitScript's Global Settings</small></h1>
+        </div>
+        <div class="row">
+          <div class="span10">
+            <h2>Global Settings</h2>
+            
+            
+            
           </div>
+          <div class="span4">
+            <h3>KitScript</h3>
+            
+            <ul class="unstyled">
+              <li><a href="#global-settings">KitScript Settings</a></li>
+              <li class="active"><a href="#management">Management</a></li>
+              <li><a href="#new-userscript">New User Script</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+            
+          </div>
+        </div>
+      </div>
 
-          <footer>
-            <p>copyright &copy; 2012 KitScript - All rights reserved.</p>
-          </footer>
 
-        </div> <!-- /container -->
-        
-        <script type="text/javascript" charset="utf-8">
 
-          jQuery(function () {
-                _listUserScripts();
-          });
 
-        </script>
-        
+
+      <!-- New Script -->
+      <div class="content" id="new-userscript-content" style="display:none;">
+        <div class="page-header">
+          <h1>KitScript's Editor<small> Add Your New User Script</small></h1>
+        </div>
+        <div class="row">
+          <div class="span10">
+            <h2>New User Script</h2>
+            
+            
+            
+          </div>
+          <div class="span4">
+            <h3>KitScript</h3>
+            
+            <ul class="unstyled">
+              <li><a href="#global-settings">KitScript Settings</a></li>
+              <li class="active"><a href="#management">Management</a></li>
+              <li><a href="#new-userscript">New User Script</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <!-- About -->
+      <div class="content" id="about-content" style="display:none;">
+        <div class="page-header">
+          <h1>About<small> Facts About KitScript</small></h1>
+        </div>
+        <div class="row">
+          <div class="span10">
+            <h2>About KitScript</h2>
+            
+            
+            
+          </div>
+          <div class="span4">
+            <h3>KitScript</h3>
+            
+            <ul class="unstyled">
+              <li><a href="#global-settings">KitScript Settings</a></li>
+              <li class="active"><a href="#management">Management</a></li>
+              <li><a href="#new-userscript">New User Script</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <footer>
+        <p>Copyright &copy; 2011-2012 KitScript - All rights reserved.</p>
+      </footer>
+
+    </div> <!-- /container -->
+    
   </body>
 </html>
