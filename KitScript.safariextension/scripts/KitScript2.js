@@ -1,4 +1,34 @@
 
+var KSUtils = Class.create({
+    
+    /**
+     *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
+     *
+     */
+    initialize: function () {
+        
+        this._vl = 0;
+    },
+    setVerboseLevel: function (verboseLevel) {
+        
+        this._vl = verboseLevel;
+    },
+    log: function (msg) {
+        
+        switch (this._vl) {
+            
+            case 2:
+                alert(msg);
+            case 1:
+                console.log(msg);
+                break;
+            case 0:
+            default:
+                // Silence
+        }
+    }
+});
+
 
 var ManagementPanel = Class.create(KS, {
     
@@ -62,6 +92,10 @@ var NewUserScriptPanel = Class.create(KS, {
         
         db.create(name, desc, includes, excludes, code, disabled);
         */
+    },
+    autoSave: function () {
+        
+        
     }
 });
 
@@ -128,8 +162,12 @@ var KS = Class.create({
     
     initialize: function () {
         
-        this.previousPage = null;
-        this.currentPage = 'main.html';
+        this._isTabOpen = false;
+        
+        this.defaultPage = 'main.html';
+        
+        this._previousPage = null;
+        this._currentPage = this.defaultPage;
         
         this._tbItems = safari.extension.toolbarItems;
         
@@ -137,45 +175,82 @@ var KS = Class.create({
         this._url = null;
     },
     openPage: function (page) {
-       
-        this._previousPage = this.currentPage;
-        
-        this._currentPage = page;
         
         if (this._tab === null)
-        {
-            this._tab = safari.application.activeBrowserWindow.openTab('foreground',-1);
-        }
+            this.openTab();
+        
+        this.setTabPage(page);
+    },
+    closePage: function () {
+        
+        this.setTabPage(this.defaultPage);
+        this.closeTab();
+    },
+    setTabPage: function (page) {
+        
+        this._previousPage = this.currentPage;
+        this._currentPage = page;
         
         this._tab.url = location.href.replace(this.previousPage, 'markups/'+this.currentPage);
         this._url = this._tab.url;
     },
-    close: function () {
+    openTab: function () {
         
-        //this._tab.close();
+        this._tab = safari.application.activeBrowserWindow.openTab('foreground',-1);
+        this._isTabOpen = true;
+    },
+    closeTab: function () {
+        
+        this._tab.close();
+        
+        this._isTabOpen = false;
+    },
+    isTabOpen: function () {
+        
+        return this._isTabOpen;
     }
 });
 
 
-var ks = {
+var ks = Class.create(KSUtils, {
     
+    initialize: function () {
+        
+        this.setVerboseLevel(1);
+    },
     db: new KSStorage(),
-    managementPanel: new ManagementPanel(),
-    newUserScriptPanel: new NewUserScriptPanel(),
-    scriptSettingsPanel: new ScriptSettingsPanel()
-};
+    panels: {
+        manageUserScripts: new ManagementPanel(),
+        newUserScript: new NewUserScriptPanel(),
+        UserScriptSettings: new ScriptSettingsPanel()
+    }
+});
 
 
 function _ksCommandHandler(event) {
     
     switch (event.command)
     {
-        case "click-btn":
+        case "open_main":
             
-            // ks.managementPanel.open(event);
+            ks.panels.manageUserScripts.openPage();
             break;
         case "close":
-            console.log("Something closed.");
+            
+            ks.log("Something closed.");
+            //ks.panels.manageUserScripts.close();
+            break;
+        case "toggle_enable":
+            
+            
+            break;
+        case "open_manage":
+            
+            
+            break;
+        case "open_new":
+            
+            
             break;
     }
 }
@@ -185,9 +260,28 @@ function _ksValidateHandler(event) {
     
     switch (event.command)
     {
-        case "click-btn":
+        case "open_main":
             
-            // 
+            if (ks.panels.manageUserScripts.isTabOpen() === true) {
+                
+                ks.panels.manageUserScripts.openPage(ks.panels.manageUserScripts.defaultPage);
+            }
+            break;
+        case "close":
+            
+            
+            break;
+        case "toggle_enable":
+            
+            
+            break;
+        case "open_manage":
+            
+            
+            break;
+        case "open_new":
+            
+            
             break;
     }
 }
