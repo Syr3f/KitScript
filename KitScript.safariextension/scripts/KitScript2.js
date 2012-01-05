@@ -51,7 +51,7 @@
 
          this._isTabOpen = false;
 
-         this.defaultPage = 'main.html';
+         this.defaultPage = 'MainPanel.html';
 
          this._previousPage = null;
          this._currentPage = this.defaultPage;
@@ -115,39 +115,65 @@
 
 
 
+ var KSContentManager = Class.create({
+
+     initialize: function () {
+
+
+     },
+     drawContent: function (contentId) {
+
+
+     }
+ });
+
+
+
+
+
 /**
- *  KSManagementPanel (KitScript User Scripts Management Panel Class)
+ *  KSPanel (KitScript User Scripts Main Panel Class)
  */
-var KSManagementPanel = Class.create(KSBase, {
+var KSMainPanel = Class.create(KSBase, {
     
     initialize: function ($super) {
         
-        this._pageName = "managementPanel.html";
+        this._pageName = "MainPanel.html";
         
         $super();
+        
+        this.contentManager = new KSContentManager();
     },
     openPage: function ($super) {
         
         $super(this._pageName);
-    },
-    openUserScriptSettings: function (id) {
-        
-        //ks.scriptSettingsPanel.openPage(id);
-    },
-    disableUserScript: function (id) {
-        
-        //db.disableScript(id);
-        
-        //$('#user-script-'+id).addClass('disabled');
-        //$('button','#us-list tbody tr td').attr('disabled','disabled');
-    },
-    deleteUserScript: function (id) {
-        
-        //db.remove(id);
-        
-        //$('#user-script-'+id).remove();
     }
 });
+
+
+
+/*
+
+
+openUserScriptSettings: function (id) {
+    
+    //ks.scriptSettingsPanel.openPage(id);
+},
+disableUserScript: function (id) {
+    
+    //db.disableScript(id);
+    
+    //$('#user-script-'+id).addClass('disabled');
+    //$('button','#us-list tbody tr td').attr('disabled','disabled');
+},
+deleteUserScript: function (id) {
+    
+    //db.remove(id);
+    
+    //$('#user-script-'+id).remove();
+}
+
+*/
 
 
 
@@ -155,7 +181,7 @@ var KSManagementPanel = Class.create(KSBase, {
 
 /**
  *  KSNewPanel (KitScript New User Script Panel Class)
- */
+ *
 var KSNewPanel = Class.create(KSBase, {
     
     initialize: function () {
@@ -179,21 +205,21 @@ var KSNewPanel = Class.create(KSBase, {
         disabled = 0;
         
         db.create(name, desc, includes, excludes, code, disabled);
-        */
+        *
     },
     autoSave: function () {
         
         
     }
 });
-
+*/
 
 
 
 
 /**
  *  KSSettingsPanel (KitScript User Script Settings Panel Class)
- */
+ *
 var KSSettingsPanel = Class.create(KSBase, {
     
     initialize: function () {
@@ -247,10 +273,10 @@ var KSSettingsPanel = Class.create(KSBase, {
         disabled = userScriptForm.isDisabled;
         
         db.update(name, desc, includes, excludes, code, disabled, id);
-        */
+        *
     }
 });
-
+*/
 
 
 
@@ -403,11 +429,10 @@ var KitScript = Class.create(KSUtils, {
         
         this.db = new KSStorage();
         this.$ = jQuery;
-        this.manageUserScripts = new KSManagementPanel();
-        this.newUserScript = new KSNewPanel();
-        this.userScriptSettings = new KSSettingsPanel();
+        this.mainPanel = new KSMainPanel();
         
         try {
+            
             this.db.connect();
         } catch (e) {
             
@@ -428,24 +453,28 @@ function _ksCommandHandler(event) {
     
     switch (event.command)
     {
-        case "open_main":
-            
-            
-            break;
         case "close":
             
             ks.log("Something closed.");
-            //ks.panels.manageUserScripts.close();
+            //ks.mainPanel.close();
             break;
         case "toggle_enable":
             
             
             break;
-        case "open_manage":
+        case "open_tab":
             
-            ks.manageUserScripts.openPage();
+            ks.mainPanel.openTab();
             break;
-        case "open_new":
+        case "goto_manage":
+            
+            
+            break;
+        case "goto_new":
+            
+            
+            break;
+        case "goto_globsettings":
             
             
             break;
@@ -460,10 +489,6 @@ function _ksValidateHandler(event) {
     
     switch (event.command)
     {
-        case "open_main":
-            
-            
-            break;
         case "close":
             
             
@@ -472,14 +497,22 @@ function _ksValidateHandler(event) {
             
             
             break;
-        case "open_manage":
+        case "open_panel":
             
-            //if (ks.manageUserScripts.isTabOpen() === true) {
+            //if (ks.mainPanel.isTabOpen() === true) {
                 
-            //    ks.manageUserScripts.openPage(ks.manageUserScripts.defaultPage);
+            //    ks.mainPanel.openPage(ks.mainPanel.defaultPage);
             //}
             break;
-        case "open_new":
+        case "goto_manage":
+            
+            
+            break;
+        case "goto_new":
+            
+            
+            break;
+        case "goto_globsettings":
             
             
             break;
