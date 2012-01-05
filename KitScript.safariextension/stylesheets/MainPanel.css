@@ -6,10 +6,15 @@ html, body {
     background-color: #eee;
 }
 body {
-    padding-top: 40px; /* 40px to make the container go all the way to the bottom of the topbar */
+    padding-top: 60px; /* 40px to make the container go all the way to the bottom of the topbar */
 }
 .container > footer p {
     text-align: center; /* center align it with the container */
+}
+.container > footer {
+    position: relative;
+    display: block;
+    margin-top: 50px;
 }
 .container {
     margin-right: auto;
@@ -21,7 +26,7 @@ body {
 .content {
     background-color: #fff;
     padding: 20px;
-    margin: -80px -20px; /* negative indent the amount of the padding to maintain the grid system */
+    margin: -40px -20px; /* negative indent the amount of the padding to maintain the grid system */
     -webkit-border-radius: 0 0 6px 6px;
        -moz-border-radius: 0 0 6px 6px;
             border-radius: 0 0 6px 6px;
@@ -51,4 +56,8 @@ body {
 
 .topbar .btn {
     border: 0;
+}
+
+.topbar {
+    margin-top: -25px;
 }
