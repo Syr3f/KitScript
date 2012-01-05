@@ -491,6 +491,8 @@ var KitScript = Class.create(KSUtils, {
     
     initialize: function ($super) {
         
+        this._isEnabled = true;
+        
         this.db = new KSStorage();
         this.$ = jQuery;
         this.mainPanel = new KSMainPanel();
@@ -507,6 +509,26 @@ var KitScript = Class.create(KSUtils, {
         $super();
         
         this.setVerboseLevel(1);
+    },
+    isEnabled: function () {
+        
+        return this._isEnabled;
+    },
+    setEnable: function () {
+        
+        if (!this.isEnabled()) {
+            
+            this._isEnabled = true;
+            this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
+        }
+    },
+    setDisable: function () {
+        
+        if (this.isEnabled()) {
+            
+            this._isEnabled = false;
+            this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
+        }
     }
 });
 
@@ -525,7 +547,7 @@ function _ksCommandHandler(event) {
             break;
         case "toggle_enable":
             
-            
+            alert("command toggle_enable");
             break;
         case "open_tab":
             
@@ -562,7 +584,7 @@ function _ksValidateHandler(event) {
             break;
         case "toggle_enable":
             
-            
+            alert("validate toggle_enable");
             break;
         case "open_tab":
             
