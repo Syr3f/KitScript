@@ -8,12 +8,3 @@ ks = new KitScript();
 // Create DB if not created 
 ks.db.createTable();
 
-
-
-ks.$(function () {
-    
-    ks.$('#toggle-enable-ks').click(function (evnt) {
-        
-        
-    });
-});

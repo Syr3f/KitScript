@@ -1,15 +1,27 @@
 
-
-
-ks.$("#btn-openNewUserScriptPanel").click(function (evnt) {
+// Run on load
+ks.$(function () {
     
-    ks.log("open new user script panel");
-    
-    ks.newUserScript.openPage();
+    //
 });
 
 
+/*
 
+<tr id="us-{{us_id}}">
+<td><h3>{{us_name}}</h3> <span>{{us_desc}}</span></td>
+<td>
+<button type="button" onclick="ks.mainPanel.managePanel.openUserScriptSettings({{us_id}})" class="btn">Settings</button>
+</td>
+<td>
+<button type="button" onclick="ks.mainPanel.managePanel.disableUserScript({{us_id}})" class="btn">Disable</button>
+</td>
+<td>
+<button type="button" onclick="ks.mainPanel.managePanel.deleteUserScript({{us_id}})" class="btn">Delete</button>
+</td>
+</tr>
+
+*/
 
 
 function _listUserScripts() {
@@ -26,7 +38,7 @@ function _listUserScripts() {
 
             row = resultSet.getRow(i);
 
-            tableRow = '<tr id="user-script-'+row['id']+'">
+            tableRow = '<tr id="user-script-'+row['id']+'>
                 <td>
                     <span>'+row['name']+'</span><br>
                     <span>'+row['desc']+'</span>
@@ -56,6 +68,3 @@ function _listUserScripts() {
         ks.$('tbody', tableId).append(tableRow);
     }
 }
-
-
-

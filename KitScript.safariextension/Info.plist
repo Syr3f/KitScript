@@ -22,7 +22,7 @@
 		<array>
 			<dict>
 				<key>Filename</key>
-				<string>markups/bar.html</string>
+				<string>markups/Bar.html</string>
 				<key>Identifier</key>
 				<string>KS_BAR1</string>
 				<key>Label</key>
@@ -31,6 +31,8 @@
 		</array>
 		<key>Database Quota</key>
 		<real>10485760</real>
+		<key>Global Page</key>
+		<string>markups/MainPanel.html</string>
 		<key>Menus</key>
 		<array>
 			<dict>
@@ -42,7 +44,7 @@
 						<key>Checked State</key>
 						<real>1</real>
 						<key>Command</key>
-						<string>toggle_enable_ks</string>
+						<string>toggle_enable</string>
 						<key>Identifier</key>
 						<string>KS_M1I1</string>
 						<key>Title</key>
@@ -56,7 +58,7 @@
 					</dict>
 					<dict>
 						<key>Command</key>
-						<string>open_manage</string>
+						<string>goto_manage</string>
 						<key>Identifier</key>
 						<string>KS_M1I2</string>
 						<key>Title</key>
@@ -64,11 +66,21 @@
 					</dict>
 					<dict>
 						<key>Command</key>
-						<string>open_new</string>
+						<string>goto_new</string>
 						<key>Identifier</key>
-						<string>KS_M1_I3</string>
+						<string>KS_M1I3</string>
 						<key>Title</key>
 						<string>New User Scripts...</string>
+					</dict>
+					<dict>
+						<key>Command</key>
+						<string>goto_globsettings</string>
+						<key>Identifier</key>
+						<string>KS_M1I4</string>
+						<key>Separator</key>
+						<false/>
+						<key>Title</key>
+						<string>Global Settings...</string>
 					</dict>
 					<dict>
 						<key>Identifier</key>
@@ -80,9 +92,9 @@
 						<key>Disabled</key>
 						<true/>
 						<key>Identifier</key>
-						<string>KS_M1I0</string>
+						<string>KS_M1I5</string>
 						<key>Title</key>
-						<string>No User Scripts for this url</string>
+						<string>No User Scripts for this URL</string>
 					</dict>
 				</array>
 			</dict>
@@ -91,7 +103,7 @@
 		<array>
 			<dict>
 				<key>Command</key>
-				<string>open_manage</string>
+				<string>open_tab</string>
 				<key>Identifier</key>
 				<string>KS_TI1</string>
 				<key>Image</key>
