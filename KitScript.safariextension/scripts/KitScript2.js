@@ -42,73 +42,73 @@
 
 
 
- /**
-  *  KSBase (KitScript Base Object Class)
-  */
- var KSBase = Class.create({
+/**
+*  KSBase (KitScript Base Object Class)
+*/
+var KSBase = Class.create({
 
-     initialize: function () {
+    initialize: function () {
 
-         this._isTabOpen = false;
+        this._isTabOpen = false;
 
-         this.defaultPage = 'MainPanel.html';
+        this.defaultPage = 'MainPanel.html';
 
-         this._previousPage = null;
-         this._currentPage = this.defaultPage;
+        this._previousPage = null;
+        this._currentPage = this.defaultPage;
 
-         this._tab = null;
-         this._url = null;
-         
-         this._isEnabled = true;
-     },
-     openPage: function (page) {
+        this._tab = null;
+        this._url = null;
+     
+        this._isEnabled = true;
+    },
+    openPage: function (page) {
 
-         if (this._isTabOpen === false)
-             this.openTab();
+        if (this._isTabOpen === false)
+            this.openTab();
 
-         this.setTabPage(page);
-     },
-     closePage: function () {
+        this.setTabPage(page);
+    },
+    closePage: function () {
 
-         this.setTabPage(this.defaultPage);
-         this.closeTab();
-     },
-     setTabPage: function (page) {
+        this.setTabPage(this.defaultPage);
+        this.closeTab();
+    },
+    setTabPage: function (page) {
 
-         this._previousPage = this._currentPage;
-         this._currentPage = page;
+        this._previousPage = this._currentPage;
+        this._currentPage = page;
 
-         this._tab.url = location.href.replace(this._previousPage, this._currentPage);
-     },
-     openTab: function () {
+        this._tab.url = location.href.replace(this._previousPage, this._currentPage);
+    },
+    openTab: function () {
 
-         this._tab = safari.application.activeBrowserWindow.openTab('foreground',-1);
-         this._isTabOpen = true;
-     },
-     closeTab: function () {
+        this._tab = safari.application.activeBrowserWindow.openTab('foreground',-1);
+        this._isTabOpen = true;
+    },
+    closeTab: function () {
 
-         if (this._tab !== null) {
+        if (this._tab !== null) {
 
-             this._tab.close();
-             this._tab = null;
-             this._isTabOpen = false;
-         }
-     },
-     isTabOpen: function () {
+            this._tab.close();
+            this._tab = null;
+            this._isTabOpen = false;
+        }
+    },
+    isTabOpen: function () {
 
-         return this._isTabOpen;
-     },
-     isEnabled: function () {
-         
-         return this._isEnabled;
-     },
-     toggleEnable: function () {
-         
-         this._isEnabled = !this._isEnabled;
-         
-         //_triggerNotEnabled();
-     }
- });
+        return this._isTabOpen;
+    },
+    isEnabled: function () {
+    
+        return this._isEnabled;
+    },
+    toggleEnable: function () {
+    
+        this._isEnabled = !this._isEnabled;
+    
+        //_triggerNotEnabled();
+    }
+});
 
 
 
@@ -118,16 +118,64 @@ var KSContentManager = Class.create({
     
     initialize: function () {
         
-        this._currentContentId = 'userscript-manager';
+        this.contents = [
+            {
+                id: "userscript-manager",
+                title: "User Script Manager"
+            },
+            {
+                id: "global-settings",
+                title: "KitScript Settings"
+            },
+            {
+                id: "new-userscript",
+                title: "User Script Editor"
+            },
+            {
+                id: "about",
+                title: "About KitScript"
+            }
+        ];
+        
+        this.defaultContentId = this.contents[0].id;
+        
+        this._currentContentId = this.defaultContentId;
         this._previousContentId = null;
+    },
+    _fadeOutContent: function (contentId) {
+        
+        ks.$(contentId).fadeOut('fast');
+    },
+    _fadeInContent: function (contentId) {
+        
+        ks.$(contentId).fadeIn('slow');
+    },
+    _setDocumentTitle: function (newTitle) {
+        
+        ks.$(document).title = "KitScript | "+newTitle;
+    },
+    getTitleByContentId: function (contentId) {
+        
+        for (var i=0; i < this.contents.length; i++) {
+            
+            if ('#'+this.contents[i].id == contentId)
+                return this.contents[i].title;
+        }
+    },
+    initContent: function () {
+        
+        this._fadeInContent(this.defaultContentId);
+        this._setDocumentTitle(this.getTitleByContentId(this.defaultContentId));
     },
     transitContent: function (newContentId) {
         
         this._previousContentId = this._currentContentId;
         this._currentContentId = newContentId;
         
-        $(this._previousContentId).fadeOut('slow');
-        $(newContentId).fadeIn('slow');
+        this._fadeOutContent(this._previousContentId);
+        this._fadeInContent(this._currentContentId);
+        
+        this._setDocumentTitle(this.getTitleByContentId(newContentId));
     }
 });
 
@@ -470,6 +518,7 @@ function _ksCommandHandler(event) {
             
             ks.mainPanel.openTab();
             ks.mainPanel.setTabPage(ks.mainPanel.defaultPage);
+            ks.mainPanel.contentManager.initContent();
             break;
         case "goto_manage":
             
