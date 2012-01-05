@@ -5,14 +5,15 @@
     <title>KitScript Management Panel</title>    
 
     <!-- = prototype.js = -->
-    <script src="../scripts/lib/prototype/prototype-1.7.0.0.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../KitScript.safariextension/scripts/lib/prototype/prototype-1.7.0.0.min.js" type="text/javascript" charset="utf-8"></script>
     
     <!-- = My Scripts = -->
-    <script src="../scripts/Storage.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../KitScript.safariextension/scripts/Storage.js" type="text/javascript" charset="utf-8"></script>
+    <script src="testStorage.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript" charset="utf-8">
     
-    dbTest.createStorage();
+    db.runTest();
     
     </script>
 
@@ -23,19 +24,7 @@
       <h1>Storage Tests</h>
     </header>
     
-    <nav>
-      <button id="btn-test-db" onclick="ks.newUserScriptPanel.open()">New User Script</button>
-    </nav>
     
-    <section id="panel">
-      
-      <table id="us-list">
-        <tbody>
-          
-        </tbody>
-      </table>
-      
-    </section>
     
   </body>
 </html>
