@@ -130,7 +130,7 @@ var KSManagementPanel = Class.create(KSBase, {
         
         $super(this._pageName);
     },
-    openSettings: function (id) {
+    openUserScriptSettings: function (id) {
         
         //ks.scriptSettingsPanel.openPage(id);
     },
