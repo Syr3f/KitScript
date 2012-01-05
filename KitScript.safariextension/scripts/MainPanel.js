@@ -7,7 +7,18 @@ jQuery(document).ready(function ($) {
         
         var _req = $(this).attr("href");
         
-        ks.mainPanel.contentManager.transitContent(_req);
+        switch (_req) {
+            case '#null':
+                break;
+            case '#enable-ks':
+                ks.setEnable();
+                break;
+            case '#disable-ks':
+                ks.setDisable();
+                break;
+            default:
+                ks.mainPanel.contentManager.transitContent(_req);
+        }
     });
 });
 
