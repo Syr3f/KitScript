@@ -1,9 +1,14 @@
 
+// Let $ be to prototype and $ to jQuery within 
 
-$(function () {
+jQuery.noConflict();
+
+
+
+(function ($) {
     
     $('#toggle-enable-ks').click(function (evnt) {
         
         
     });
-});
+})(jQuery);
