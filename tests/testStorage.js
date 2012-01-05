@@ -36,19 +36,11 @@ var KSStorageTest = Class.create(KSStorage, {
         
         console.log("Inserting new row...");
         $super(name, desc, includes, excludes, code, disabled);
-        
-        if (this.getSuccess() === true) {
-            console.log("New row inserted!");
-        } else {
-            console.log("Error! No row inserted!");
-        }
-        
     },
     update: function ($super, id, name, desc, includes, excludes, code, disabled) {
         
         console.log("Updating row "+ id+"...");
         $super(id, name, desc, includes, excludes, code, disabled);
-        console.log("Row "+id+" updated.");
     },
     fetch: function ($super,id) {
         
@@ -65,13 +57,11 @@ var KSStorageTest = Class.create(KSStorage, {
         
         console.log("Deleting row "+id+".");
         $super(id);
-        console.log("Row "+id+" deleted.");
     },
     disableScript: function ($super, id) {
         
         console.log("Disabling script.");
         $super(id);
-        console.log("Script disabled.");
     },
     runTest: function () {
         

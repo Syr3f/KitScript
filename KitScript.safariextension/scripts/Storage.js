@@ -229,7 +229,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementArray();
         
-        sqlArray.push("UPDATE UserScripts SET disabled = 1 WHERE id = ?;", [id], _statementCallback, _errorHandler);
+        sqlArray.push("UPDATE UserScripts SET disabled = 1 WHERE id = ?;", [id], _nullHandler, _errorHandler);
         
         this.transact(sqlArray);
     }
@@ -256,7 +256,7 @@ function _successHandler() {
     db.setSuccess(true);
 }
 
-function _errorHandler(error) {
+function _errorHandler(transaction, error) {
     
     console.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
     
