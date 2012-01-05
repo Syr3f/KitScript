@@ -1,11 +1,26 @@
 
-$(function () {
+
+
+(function (ks) {
+    
+    ks.$("#btn-openNewUserScriptPanel").click(function (evnt) {
+        
+        ks.log("open new user script panel");
+        
+        ks.newUserScript.openPage();
+    });
+    
+})(ks)
+
+
+
+(function (ks) {
     
     function _listUserScripts() {
         
         tableId = '#us-list';
         
-        $(tableId).empty();
+        ks.$(tableId).empty();
         
         resultSet = db.fetchAll();
         
@@ -38,7 +53,7 @@ $(function () {
                     </td>
                 </tr>';
 
-                $('tbody', tableId).append(tableRow);
+                ks.$('tbody', tableId).append(tableRow);
 
                 oddClass = "";
             }
@@ -51,9 +66,11 @@ $(function () {
                 </td>
             </tr>';
             
-            $('tbody', tableId).append(tableRow);
+            ks.$('tbody', tableId).append(tableRow);
         }
     }
     
     _listUserScripts();
-});
+})(ks)
+
+

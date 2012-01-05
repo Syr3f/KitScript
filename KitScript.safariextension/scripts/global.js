@@ -5,10 +5,10 @@ jQuery.noConflict();
 
 
 
-(function ($) {
+(function (ks) {
     
-    $('#toggle-enable-ks').click(function (evnt) {
+    ks.$('#toggle-enable-ks').click(function (evnt) {
         
         
     });
-})(jQuery);
+})(ks);
