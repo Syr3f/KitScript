@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>KitScript Management Panel</title>
+    <title>KitScript</title>
     
     <!-- = CSS = -->
     <!-- link rel="stylesheet" href="../stylesheets/blueprintcss/screen-1.0.1.min.css" -->
     <!-- link rel="stylesheet" href="../stylesheets/jquery-ui/south-street/jquery-ui-1.8.16.min.css" -->
     <link rel="stylesheet" href="../stylesheets/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="../stylesheets/global.css">
-    <link rel="stylesheet" href="../stylesheets/managementPanel.css">
+    <link rel="stylesheet" href="../stylesheets/Global.css">
+    <link rel="stylesheet" href="../stylesheets/MainPanel.css">
     
     <!-- = jQuery = -->
     <script src="../scripts/lib/jquery/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
@@ -26,6 +26,16 @@
     <!-- script src="scripts/lib/backbone/backbone-0.5.3.min.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="scripts/lib/backbone/backbone-localstorage.js" type="text/javascript" charset="utf-8"></script -->
     
+    <!-- = Bootstrap.js = -->
+    <!-- script src="../scripts/lib/bootstrap/bootstrap-alerts.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="../scripts/lib/bootstrap/bootstrap-buttons.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="../scripts/lib/bootstrap/bootstrap-dropdown.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="../scripts/lib/bootstrap/bootstrap-modal.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="../scripts/lib/bootstrap/bootstrap-popover.js" type="text/javascript" charset="utf-8"></script -->
+    <script src="../scripts/lib/bootstrap/bootstrap-scrollspy.js" type="text/javascript" charset="utf-8"></script>
+    <!-- script src="../scripts/lib/bootstrap/bootstrap-tabs.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="../scripts/lib/bootstrap/bootstrap-twipsy.js" type="text/javascript" charset="utf-8"></script -->
+
     <!-- = Hogan.js = -->
     <!-- script src="../scripts/lib/hogan.js/hogan.js" type="text/javascript" charset="utf-8"></script -->
     
@@ -36,23 +46,16 @@
     <script src="../scripts/Global.js" type="text/javascript" charset="utf-8"></script>
     <script src="../scripts/MainPanel.js" type="text/javascript" charset="utf-8"></script>
     
-    <script type="text/javascript" charset="utf-8">
-      
-      
-      
-      
-    </script>
-    
   </head>
   <body>
     
-    <div class="topbar">
+    <div class="topbar" data-scrollspy="scrollspy" id="ks-topmenu">
       <div class="fill">
         <div class="container">
-          <a class="brand" href="#">KitScript</a>
+          <a class="brand" href="#userscript-manager">KitScript</a>
           <ul class="nav">
-            <li><a href="#global-settings">KitScript Settings</a></li>
-            <li class="active"><a href="#management">Management</a></li>
+            <li><a href="#global-settings">Global Settings</a></li>
+            <li class="active"><a href="#userscript-manager">User Scripts Manager</a></li>
             <li><a href="#new-userscript">New User Script</a></li>
             <li><a href="#about">About</a></li>
           </ul>
@@ -67,9 +70,9 @@
 
 
       <!-- Management - DEFAULT PANEL -->
-      <div class="content" id="management-content">
+      <section class="content" id="userscript-manager">
         <div class="page-header">
-          <h1>KitScript's Management<small> Manage Your User Scripts</small></h1>
+          <h1>User Scripts Management<small> Manage your User Scripts on this panel</small></h1>
         </div>
         <div class="row">
           <div class="span10">
@@ -87,25 +90,25 @@
           <div class="span4">
             <h3>KitScript</h3>
 
-            <ul class="unstyled">
-              <li><a href="#global-settings">KitScript Settings</a></li>
-              <li class="active"><a href="#management">Management</a></li>
+            <ul class="unstyled ks-vertmenu">
+              <li><a href="#global-settings">Global Settings</a></li>
+              <li class="active"><a href="#userscript-manager">User Scripts Manager</a></li>
               <li><a href="#new-userscript">New User Script</a></li>
               <li><a href="#about">About</a></li>
             </ul>
 
           </div>
         </div>
-      </div>
+      </section>
 
 
 
 
 
       <!-- Global Settings -->
-      <div class="content" id="settings-content" style="display:none;">
+      <section class="content" id="global-settings" style="display:none;">
         <div class="page-header">
-          <h1>KitScript's Settings<small> Tweak KitScript's Global Settings</small></h1>
+          <h1>Global Settings<small> Tweak KitScript's global settings here</small></h1>
         </div>
         <div class="row">
           <div class="span10">
@@ -117,25 +120,25 @@
           <div class="span4">
             <h3>KitScript</h3>
             
-            <ul class="unstyled">
-              <li><a href="#global-settings">KitScript Settings</a></li>
-              <li class="active"><a href="#management">Management</a></li>
+            <ul class="unstyled ks-vertmenu">
+              <li class="active"><a href="#global-settings">Global Settings</a></li>
+              <li><a href="#userscript-manager">User Scripts Manager</a></li>
               <li><a href="#new-userscript">New User Script</a></li>
               <li><a href="#about">About</a></li>
             </ul>
             
           </div>
         </div>
-      </div>
+      </section>
 
 
 
 
 
       <!-- New Script -->
-      <div class="content" id="new-userscript-content" style="display:none;">
+      <section class="content" id="new-userscript" style="display:none;">
         <div class="page-header">
-          <h1>KitScript's Editor<small> Add Your New User Script</small></h1>
+          <h1>User Script Editor<small> Add your new User Script with the editor</small></h1>
         </div>
         <div class="row">
           <div class="span10">
@@ -147,23 +150,23 @@
           <div class="span4">
             <h3>KitScript</h3>
             
-            <ul class="unstyled">
-              <li><a href="#global-settings">KitScript Settings</a></li>
-              <li class="active"><a href="#management">Management</a></li>
-              <li><a href="#new-userscript">New User Script</a></li>
+            <ul class="unstyled ks-vertmenu">
+              <li><a href="#global-settings">Global Settings</a></li>
+              <li><a href="#userscript-manager">User Scripts Manager</a></li>
+              <li class="active"><a href="#new-userscript">New User Script</a></li>
               <li><a href="#about">About</a></li>
             </ul>
             
           </div>
         </div>
-      </div>
+      </section>
 
 
 
 
 
       <!-- About -->
-      <div class="content" id="about-content" style="display:none;">
+      <section class="content" id="about" style="display:none;">
         <div class="page-header">
           <h1>About<small> Facts About KitScript</small></h1>
         </div>
@@ -177,16 +180,16 @@
           <div class="span4">
             <h3>KitScript</h3>
             
-            <ul class="unstyled">
-              <li><a href="#global-settings">KitScript Settings</a></li>
-              <li class="active"><a href="#management">Management</a></li>
+            <ul class="unstyled ks-vertmenu">
+              <li><a href="#global-settings">Global Settings</a></li>
+              <li><a href="#userscript-manager">User Scripts Manager</a></li>
               <li><a href="#new-userscript">New User Script</a></li>
-              <li><a href="#about">About</a></li>
+              <li class="active"><a href="#about">About</a></li>
             </ul>
             
           </div>
         </div>
-      </div>
+      </section>
 
 
 

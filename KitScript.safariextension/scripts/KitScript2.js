@@ -78,8 +78,7 @@
          this._previousPage = this._currentPage;
          this._currentPage = page;
 
-         this._tab.url = location.href.replace(this._previousPage, 'markups/'+this._currentPage);
-         this._url = this._tab.url;
+         this._tab.url = location.href.replace(this._previousPage, this._currentPage);
      },
      openTab: function () {
 
@@ -115,17 +114,22 @@
 
 
 
- var KSContentManager = Class.create({
-
-     initialize: function () {
-
-
-     },
-     drawContent: function (contentId) {
-
-
-     }
- });
+var KSContentManager = Class.create({
+    
+    initialize: function () {
+        
+        this._currentContentId = 'userscript-manager';
+        this._previousContentId = null;
+    },
+    transitContent: function (newContentId) {
+        
+        this._previousContentId = this._currentContentId;
+        this._currentContentId = newContentId;
+        
+        $(this._previousContentId).fadeOut('slow');
+        $(newContentId).fadeIn('slow');
+    }
+});
 
 
 
@@ -465,6 +469,7 @@ function _ksCommandHandler(event) {
         case "open_tab":
             
             ks.mainPanel.openTab();
+            ks.mainPanel.setTabPage(ks.mainPanel.defaultPage);
             break;
         case "goto_manage":
             
