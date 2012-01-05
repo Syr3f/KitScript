@@ -4,33 +4,32 @@ var ManagementPanel = Class.create(KS, {
     
     initialize: function () {
         
-        //this._id = "KS_PMP1";
         this._page = "managementPanel.html";
     },
-    open: function ($super) {
+    openPage: function ($super) {
         
         $super(this._page);
     },
     close: function ($super) {
         
-        $super(this._id);
+        //$super();
     },
     openSettings: function (id) {
         
-        ks.scriptSettingsPanel.open(id);
+        //ks.scriptSettingsPanel.openPage(id);
     },
     disable: function (id) {
         
-        db.disableScript(id);
+        //db.disableScript(id);
         
-        $('#user-script-'+id).addClass('disabled');
-        $('button','#us-list tbody tr td').attr('disabled','disabled');
+        //$('#user-script-'+id).addClass('disabled');
+        //$('button','#us-list tbody tr td').attr('disabled','disabled');
     },
     remove: function (id) {
         
-        db.remove(id);
+        //db.remove(id);
         
-        $('#user-script-'+id).remove();
+        //$('#user-script-'+id).remove();
     }
 });
 
@@ -39,19 +38,18 @@ var NewUserScriptPanel = Class.create(KS, {
     
     initialize: function () {
         
-        //this._id = "KS_PNU1";
         this._page = "newUserScriptPanel.html";
     },
-    open: function ($super) {
+    openPage: function ($super) {
         
         $super(this._page);
     },
     close: function ($super) {
         
-        $super(this._id);
+        //$super();
     },
     save: function (newUserScriptForm) {
-        
+        /*
         code = newUserScriptForm.us-code;
         
         us = new UserScript(code);
@@ -63,6 +61,7 @@ var NewUserScriptPanel = Class.create(KS, {
         disabled = 0;
         
         db.create(name, desc, includes, excludes, code, disabled);
+        */
     }
 });
 
@@ -71,20 +70,19 @@ var ScriptSettingsPanel = Class.create(KS, {
     
     initialize: function () {
         
-        //this._id = "KS_PSS1";
         this._page = "scriptSettingsPanel.html";
     },
-    open: function ($super, scriptId) {
+    openPage: function ($super, scriptId) {
         
         this._scriptId = scriptId;
         
         $super(this._page);
         
-        this.showUserSettings();
+        //this.showUserSettings();
     },
     close: function ($super) {
         
-        $super(this._id);
+        //$super();
     },
     showUserSettings: function () {
         
@@ -107,7 +105,7 @@ var ScriptSettingsPanel = Class.create(KS, {
         
     },
     saveScriptEdition: function (userScriptForm) {
-        
+        /*
         id = userScriptForm.us-id;
         
         code = userScriptForm.us-code;
@@ -121,6 +119,7 @@ var ScriptSettingsPanel = Class.create(KS, {
         disabled = userScriptForm.isDisabled;
         
         db.update(name, desc, includes, excludes, code, disabled, id);
+        */
     }
 });
 
@@ -129,39 +128,19 @@ var KS = Class.create({
     
     initialize: function () {
         
-        //this._previousPopoverId = null;
-        //this._currentPopoverId = 'KS_PMP1';
-        
         this.previousPage = null;
         this.currentPage = 'main.html';
         
-        //this._popovers = safari.extension.popovers;
         this._tbItems = safari.extension.toolbarItems;
         
         this._tab = null;
+        this._url = null;
     },
-    open: function (page) {
-        
-        //this.close(this._currentPopoverId);
-        
-        /*for (var i = 0; i < this._popovers.length; i++) {
-            
-            if (popoverId == this._popovers[i].identifier) {
-                
-                this._tbItems[0].popover = this._popovers[i];
-            }
-        }*/
-        
-        //this._tbItems[0].showPopover();
-        
-        //this._previousPopoverId = this._currentPopoverId;
-        
-        //this._currentPopoverId = popoverId;
-        
+    openPage: function (page) {
+       
         this._previousPage = this.currentPage;
         
         this._currentPage = page;
-        
         
         if (this._tab === null)
         {
@@ -169,24 +148,14 @@ var KS = Class.create({
         }
         
         this._tab.url = location.href.replace(this.previousPage, 'markups/'+this.currentPage);
-        //this._url = this._tab.url;
+        this._url = this._tab.url;
     },
-    close: function (popoverId) {
+    close: function () {
         
-        //safari.extension.removePopover(popoverId);
+        //this._tab.close();
     }
 });
 
-var KSStorage = Class.create(Storage, {
-    
-    initialize: function () {
-        
-    },
-    initDb: function () {
-        
-    },
-    
-});
 
 var ks = {
     
@@ -204,6 +173,9 @@ function _ksCommandHandler(event) {
         case "click-btn":
             
             // ks.managementPanel.open(event);
+            break;
+        case "close":
+            console.log("Something closed.");
             break;
     }
 }
