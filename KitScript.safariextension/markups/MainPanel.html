@@ -32,7 +32,7 @@
     <!-- script src="../scripts/lib/bootstrap/bootstrap-dropdown.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-modal.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-popover.js" type="text/javascript" charset="utf-8"></script -->
-    <script src="../scripts/lib/bootstrap/bootstrap-scrollspy.js" type="text/javascript" charset="utf-8"></script>
+    <!-- script src="../scripts/lib/bootstrap/bootstrap-scrollspy.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-tabs.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-twipsy.js" type="text/javascript" charset="utf-8"></script -->
 
@@ -49,13 +49,14 @@
   </head>
   <body>
     
-    <div class="topbar" data-scrollspy="scrollspy" id="ks-topmenu">
+    <!-- div class="topbar" data-scrollspy="scrollspy" id="ks-topmenu" -->
+    <div class="topbar" id="ks-topmenu">
       <div class="fill">
         <div class="container">
           <a class="brand" href="#userscript-manager">KitScript</a>
           <ul class="nav">
             <li><a href="#global-settings">Global Settings</a></li>
-            <li class="active"><a href="#userscript-manager">User Scripts Manager</a></li>
+            <li><a href="#userscript-manager">User Scripts Manager</a></li>
             <li><a href="#new-userscript">New User Script</a></li>
             <li><a href="#about">About</a></li>
           </ul>
@@ -70,7 +71,7 @@
 
 
       <!-- Management - DEFAULT PANEL -->
-      <section class="content" id="userscript-manager">
+      <section class="content" id="userscript-manager" style="display:none;">
         <div class="page-header">
           <h1>User Scripts Management<small> Manage your User Scripts on this panel</small></h1>
         </div>
@@ -92,7 +93,7 @@
 
             <ul class="unstyled ks-vertmenu">
               <li><a href="#global-settings">Global Settings</a></li>
-              <li class="active"><a href="#userscript-manager">User Scripts Manager</a></li>
+              <li><a href="#userscript-manager">User Scripts Manager</a></li>
               <li><a href="#new-userscript">New User Script</a></li>
               <li><a href="#about">About</a></li>
             </ul>
@@ -121,7 +122,7 @@
             <h3>KitScript</h3>
             
             <ul class="unstyled ks-vertmenu">
-              <li class="active"><a href="#global-settings">Global Settings</a></li>
+              <li><a href="#global-settings">Global Settings</a></li>
               <li><a href="#userscript-manager">User Scripts Manager</a></li>
               <li><a href="#new-userscript">New User Script</a></li>
               <li><a href="#about">About</a></li>
@@ -153,7 +154,7 @@
             <ul class="unstyled ks-vertmenu">
               <li><a href="#global-settings">Global Settings</a></li>
               <li><a href="#userscript-manager">User Scripts Manager</a></li>
-              <li class="active"><a href="#new-userscript">New User Script</a></li>
+              <li><a href="#new-userscript">New User Script</a></li>
               <li><a href="#about">About</a></li>
             </ul>
             
@@ -184,7 +185,7 @@
               <li><a href="#global-settings">Global Settings</a></li>
               <li><a href="#userscript-manager">User Scripts Manager</a></li>
               <li><a href="#new-userscript">New User Script</a></li>
-              <li class="active"><a href="#about">About</a></li>
+              <li><a href="#about">About</a></li>
             </ul>
             
           </div>
