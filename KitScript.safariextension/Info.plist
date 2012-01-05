@@ -44,13 +44,15 @@
 						<key>Checked State</key>
 						<real>1</real>
 						<key>Command</key>
-						<string>toggle_enable</string>
+						<string>toggle_enable_ks</string>
 						<key>Identifier</key>
 						<string>KS_M1I1</string>
 						<key>Title</key>
 						<string>Enabled</string>
 					</dict>
 					<dict>
+						<key>Identifier</key>
+						<string>KS_MIS1</string>
 						<key>Separator</key>
 						<true/>
 					</dict>
@@ -71,6 +73,8 @@
 						<string>New User Scripts...</string>
 					</dict>
 					<dict>
+						<key>Identifier</key>
+						<string>KS_MIS2</string>
 						<key>Separator</key>
 						<true/>
 					</dict>
@@ -78,9 +82,9 @@
 						<key>Disabled</key>
 						<true/>
 						<key>Identifier</key>
-						<string>KS_M1I6</string>
+						<string>KS_M1I0</string>
 						<key>Title</key>
-						<string>No User Scripts for this URL</string>
+						<string>No User Scripts for this url</string>
 					</dict>
 				</array>
 			</dict>
@@ -89,7 +93,7 @@
 		<array>
 			<dict>
 				<key>Command</key>
-				<string>open_main</string>
+				<string>open_manage</string>
 				<key>Identifier</key>
 				<string>KS_TI1</string>
 				<key>Image</key>
@@ -103,7 +107,7 @@
 				<key>Popover</key>
 				<string>KS_PMP1</string>
 				<key>Tool Tip</key>
-				<string>KitScript</string>
+				<string>KitScript Functions Access</string>
 			</dict>
 		</array>
 	</dict>
