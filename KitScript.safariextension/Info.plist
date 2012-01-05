@@ -31,8 +31,6 @@
 		</array>
 		<key>Database Quota</key>
 		<real>10485760</real>
-		<key>Global Page</key>
-		<string>main.html</string>
 		<key>Menus</key>
 		<array>
 			<dict>
