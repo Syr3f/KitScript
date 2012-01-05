@@ -1,21 +1,13 @@
 
-// Let $ be to prototype and $ to jQuery within 
-
+// Let $ be to prototype and ks.$ to jQuery within 
 jQuery.noConflict();
 
-
-
-
-
 // ks KitScript root object
-
 ks = new KitScript();
 
 // Create DB if not created 
+ks.db.createTable();
 
-if (ks.db.isDbExistant() === false)
-    ks.log("Db Inexistant.");
-    //ks.db.createTable()
 
 
 ks.$(function () {

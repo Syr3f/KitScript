@@ -5,9 +5,9 @@ var SQLStatementsArray = Class.create({
         
         this._sqlStmntsArray = new Array();
     },
-    push: function (dboconn, sql, arguments, statementCallback, errorCallback) {
+    push: function (storageInstance, sql, arguments, statementCallback, errorCallback) {
         
-        this._sqlStmntsArray.push(new Array(dboconn, sql, (arguments.length > 0 ? arguments : null), statementCallback, errorCallback));
+        this._sqlStmntsArray.push(new Array(storageInstance, sql, (arguments.length > 0 ? arguments : null), statementCallback, errorCallback));
     },
     getArray: function () {
         
@@ -113,6 +113,10 @@ var Storage = Class.create({
         
         return true;
     },
+    getConn: function () {
+        
+        return this._DB;
+    },
     isConnected: function () {
         
         return this._isConnected;
@@ -124,21 +128,15 @@ var Storage = Class.create({
         this.setSuccess(false);
         
         //var _js = 'this._DB.transaction(function (transaction) {';
-        
-        //_js += 'transaction.prototype.dboconn = '+_sqls[i][0]+';';
-        
         //for (var i = 0; i < _sqls.length; i++) {
-            
         //    _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
         //}
-        
         //_js += '});';
-        
         //eval(_js);
         
         this._DB.transaction(function (transaction) {
             
-            transaction.prototype.dboconn = _sqls[i][0];
+            eval("transaction.__proto__.storageInstance = _sqls[0][0]");
             
             var _js = "";
             
@@ -172,7 +170,7 @@ var Storage = Class.create({
 
 function _statementCallback(transaction, resultSet) {
     
-    var _db = transaction.dboconn;
+    var _db = transaction.storageInstance;
     
     _db.setResultSet(resultSet);
     
@@ -191,7 +189,7 @@ function _successHandler() {
 
 function _errorHandler(transaction, error) {
     
-    var _db = transaction.dboconn;
+    var _db = transaction.storageInstance;
     
     console.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
     

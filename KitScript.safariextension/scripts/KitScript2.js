@@ -291,7 +291,7 @@ var KSStorage = Class.create(Storage, {
         
         _fH = function (transaction, resultSet) {
             
-            var _db = transaction.dboconn;
+            var _db = transaction.storageInstance;
             
             _statementCallback(transaction, resultSet);
             
