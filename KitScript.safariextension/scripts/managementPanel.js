@@ -1,76 +1,61 @@
 
 
 
-(function (ks) {
+ks.$("#btn-openNewUserScriptPanel").click(function (evnt) {
     
-    ks.$("#btn-openNewUserScriptPanel").click(function (evnt) {
-        
-        ks.log("open new user script panel");
-        
-        ks.newUserScript.openPage();
-    });
+    ks.log("open new user script panel");
     
-})(ks)
+    ks.newUserScript.openPage();
+});
 
 
 
-(function (ks) {
+
+
+function _listUserScripts() {
     
-    function _listUserScripts() {
+    tableId = '#us-list';
+    
+    ks.$(tableId).empty();
+    
+    resultSet = ks.db.fetchAll(0, 15);
+    
+    if (resultSet.getRowCount() > 0) {
         
-        tableId = '#us-list';
-        
-        ks.$(tableId).empty();
-        
-        resultSet = db.fetchAll();
-        
-        if (resultSet.getRowCount() > 0) {
-            
-            for (var i = 0; i < resultSet.getRowCount(); i++) {
+        for (var i = 0; i < resultSet.getRowCount(); i++) {
 
-                if (i % 2 = 0) {
-                    oddClass = 'class="odd"';
-                }
+            row = resultSet.getRow(i);
 
-                row = resultSet.getRow(i);
-
-                tableRow = '<tr '+oddClass+' id="user-script-'+row['id']+'">
-                    <td class="icon">
-                        (icon)
-                    </td>
-                    <td>
-                        <span class="us-title">'+row['name']+'</span><br>
-                        <span class="us-desc">'+row['desc']+'</span>
-                    </td>
-                    <td align="center" class="btn">
-                        <button type="button" onclick="ks.managementPanel.openSettings('+row['id']+')">Settings</button>
-                    </td>
-                    <td align="center" class="btn">
-                        <button type="button" onclick="ks.managementPanel.disable('+row['id']+')">Disable</button>
-                    </td>
-                    <td align="center" class="btn">
-                        <button type="button" onclick="ks.managementPanel.remove('+row['id']+')">Remove</button>
-                    </td>
-                </tr>';
-
-                ks.$('tbody', tableId).append(tableRow);
-
-                oddClass = "";
-            }
-        }
-        else
-        {
-            tableRow = '<tr>
+            tableRow = '<tr id="user-script-'+row['id']+'">
                 <td>
-                    No User Scripts in the database.
+                    <span>'+row['name']+'</span><br>
+                    <span>'+row['desc']+'</span>
+                </td>
+                <td align="center">
+                    <button class="btn" type="button" onclick="ks.manageUserScripts.openUserScriptSettings('+row['id']+')">Settings</button>
+                </td>
+                <td align="center">
+                    <button class="btn" type="button" onclick="ks.manageUserScripts.disableUserScript('+row['id']+')">Disable</button>
+                </td>
+                <td align="center">
+                    <button class="btn" type="button" onclick="ks.manageUserScripts.deleteUserScript('+row['id']+')">Remove</button>
                 </td>
             </tr>';
-            
+
             ks.$('tbody', tableId).append(tableRow);
         }
     }
-    
-    _listUserScripts();
-})(ks)
+    else
+    {
+        tableRow = '<tr>
+            <td>
+                No User Scripts in the database.
+            </td>
+        </tr>';
+        
+        ks.$('tbody', tableId).append(tableRow);
+    }
+}
+
 
 
