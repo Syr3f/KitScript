@@ -114,6 +114,9 @@ var KSBase = Class.create({
 
 
 
+/**
+ *  KSContentManager (KitScript Content Manager for the Main Panel)
+ */
 var KSContentManager = Class.create({
     
     initialize: function () {
@@ -125,7 +128,7 @@ var KSContentManager = Class.create({
             },
             {
                 id: "global-settings",
-                title: "KitScript Settings"
+                title: "Global Settings"
             },
             {
                 id: "new-userscript",
@@ -142,40 +145,50 @@ var KSContentManager = Class.create({
         this._currentContentId = this.defaultContentId;
         this._previousContentId = null;
     },
-    _fadeOutContent: function (contentId) {
+    _hideContent: function (contentId) {
         
-        ks.$(contentId).fadeOut('fast');
+        ks.$('#'+contentId).css('display','none');
     },
-    _fadeInContent: function (contentId) {
+    _showContent: function (contentId) {
         
-        ks.$(contentId).fadeIn('slow');
+        ks.$('#'+contentId).css('display','block');
     },
     _setDocumentTitle: function (newTitle) {
         
-        ks.$(document).title = "KitScript | "+newTitle;
+        document.title = "KitScript | "+newTitle;
+    },
+    _cleanContentIdStr: function (contentId) {
+        
+        if (contentId.substr(0,1) == '#')
+            return contentId.substr(1,contentId.length);
+        else
+            return contentId;
     },
     getTitleByContentId: function (contentId) {
         
+        _contentId = this._cleanContentIdStr(contentId);
+        
         for (var i=0; i < this.contents.length; i++) {
             
-            if ('#'+this.contents[i].id == contentId)
+            if (this.contents[i].id == _contentId)
                 return this.contents[i].title;
         }
     },
     initContent: function () {
         
-        this._fadeInContent(this.defaultContentId);
         this._setDocumentTitle(this.getTitleByContentId(this.defaultContentId));
     },
     transitContent: function (newContentId) {
         
+        _contentId = this._cleanContentIdStr(newContentId);
+        
         this._previousContentId = this._currentContentId;
-        this._currentContentId = newContentId;
+        this._currentContentId = _contentId;
         
-        this._fadeOutContent(this._previousContentId);
-        this._fadeInContent(this._currentContentId);
+        this._hideContent(this._previousContentId);
+        this._showContent(this._currentContentId);
         
-        this._setDocumentTitle(this.getTitleByContentId(newContentId));
+        this._setDocumentTitle(this.getTitleByContentId(_contentId));
     }
 });
 
@@ -184,17 +197,16 @@ var KSContentManager = Class.create({
 
 
 /**
- *  KSPanel (KitScript User Scripts Main Panel Class)
+ *  KSMainPanel (KitScript User Scripts Main Panel Class)
  */
 var KSMainPanel = Class.create(KSBase, {
     
     initialize: function ($super) {
         
         this._pageName = "MainPanel.html";
+        this.contentManager = null;
         
         $super();
-        
-        this.contentManager = new KSContentManager();
     },
     openPage: function ($super) {
         
@@ -482,6 +494,7 @@ var KitScript = Class.create(KSUtils, {
         this.db = new KSStorage();
         this.$ = jQuery;
         this.mainPanel = new KSMainPanel();
+        this.mainPanel.contentManager = new KSContentManager();
         
         try {
             
@@ -518,7 +531,7 @@ function _ksCommandHandler(event) {
             
             ks.mainPanel.openTab();
             ks.mainPanel.setTabPage(ks.mainPanel.defaultPage);
-            ks.mainPanel.contentManager.initContent();
+            //ks.mainPanel.contentManager.initContent();
             break;
         case "goto_manage":
             
@@ -551,7 +564,7 @@ function _ksValidateHandler(event) {
             
             
             break;
-        case "open_panel":
+        case "open_tab":
             
             //if (ks.mainPanel.isTabOpen() === true) {
                 
