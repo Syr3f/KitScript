@@ -3,7 +3,7 @@
 jQuery(document).ready(function ($) {
     
     //
-    $("#ks-topmenu * a, ul.ks-vertmenu * a").click(function (evt) {
+    $("#ks-topmenu * a, ul.ks-vertmenu * a, #ks-gs-form * a").click(function (evt) {
         
         var _req = $(this).attr("href");
         
@@ -15,6 +15,18 @@ jQuery(document).ready(function ($) {
                 break;
             case '#disable-ks':
                 ks.setDisable();
+                break;
+            
+            // Global Settings Buttons
+            case '#ks-gs-btn-add':
+                //alert(1);
+                //ks.mainPanel.globalSettingsForm.addExclude();
+                break;
+            case '#ks-gs-btn-edit':
+                //ks.mainPanel.globalSettingsForm.editExclude();
+                break;
+            case '#ks-gs-btn-remove':
+                ks.mainPanel.globalSettingsForm.removeExclude();
                 break;
             default:
                 ks.mainPanel.contentManager.transitContent(_req);
