@@ -267,108 +267,6 @@ deleteUserScript: function (id) {
 
 
 /**
- *  KSNewPanel (KitScript New User Script Panel Class)
- *
-var KSNewPanel = Class.create(KSBase, {
-    
-    initialize: function () {
-        
-        this._pageName = "newUserScriptPanel.html";
-    },
-    openPage: function ($super) {
-        
-        $super(this._pageName);
-    },
-    save: function (newUserScriptForm) {
-        /*
-        code = newUserScriptForm.us-code;
-        
-        us = new UserScript(code);
-        
-        name = us.getName();
-        desc = us.getDescription();
-        includes = us.getIncludes().join(",");
-        excludes = us.getExcludes().join(",");
-        disabled = 0;
-        
-        db.create(name, desc, includes, excludes, code, disabled);
-        *
-    },
-    autoSave: function () {
-        
-        
-    }
-});
-*/
-
-
-
-
-/**
- *  KSSettingsPanel (KitScript User Script Settings Panel Class)
- *
-var KSSettingsPanel = Class.create(KSBase, {
-    
-    initialize: function () {
-        
-        this._pageName = "scriptSettingsPanel.html";
-    },
-    openPage: function ($super, scriptId) {
-        
-        this._scriptId = scriptId;
-        
-        $super(this._pageName);
-        
-        //this.showUserSettings();
-    },
-    close: function ($super) {
-        
-        //$super();
-    },
-    showUserSettings: function () {
-        
-        
-    },
-    showScriptSettings: function () {
-        
-        
-    },
-    showScriptEdition: function () {
-        
-        
-    },
-    saveUserSettings: function () {
-        
-        
-    },
-    saveScriptSettings: function () {
-        
-        
-    },
-    saveScriptEdition: function (userScriptForm) {
-        /*
-        id = userScriptForm.us-id;
-        
-        code = userScriptForm.us-code;
-        
-        us = new UserScript(code);
-        
-        name = us.getName();
-        desc = us.getDescription();
-        includes = us.getIncludes().join(",");
-        excludes = us.getExcludes().join(",");
-        disabled = userScriptForm.isDisabled;
-        
-        db.update(name, desc, includes, excludes, code, disabled, id);
-        *
-    }
-});
-*/
-
-
-
-
-/**
  *  KSStorage (KitScript Storage Class)
  */
 var KSStorage = Class.create(Storage, {
@@ -379,8 +277,6 @@ var KSStorage = Class.create(Storage, {
         this._dbVersion = '1.0';
         this._dbDisplayName = 'KitScript';
         this._dbSize = 10 * 1024 * 1024; // 10 MB in bytes
-        
-        this._dbTable = "UserScripts";
         
         this._isDbExistant = false;
         
@@ -427,7 +323,7 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
-    createTable: function (isDropAllowed) {
+    createTables: function (isDropAllowed) {
         
         if (isDropAllowed === true) {
             
@@ -440,13 +336,29 @@ var KSStorage = Class.create(Storage, {
             this.transact(sqlArray);
         }
         
-        _fH = function () { console.log("Table created."); };
+        _fH1 = function () { console.log("Table created."); };
+        _fH2 = function () { console.log("Data inserted."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTable+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _fH, _errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS UserScripts (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _fH1, _errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS GlobalExcludes (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _fH1, _errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS KitScript (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], _fH1, _errorHandler);
+        sqlArray.push(this, "INSERT INTO KitScript (enabled) VALUES (1);", [], _fH2, _errorHandler);
         
         this.transact(sqlArray);
+    }
+});
+
+
+
+
+
+var KSUserScriptStorage = Class.create({
+    
+    initialize: function () {
+        
+        this._dbTable = "UserScripts";
     },
     insert: function (name, desc, includes, excludes, code, disabled) {
         
@@ -501,6 +413,96 @@ var KSStorage = Class.create(Storage, {
         sqlArray = new SQLStatementsArray();
         
         sqlArray.push(this, "UPDATE "+this._dbTable+" SET disabled = 1 WHERE id = ?;", [id], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    }
+});
+
+
+
+
+
+var KSGlobalExcludesStorage = Class.create({
+    
+    initialize: function () {
+        
+        this._dbTable = "GlobalExcludes";
+    },
+    insert: function (url) {
+        
+        _fH = function () { console.log("Data inserted."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "INSERT INTO "+this._dbTable+" (url) VALUES (?);", [url], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    update: function (id, url) {
+        
+        _fH = function () { console.log("Data updated."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "UPDATE "+this._dbTable+" SET url = ? WHERE id = ?;", [url, id], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    fetch: function (id, fetchCallback) {
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "SELECT * FROM "+this._dbTable+" WHERE id = ?;", [id], fetchCallback, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    fetchAll: function (offset, limit, fetchCallback) {
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "SELECT * FROM "+this._dbTable+" LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    remove: function (id) {
+        
+        _fH = function () { console.log("Data deleted."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "DELETE FROM "+this._dbTable+" WHERE id = ?;", [id], _fH, _killTransaction);
+        
+        this.transact(sqlArray);
+    }
+});
+
+
+
+
+
+var KSKitScriptStorage = Class.create({
+    
+    initialize: function () {
+        
+        this._dbTable = "KitScript";
+    },
+    enableKitScript: function () {
+        
+        _fH = function () { console.log("KitScript is enabled."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "UPDATE "+this._dbTable+" SET enabled = 1 WHERE id = 1;", [], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    disableKitScript: function () {
+        
+        _fH = function () { console.log("KitScript is disabled."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "UPDATE "+this._dbTable+" SET enabled = 0 WHERE id = 1;", [], _fH, _errorHandler);
         
         this.transact(sqlArray);
     }
