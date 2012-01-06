@@ -205,6 +205,7 @@ var KSMainPanel = Class.create(KSBase, {
         
         this._pageName = "MainPanel.html";
         this.contentManager = null;
+        this.globalSettingsForm = null;
         
         $super();
     },
@@ -215,6 +216,28 @@ var KSMainPanel = Class.create(KSBase, {
 });
 
 
+
+
+
+var KSGlobalSettingsForm = Class.create({
+    
+    initialize: function () {
+        
+        
+    },
+    addExclude: function () {
+        
+        ks.$('#ks-gs-add-modal').modal('show');
+    },
+    editExclude: function () {
+        
+        
+    },
+    removeExclude: function () {
+        
+        
+    }
+});
 
 /*
 
@@ -497,6 +520,8 @@ var KitScript = Class.create(KSUtils, {
         this.$ = jQuery;
         this.mainPanel = new KSMainPanel();
         this.mainPanel.contentManager = new KSContentManager();
+        
+        this.mainPanel.globalSettingsForm = new KSGlobalSettingsForm();
         
         try {
             
