@@ -567,79 +567,22 @@ function _ksCommandHandler(event) {
     
     switch (event.command)
     {
-        case "close":
-            
-            ks.log("Something closed.");
-            //ks.mainPanel.close();
-            break;
-        case "toggle_enable":
-            
-            alert("command toggle_enable");
-            break;
         case "open_tab":
-            
             ks.mainPanel.openTab();
             ks.mainPanel.setTabPage(ks.mainPanel.defaultPage);
-            //ks.mainPanel.contentManager.initContent();
-            break;
-        case "goto_manage":
-            
-            
-            break;
-        case "goto_new":
-            
-            
-            break;
-        case "goto_globsettings":
-            
-            
             break;
     }
 }
-
-
-
-
 
 function _ksValidateHandler(event) {
     
     switch (event.command)
     {
-        case "close":
-            
-            
-            break;
-        case "toggle_enable":
-            
-            alert("validate toggle_enable");
-            break;
         case "open_tab":
-            
-            //if (ks.mainPanel.isTabOpen() === true) {
-                
-            //    ks.mainPanel.openPage(ks.mainPanel.defaultPage);
-            //}
-            break;
-        case "goto_manage":
-            
-            
-            break;
-        case "goto_new":
-            
-            
-            break;
-        case "goto_globsettings":
-            
-            
             break;
     }
 }
 
-
-
-
-
 safari.application.addEventListener("command", _ksCommandHandler, false);
 safari.application.addEventListener("validate", _ksValidateHandler, false);
-
 
