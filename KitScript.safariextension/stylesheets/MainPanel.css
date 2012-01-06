@@ -61,3 +61,11 @@ body {
 .topbar {
     margin-top: -25px;
 }
+
+/* Add User Script Content */
+
+.ks-aus-sssmall {
+    font-family: "New Courier", Courier, serif;
+    font-size: 0.8em;
+    line-height: 1em;
+}
