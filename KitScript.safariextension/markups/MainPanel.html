@@ -30,7 +30,7 @@
     <!-- script src="../scripts/lib/bootstrap/bootstrap-alerts.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-buttons.js" type="text/javascript" charset="utf-8"></script -->
     <script src="../scripts/lib/bootstrap/bootstrap-dropdown.js" type="text/javascript" charset="utf-8"></script>
-    <!-- script src="../scripts/lib/bootstrap/bootstrap-modal.js" type="text/javascript" charset="utf-8"></script -->
+    <script src="../scripts/lib/bootstrap/bootstrap-modal.js" type="text/javascript" charset="utf-8"></script>
     <!-- script src="../scripts/lib/bootstrap/bootstrap-popover.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-scrollspy.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-tabs.js" type="text/javascript" charset="utf-8"></script -->
@@ -80,7 +80,7 @@
       <!-- Management - DEFAULT PANEL -->
       <section class="content" id="userscript-manager">
         <div class="page-header">
-          <h1>User Scripts Management <small>Manage your User Scripts on this panel</small></h1>
+          <h1>User Scripts Manager <small>Manage your User Scripts on this panel</small></h1>
         </div>
         <div class="row">
           <div class="span10">
@@ -120,9 +120,51 @@
         </div>
         <div class="row">
           <div class="span10">
-            <h2>Global Settings</h2>
+            <h2>Global Exclusion URLs</h2>
             
+            <form id="ks-gs-form">
+              <div class="span9 well">
+                <select class="medium span9" style="width:500px;" size="18" multiple>
+                  <option value=""></option>
+                </select>
+                <span class="help-block">Enter the global exclusion URLs by clicking the "Add" button below. To edit or remove a URL, select it in the list above and then click the button below.</span>
+              </div>
+              <div class="span9 well">
+                <a class="btn small primary" href="#ks-gs-btn-add" data-controls-modal="ks-gs-add-modal" data-backdrop="true" data-keyboard="true">Add</a>
+                <a class="btn small success disabled" href="#ks-gs-btn-edit" data-controls-modal="ks-gs-edit-modal" data-backdrop="true" data-keyboard="true">Edit</a>
+                <a class="btn small danger disabled" href="#ks-gs-btn-remove">Remove</a>
+              </div>
+            </form>
             
+            <div id="ks-gs-add-modal" class="modal hide fade">
+              <div class="modal-header">
+                <a href="#" class="close">&times;</a>
+                <h3>Add a Global Exclude</h3>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <input class="span9" name="" value="">
+                </form>
+              </div>
+              <div class="modal-footer">
+                <a href="#ks-gs-action-add" class="btn primary">Add</a>
+              </div>
+            </div>
+            
+            <div id="ks-gs-edit-modal" class="modal hide fade">
+              <div class="modal-header">
+                <a href="#" class="close">&times;</a>
+                <h3>Edit a Global Exclude</h3>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <input class="span9" name="" value="">
+                </form>
+              </div>
+              <div class="modal-footer">
+                <a href="#ks-gs-action-update" class="btn primary">Update</a>
+              </div>
+            </div>
             
           </div>
           <div class="span4">
@@ -146,13 +188,23 @@
       <!-- New Script -->
       <section class="content" id="new-userscript" style="display:none;">
         <div class="page-header">
-          <h1>Add User Scripts <small>Add your new User Script with the editor</small></h1>
+          <h1>New User Scripts <small>Add your new User Script with the editor</small></h1>
         </div>
         <div class="row">
           <div class="span10">
-            <h2>New User Script</h2>
+            <h2>Add a User Script</h2>
             
-            
+            <form id="ks-aus-form">
+              <div class="span9 well">
+                
+                <textarea id="ks-aus-script" rows="30" class="ks-aus-sssmall span9"></textarea>
+                
+                <span class="help-block">Enter or paste the user script code in the field above and press the "Add" button below to add the script in KitScript's database.</span>
+              </div>
+              <div class="span9 well">
+                <a class="btn small primary" href="#ks-aus-btn-add">Add</a>
+              </div>
+            </form>
             
           </div>
           <div class="span4">
