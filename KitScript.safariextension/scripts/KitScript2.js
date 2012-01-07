@@ -313,13 +313,11 @@ var KSStorage = Class.create(Storage, {
                     _db._isDbExistant = true;
                 }
             }
-            
-            return this._isDbExistant;
         }
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT name FROM sqlite_master WHERE type=? AND name=?;", ["table",this._dbTable], _fH, _errorHandler);
+        sqlArray.push(this, "SELECT name FROM sqlite_master WHERE type=? AND name=?;", ["table","UserScripts"], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
@@ -331,7 +329,9 @@ var KSStorage = Class.create(Storage, {
             
             sqlArray = new SQLStatementsArray();
             
-            sqlArray.push(this, 'DROP TABLE '+this._dbTable+';', [], _fH, _errorHandler);
+            sqlArray.push(this, 'DROP TABLE UserScripts;', [], _fH, _errorHandler);
+            sqlArray.push(this, 'DROP TABLE GlobalExcludes;', [], _fH, _errorHandler);
+            sqlArray.push(this, 'DROP TABLE KitScript;', [], _fH, _errorHandler);
             
             this.transact(sqlArray);
         }
@@ -486,7 +486,7 @@ var KSKitScriptStorage = Class.create({
         
         this._dbTable = "KitScript";
     },
-    enableKitScript: function () {
+    setEnabled: function () {
         
         _fH = function () { console.log("KitScript is enabled."); };
         
@@ -496,7 +496,9 @@ var KSKitScriptStorage = Class.create({
         
         this.transact(sqlArray);
     },
-    disableKitScript: function () {
+    setDisabled: function () {
+        
+        alert("3");
         
         _fH = function () { console.log("KitScript is disabled."); };
         
@@ -519,6 +521,7 @@ var KitScript = Class.create(KSUtils, {
         this._isEnabled = true;
         
         this.db = new KSStorage();
+        this.db.kitScript = new KSKitScriptStorage();
         this.$ = jQuery;
         this.mainPanel = new KSMainPanel();
         this.mainPanel.contentManager = new KSContentManager();
@@ -545,6 +548,7 @@ var KitScript = Class.create(KSUtils, {
         
         if (!this.isEnabled()) {
             
+            this.db.kitScript.setEnabled();
             this._isEnabled = true;
             this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
         }
@@ -553,6 +557,7 @@ var KitScript = Class.create(KSUtils, {
         
         if (this.isEnabled()) {
             
+            this.db.kitScript.setDisabled();
             this._isEnabled = false;
             this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
         }
