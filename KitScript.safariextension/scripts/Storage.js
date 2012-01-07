@@ -127,13 +127,6 @@ var Storage = Class.create({
         
         this.setSuccess(false);
         
-        //var _js = 'this._DB.transaction(function (transaction) {';
-        //for (var i = 0; i < _sqls.length; i++) {
-        //    _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
-        //}
-        //_js += '});';
-        //eval(_js);
-        
         this._DB.transaction(function (transaction) {
             
             eval("transaction.__proto__.storageInstance = _sqls[0][0]");
