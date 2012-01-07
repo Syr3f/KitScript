@@ -26,17 +26,17 @@
     <!-- script src="scripts/lib/backbone/backbone-0.5.3.min.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="scripts/lib/backbone/backbone-localstorage.js" type="text/javascript" charset="utf-8"></script -->
     
-    <!-- = Bootstrap.js = -->
+    <!-- = Bootstrap = -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-alerts.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-buttons.js" type="text/javascript" charset="utf-8"></script -->
     <script src="../scripts/lib/bootstrap/bootstrap-dropdown.js" type="text/javascript" charset="utf-8"></script>
     <script src="../scripts/lib/bootstrap/bootstrap-modal.js" type="text/javascript" charset="utf-8"></script>
     <!-- script src="../scripts/lib/bootstrap/bootstrap-popover.js" type="text/javascript" charset="utf-8"></script -->
-    <!-- script src="../scripts/lib/bootstrap/bootstrap-scrollspy.js" type="text/javascript" charset="utf-8"></script -->
+    <script src="../scripts/lib/bootstrap/bootstrap-scrollspy.js" type="text/javascript" charset="utf-8"></script>
     <!-- script src="../scripts/lib/bootstrap/bootstrap-tabs.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap/bootstrap-twipsy.js" type="text/javascript" charset="utf-8"></script -->
-
-    <!-- = Hogan.js = -->
+    
+    <!-- = Hogan = -->
     <!-- script src="../scripts/lib/hogan.js/hogan.js" type="text/javascript" charset="utf-8"></script -->
     
     <!-- = My Scripts = -->
@@ -49,8 +49,7 @@
   </head>
   <body>
     
-    <!-- div class="topbar" data-scrollspy="scrollspy" id="ks-topmenu" -->
-    <div class="topbar" id="ks-topmenu" data-dropdown="dropdown">
+    <div class="topbar" id="ks-topmenu" data-dropdown="dropdown" data-scrollspy="scrollspy">
       <div class="fill">
         <div class="container">
           <a class="brand" href="#userscript-manager">KitScript</a>          
@@ -77,7 +76,7 @@
 
 
 
-      <!-- Management - DEFAULT PANEL -->
+      <!-- User Scripts Manager - DEFAULT PANEL -->
       <section class="content" id="userscript-manager">
         <div class="page-header">
           <h1>User Scripts Manager <small>Manage your User Scripts on this panel</small></h1>
@@ -139,7 +138,7 @@
             <div id="ks-gs-add-modal" class="modal hide fade">
               <div class="modal-header">
                 <a href="#" class="close">&times;</a>
-                <h3>Add a Global Exclude</h3>
+                <h3>Add a Global Exclusion URL</h3>
               </div>
               <div class="modal-body">
                 <form>
@@ -154,7 +153,7 @@
             <div id="ks-gs-edit-modal" class="modal hide fade">
               <div class="modal-header">
                 <a href="#" class="close">&times;</a>
-                <h3>Edit a Global Exclude</h3>
+                <h3>Edit a Global Exclusion URL</h3>
               </div>
               <div class="modal-body">
                 <form>
@@ -185,7 +184,7 @@
 
 
 
-      <!-- New Script -->
+      <!-- New User Script -->
       <section class="content" id="new-userscript" style="display:none;">
         <div class="page-header">
           <h1>New User Scripts <small>Add your new User Script with the editor</small></h1>
@@ -196,9 +195,7 @@
             
             <form id="ks-aus-form">
               <div class="span9 well">
-                
                 <textarea id="ks-aus-script" rows="30" class="ks-aus-sssmall span9"></textarea>
-                
                 <span class="help-block">Enter or paste the user script code in the field above and press the "Add" button below to add the script in KitScript's database.</span>
               </div>
               <div class="span9 well">
@@ -234,7 +231,9 @@
           <div class="span10">
             <h2>About The Safari Extension</h2>
             
-            
+            <h3>Changelog</h3>
+            <h4>0.1</h4>
+            <p></p>
             
           </div>
           <div class="span4">
