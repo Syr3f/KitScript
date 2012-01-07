@@ -1,3 +1,2 @@
-## KitScript - A User Script Safari Extension
+## KitScript - Safari Extension For User Scripts
 
-A Firefox Greasemonkey for Safari.
