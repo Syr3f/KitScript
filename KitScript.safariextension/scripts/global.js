@@ -6,5 +6,6 @@ jQuery.noConflict();
 ks = new KitScript();
 
 // Create DB if not created 
-ks.db.createTable();
+if (!ks.db.isDbExistant())
+    ks.db.createTables();
 
