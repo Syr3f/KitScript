@@ -440,6 +440,12 @@ var KitScript = Class.create(KSUtils, {
         this.mainPanel = new KSMainPanel();
         this.mainPanel.contentManager = new KSContentManager();
         
+        this.mainPanel.userScriptsManagerForm = new KSUserScriptsManagerForm();
+        this.mainPanel.globalSettingsForm = new KSGlobalSettingsForm();
+        this.mainPanel.newUserScriptForm = new KSNewUserScriptForm();
+        this.mainPanel.userScriptSettingsForm = new KSUserScriptSettingsForm();
+        this.mainPanel.aboutForm = new KSAboutKitScriptForm();
+        
         try {
             
             this.db.connect();
