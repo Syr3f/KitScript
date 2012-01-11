@@ -25,6 +25,7 @@ var _Utils = Class.create({
     initialize: function () {
         
         this.$ = jQuery;
+        this.md = window.markdown;
     },
     /**
      *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
