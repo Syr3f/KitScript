@@ -115,11 +115,6 @@ var KSContentManager = Class.create(_Utils, {
         
         this.regisForms.push(formIdObj);
         
-        this.defaultContentId = 'userscript-manager';
-        
-        this._currentContentId = this.defaultContentId;
-        this._previousContentId = null;
-        
         this.errorLevel = 1;
         this.warnLevel = 2;
         this.successLevel = 3;
@@ -153,26 +148,19 @@ var KSContentManager = Class.create(_Utils, {
                 return this.regisForms[i].title;
         }
     },
-    initContent: function () {
-        
-        this._setDocumentTitle(this._getTitleByContentId(this.defaultContentId));
-    },
     transitContent: function (newContentId) {
         
         _contentId = this._cleanContentIdStr(newContentId);
         
-        this._previousContentId = this._currentContentId;
-        this._currentContentId = _contentId;
+        KSContentManager.previousContentId = KSContentManager.currentContentId;
+        KSContentManager.currentContentId = _contentId;
         
-        this._hideContent(this._previousContentId);
-        this._showContent(this._currentContentId);
+        this._hideContent(KSContentManager.previousContentId);
+        this._showContent(KSContentManager.currentContentId);
         
         var _ttl = this._getTitleByContentId(_contentId);
         
         this._setDocumentTitle(_ttl);
-        
-        //ks.nav.pushState(null, _ttl, "KitScript#"+_contentId);
-        //ks.nav.go(1);
     },
     /*
     popAlert: function (strMsg) {
@@ -229,6 +217,8 @@ var KSContentManager = Class.create(_Utils, {
 });
 
 KSContentManager.regisForms = [];
+KSContentManager.currentContentId = 'userscript-manager';
+KSContentManager.previousContentId = null;
 
 
 
@@ -248,6 +238,10 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         };
         
         $super(this._formIdObj);
+    },
+    drawTable: function () {
+        
+        
     },
     openUserScriptSettings: function (id) {
         
@@ -345,7 +339,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         
         try {
             
-            this.gm.loadScript(_script);
+            ks.gmmd.loadScript(_script);
             
             var _rec = this._getHeaderValues();
             
@@ -357,19 +351,19 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     },
     _getHeaderValues: function () {
         
-        var _name = this.gm.getName();
-        var _space = this.gm.getNamespace();
-        var _desc = this.gm.getDescription();
-        var _incs = this.gm.getIncludes();
-        var _excs = this.gm.getExcludes();
+        var _name = ks.gmmd.getName();
+        var _space = ks.gmmd.getNamespace();
+        var _desc = ks.gmmd.getDescription();
+        var _incs = ks.gmmd.getIncludes();
+        var _excs = ks.gmmd.getExcludes();
         
         return [_name,_space,_desc,_incs.join(','),_excs.join(',')];
     },
     _storeUserScript: function (name, space, desc, excludes, includes, code) {
         
-        this._a("_storeUserScript");
+        _fH = function () {};
         
-        this.db.insertUserScript(KSSHF_blobize(code));
+        db.insertUserScriptFile(KSSHF_blobize(code),_fH,this);
         
         var _sC1 = function (trsct,rs) {
             
@@ -381,25 +375,33 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
                 
                 var _sC2 = function (trsct,rs) {
                     
-                    var _this = trsct.objInstance;
+                    var _this2 = trsct.objInstance;
                     
-                    _this.showSuccessAlert("The user script has been added.");
+                    _this2.transitContent('#userscript-manager');
                     
-                    _this.transitContent('userscript-manager');
+                    ks.mainPanel.userScriptsManagerForm.showSuccessAlert("The user script has been added.");
                 }
                 
-                _this.db.insertUserScriptMetadata(this._escQuot(name), this._escQuot(space), this._escQuot(desc), this._escQuot(excludes), this._escQuot(includes), _row['LastRowId'], 0, _sC2, _this);
+                db.insertUserScriptMetadata(_this._fname, _this._fspace, _this._escQuot(_this._fdesc), _this._fincludes, _this._fexcludes, parseInt(_row[_this._liria]), 0, _sC2, _this);
             } else {
                 
                 _this.showErrorAlert("The user script couldn't be stored.");
             }
         }
         
-        this.db.getLastInsertRowId(_sC1, this);
+        this._liria = 'LastInsertId';
+        
+        this._fname = name;
+        this._fspace = space;
+        this._fdesc = desc;
+        this._fexcludes = excludes;
+        this._fincludes = includes;
+        
+        db.getLastInsertRowId(this._liria, _sC1, this);
     },
     _escQuot: function (str) {
         
-        return str.replace("'","\'","gm");
+        return str.replace("'","\\'","gm");
     },
     showWarningAlert: function (strMsg) {
         
@@ -500,8 +502,7 @@ var KitScript = Class.create(_Utils, {
         
         this._isEnabled = true;
         
-        this.db = new KSStorage();
-        this.gm = new KSGreasemonkeyMetadata();
+        this.gmmd = new KSGreasemonkeyMetadata();
         
         this.mainPanel = new KSMainPanel();
         this.mainPanel.contentManager = new KSContentManager();
@@ -510,16 +511,6 @@ var KitScript = Class.create(_Utils, {
         this.mainPanel.newUserScriptForm = new KSNewUserScriptForm();
         this.mainPanel.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainPanel.aboutProjectForm = new KSAboutProjectForm();
-        
-        try {
-            
-            this.db.connect();
-        } catch (e) {
-            
-            this.mainPanel.userScriptsManagerForm.showErrorAlert(e.getMessage());
-        }
-        
-        //this.nav = window.History;
     },
     isEnabled: function () {
         
@@ -537,7 +528,7 @@ var KitScript = Class.create(_Utils, {
         
         if (!this.isEnabled()) {
             
-            this.db.setKitScriptEnabled(_sC, this);
+            db.setKitScriptEnabled(_sC, this);
         }
     },
     setDisable: function () {
@@ -552,7 +543,7 @@ var KitScript = Class.create(_Utils, {
         
         if (this.isEnabled()) {
             
-            this.db.setKitScriptDisabled(_sC, this);
+            db.setKitScriptDisabled(_sC, this);
         }
     },
     declareEnabled: function () {
@@ -579,7 +570,7 @@ var KitScript = Class.create(_Utils, {
             }
         }
         
-        this.db.isKitScriptEnabled(_sC, this);
+        db.isKitScriptEnabled(_sC, this);
     }
 });
 
