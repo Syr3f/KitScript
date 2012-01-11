@@ -490,6 +490,14 @@ var KitScript = Class.create(_Utils, {
         this.mainPanel.newUserScriptForm = new KSNewUserScriptForm();
         this.mainPanel.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainPanel.aboutForm = new KSAboutKitScriptForm();
+        
+        try {
+            
+            this.db.connect();
+        } catch (e) {
+            
+            this.log(e.getMessage());
+        }
     },
     isEnabled: function () {
         
