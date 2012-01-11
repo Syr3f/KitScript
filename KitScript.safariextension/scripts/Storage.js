@@ -129,7 +129,7 @@ var Storage = Class.create({
         
         this._DB.transaction(function (transaction) {
             
-            eval("transaction.__proto__.storageInstance = _sqls[0][0]");
+            eval("transaction.__proto__.objInstance = _sqls[0][0]");
             
             var _js = "";
             
@@ -163,7 +163,7 @@ var Storage = Class.create({
 
 function _statementCallback(transaction, resultSet) {
     
-    var _db = transaction.storageInstance;
+    var _db = transaction.objInstance;
     
     _db.setResultSet(resultSet);
     
