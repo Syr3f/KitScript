@@ -20,32 +20,13 @@
  */
 var KSGMException = Class.create({
     
-    initialize: function (errorId) {
+    initialize: function (msg) {
         
-        this._msg = "";
-        this._errorId = errorId;
-        
-        switch (errorId) {
-            
-            // user script errors (101-399)
-            case 101:
-                this._msg = "User script header is not valid.";
-                break;
-            
-            // Greasemonkey API errors (701-999)
-            case 701:
-                break;
-            default:
-                this._msg = "Undefined user script error.";
-        }
+        this._msg = msg;
     },
     getMessage: function () {
         
         return this._msg;
-    },
-    getErrorId: function () {
-        
-        return this._errorId;
     }
 });
 
@@ -69,8 +50,7 @@ var KSGMUS = Class.create({
         
         if (!this.isHeaderValid()) {
             
-            var _errorId = 101;
-            throw new KSGMException(_errorId);
+            throw new KSGMException("User script metadata block is invalid.");
         }
     },
     isHeaderValid: function () {
@@ -79,44 +59,191 @@ var KSGMUS = Class.create({
         
         return this._isValid;
     },
+    
+    /**
+     *  =================
+     *  SUPPORTED IN v0.1
+     *  =================
+     */
+    
+    /**
+     *  @name string – KS Mandatory
+     *
+     *  - The combination of namespace and name is the unique identifier for a Greasemonkey script.
+     *
+     *  @returns string
+     */
+    getName: function () {
+        
+        if (/[\/]{2} \@name (.*)/g.test(this._script) === true) {
+            
+            var matches = /[\/]{2} \@name (.*)/g.exec(this._script);
+            
+            return matches[1];
+        } else {
+            
+            throw new KSGMException("No mandatory @name in metadata block.");
+        }
+    },
+    /**
+     *  @namespace string – KS Mandatory
+     *
+     *  - The combination of namespace and name is the unique identifier for a Greasemonkey script.
+     *
+     *  @returns string
+     */
+    getNamespace: function () {
+        
+        if (/[\/]{2} \@namespace (.*)/g.test(this._script) === true) {
+            
+            var matches = /[\/]{2} \@namespace (.*)/g.exec(this._script);
+            
+            return matches[1];
+        } else {
+            
+            throw new KSGMException("No mandatory @namesapce in metadata block.");
+        }
+    },
+    /**
+     *  @description string – KS Mandatory
+     *
+     *  @returns string
+     */
+    getDescription: function () {
+        
+        if (/[\/]{2} \@description (.*)/g.test(this._script) === true) {
+            
+            var matches = /[\/]{2} \@description (.*)/g.exec(this._script);
+            
+            return matches[1];
+        } else {
+            
+            throw new KSGMException("No mandatory @description in metadata block.");
+        }
+    },
+    /**
+     *  @requires url – Optional
+     *
+     *  @returns Array
+     */
+    getRequires: function () {
+        
+        var _requires = [];
+        
+        if (/[\/]{2} \@match (.*)/g.test(this._script) === true) {
+            
+            var matches = /[\/]{2} \@require (.*)/g.exec(this._script);
+            
+            for (var i = 1; i < matches.length; i++) {
+                
+                _requires.push(matches[i]);
+            }
+        }
+        
+        return _requires;
+    },
+    /**
+     *  @includes pattern – Optional
+     *
+     *  - There can be any number of @include rules in a script.
+     *  - If no include rule is provided, @include * is assumed.
+     *
+     *  @returns Array
+     */
     getIncludes: function () {
         
         var _includes = [];
         
-        var matches = /[\/]{2} \@include (.*)/g.exec(this._script);
-        
-        for (var i = 1; i < matches.length; i++) {
+        if (/[\/]{2} \@include (.*)/g.test(this._script) === true) {
             
-            _includes.push(matches[i]);
+            var matches = /[\/]{2} \@include (.*)/g.exec(this._script);
+            
+            if (matches.length > 0) {
+                
+                for (var i = 1; i < matches.length; i++) {
+                    
+                    _includes.push(matches[i]);
+                }
+            } else {
+                
+                _includes.push('*');
+            }
         }
         
         return _includes;
     },
+    /**
+     *  @excludes pattern – Optional
+     *
+     *  - There can be any number of @exclude rules in a script.
+     *
+     *  @returns Array
+     */
     getExcludes: function () {
         
         var _excludes = [];
         
-        var matches = /[\/]{2} \@exclude (.*)/g.exec(this._script);
-        
-        for (var i = 1; i < matches.length; i++) {
+        if (/[\/]{2} \@exclude (.*)/g.test(this._script) === true) {
             
-            _excludes.push(matches[i]);
+            var matches = /[\/]{2} \@exclude (.*)/g.exec(this._script);
+            
+            if (matches.length > 0) {
+                
+                for (var i = 1; i < matches.length; i++) {
+                    
+                    _excludes.push(matches[i]);
+                }
+            }
         }
         
         return _excludes;
     },
-    getDescription: function () {
+    /**
+     *  @version float – Optional
+     *
+     *  - This is the version of the script, which should be treated like a
+     *      firefox extension version, and maintain the same syntax.
+     *
+     *  KS v0.1:
+     *  - No auto-update implemented
+     *
+     *  @returns string
+     */
+    getVersion: function () {
         
-        var matches = /[\/]{2} \@description (.*)/g.exec(this._script);
-        
-        return matches[1];
+        if (/[\/]{2} \@version (.*)/g.test(this._script) === true) {
+            
+            var matches = /[\/]{2} \@version (.*)/g.exec(this._script);
+            
+            return matches[1];
+        } else {
+            
+            return "";
+        }
     },
+    
+    /**
+     *  ===========================
+     *  SUPPORTED IN FUTUR VERSIONS
+     *  ===========================
+     */
+    
+    /**
+     *  @icon url
+     *
+     *
+     */
     getIcon: function () {
         
         var matches = /[\/]{2} \@icon (.*)/g.exec(this._script);
         
         return matches[1];
     },
+    /**
+     *  @match pattern
+     *
+     *
+     */
     getMatches: function () {
         
         var _matches = [];
@@ -130,31 +257,11 @@ var KSGMUS = Class.create({
         
         return _matches;
     },
-    getName: function () {
-        
-        var matches = /[\/]{2} \@name (.*)/g.exec(this._script);
-        
-        return matches[1];
-    },
-    getNamespace: function () {
-        
-        var matches = /[\/]{2} \@namespace (.*)/g.exec(this._script);
-        
-        return matches[1];
-    },
-    getRequires: function () {
-        
-        var _requires = [];
-        
-        var matches = /[\/]{2} \@match (.*)/g.exec(this._script);
-        
-        for (var i = 1; i < matches.length; i++) {
-            
-            _requires.push(matches[i]);
-        }
-        
-        return _requires;
-    },
+    /**
+     *  @resource url
+     *
+     *
+     */
     getResources: function () {
         
         var _resources = [];
@@ -168,23 +275,29 @@ var KSGMUS = Class.create({
         
         return _resources;
     },
+    /**
+     *  @run-at "document-end" | "document-start"
+     *
+     *  - Supports two values: document-end and document-start. 
+     */
     getRunAt: function () {
         
         var matches = /[\/]{2} \@run-at (.*)/g.exec(this._script);
         
+        // throw Exception if no match one or the other
+        
         return matches[1];
     },
+    /**
+     *  @unwrap void
+     *
+     *  - This key is strongly recommended to only be used for debugging purposes.
+     */
     hasUnwrap: function () {
         
         var _hasUnwrap = /[\/]{2} \@unwrap (.*)/g.test(this._script);
         
         return _hasUnwrap;
-    },
-    getVersion: function () {
-        
-        var matches = /[\/]{2} \@version (.*)/g.exec(this._script);
-        
-        return matches[1];
     }
 });
 
