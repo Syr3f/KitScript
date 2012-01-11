@@ -19,6 +19,9 @@ jQuery.noConflict();
 // ks KitScript root object
 ks = new KitScript();
 
+// Debug Verbosity: 0=Silenced,1=Console,2=BrowserAlert
+ks.setVerbosityLevel(0);
+
 // Create DB if not created 
 if (!ks.db.isDbExistant())
     ks.db.createTables();
