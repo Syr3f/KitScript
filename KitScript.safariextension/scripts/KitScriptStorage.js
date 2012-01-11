@@ -100,30 +100,35 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS UserScripts (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, whitelist TEXT NOT NULL, blacklist TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _fH1, _errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS UserScripts (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NOT NULL, script TEXT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _fH1, _errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS GlobalExcludes (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _fH1, _errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS KitScript (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], _fH1, _errorHandler);
         sqlArray.push(this, "INSERT INTO KitScript (enabled) VALUES (1);", [], _fH2, _errorHandler);
         
         this.transact(sqlArray);
     },
-    insertUserScript: function (name, desc, includes, excludes, code, disabled) {
+    insertUserScript: function (name, space, desc, includes, excludes, code, disabled) {
         
-        _fH = function () { console.log("Data inserted."); };
+        _fH = function () {
+            
+            ks.mainPanel.contentManager.transitContent('userscript-manager');
+            
+            ks.mainPanel.userScriptsManagerForm.showSuccessAlert('The user script has been added.');
+        };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "INSERT INTO "+this._dbTableUserScripts+" (name, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?);", [name, desc, includes, excludes, code, disabled], _fH, _errorHandler);
+        sqlArray.push(this, "INSERT INTO "+this._dbTableUserScripts+" (name, namespace, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?, ?);", [name, space, desc, includes, excludes, code, disabled], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
-    updateUserScript: function (id, name, desc, includes, excludes, code, disabled) {
+    updateUserScript: function (id, name, space, desc, includes, excludes, code, disabled) {
         
         _fH = function () { console.log("Data updated."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "UPDATE "+this._dbTableUserScripts+" SET name = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, desc, includes, excludes, code, disabled, id], _fH, _errorHandler);
+        sqlArray.push(this, "UPDATE "+this._dbTableUserScripts+" SET name = ?, namespace = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, space, desc, includes, excludes, code, disabled, id], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
