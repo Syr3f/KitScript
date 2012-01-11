@@ -18,8 +18,14 @@
 // Run on load
 jQuery(document).ready(function ($) {
     
+    var _btnsSels = ['#ks-topmenu * a',
+                        'ul.ks-vertmenu * a',
+                        '#ks-gs-form * a',
+                        '#ks-aus-form * a',
+                        '#ks-alert-modal * a'];
+    
     //
-    $("#ks-topmenu * a, ul.ks-vertmenu * a, #ks-gs-form * a, #ks-aus-form * a").click(function (evt) {
+    $(_btnsSels.join(',')).click(function (evt) {
         
         var _req = $(this).attr("href");
         
@@ -49,6 +55,16 @@ jQuery(document).ready(function ($) {
             case '#ks-aus-btn-add':
                 ks.mainPanel.newUserScriptForm.addUserScript();
                 break;
+            
+            // User Script Settings
+            case '#':
+                break;
+            
+            // Alert Modal
+            case '#ks-alert-close':
+                ks.mainPanel.hideAlert();
+                break;
+            
             default:
                 ks.mainPanel.contentManager.transitContent(_req);
         }
