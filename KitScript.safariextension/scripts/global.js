@@ -36,5 +36,12 @@ jQuery(document).ready(function ($) {
         
     // Declare on UI if Enabled or Disabled
     ks.declareEnabled();
+    
+    // Bind History to StateChange Event
+    //ks.$(window).bind('statechange', function () {
+    //    
+    //    var _State = ks.nav.getState();
+    //    ks.nav.log(_State.data, _State.title, _State.url);
+    //});
 });
 

@@ -10,7 +10,8 @@
  *  @version 0.1
  */
 
-"use strict";
+//"use strict";
+
 
 
 
@@ -166,7 +167,12 @@ var KSContentManager = Class.create(_Utils, {
         this._hideContent(this._previousContentId);
         this._showContent(this._currentContentId);
         
-        this._setDocumentTitle(this.getTitleByContentId(_contentId));
+        var _ttl = this._getTitleByContentId(_contentId);
+        
+        this._setDocumentTitle(_ttl);
+        
+        //ks.nav.pushState(null, _ttl, "KitScript#"+_contentId);
+        //ks.nav.go(1);
     },
     /*
     popAlert: function (strMsg) {
@@ -361,7 +367,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     },
     _storeUserScript: function (name, space, desc, excludes, includes, code) {
         
-        this.log();
+        this._a("_storeUserScript");
         
         this.db.insertUserScript(KSSHF_blobize(code));
         
@@ -475,8 +481,6 @@ var KSAboutKitScriptForm = Class.create(KSContentManager, {
 
 /**
  *  KitScript Class
- *
- *  Main class of the extension.
  */
 var KitScript = Class.create(_Utils, {
     
@@ -502,8 +506,10 @@ var KitScript = Class.create(_Utils, {
             this.db.connect();
         } catch (e) {
             
-            this.log(e.getMessage());
+            this.mainPanel.userScriptsManagerForm.showErrorAlert(e.getMessage());
         }
+        
+        //this.nav = window.History;
     },
     isEnabled: function () {
         
@@ -513,41 +519,43 @@ var KitScript = Class.create(_Utils, {
         
         _sC = function (transaction, resultSet) {
             
-            jQuery('#toggle-enable-dropdown').text("KitScript is Enabled!");
+            var _ks = transaction.objInstance;
+            
+            _ks.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
+            _ks._isEnabled = true;
         };
         
         if (!this.isEnabled()) {
             
-            this.db.setKitScriptEnabled(_sC);
-            this._isEnabled = true;
+            this.db.setKitScriptEnabled(_sC, this);
         }
     },
     setDisable: function () {
         
         _sC = function () {
             
-            jQuery('#toggle-enable-dropdown').text("KitScript is Disabled!");
+            var _ks = transaction.objInstance;
             
-            this.log("KitScript is disabled.");
+            _ks.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
+            _ks._isEnabled = false;
         };
         
         if (this.isEnabled()) {
             
-            this.db.setKitScriptDisabled(_sC);
-            this._isEnabled = false;
+            this.db.setKitScriptDisabled(_sC, this);
         }
     },
     declareEnabled: function () {
         
         _sC = function (transaction, resultSet) {
             
-            _ks = transaction.objInstance;
+            var _ks = transaction.objInstance;
             
             if (resultSet.rows.length > 0) {
                 
-                _row = resultSet.rows.item(0);
+                var _row = resultSet.rows.item(0);
                 
-                if (parseFloat(_row['enabled']) == 1) {
+                if (parseInt(_row['enabled']) == 1) {
                     
                     _ks._isEnabled = true;
                     
@@ -559,7 +567,6 @@ var KitScript = Class.create(_Utils, {
                     _ks.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
                 }
             }
-            
         }
         
         this.db.isKitScriptEnabled(_sC, this);
