@@ -60,34 +60,30 @@ var KSGMUS = Class.create({
     
     initialize: function () {
         
-        this._isValid = false;
-        
-        this._validateHeader();
+        this._isHeaderValid = false;
+        this._script = "";
     },
     loadScript: function (scriptStr) {
         
         this._script = scriptStr;
         
-        this._validateHeader();
-        
-        if (!this.isValid()) {
+        if (!this.isHeaderValid()) {
             
             var _errorId = 101;
             throw new KSGMException(_errorId);
         }
     },
-    _validateHeader: function () {
+    isHeaderValid: function () {
         
-        this._isValid = /\/\/[ ]+==UserScript==\n.*\/\/[ ]+==\/UserScript==/g.test(this._script);
-    },
-    isValid: function () {
+        this._isValid = /[\/]{2} ==UserScript==[^=]*==[\/]{1}UserScript==/m.test(this._script);
+        
         return this._isValid;
     },
     getIncludes: function () {
         
         var _includes = [];
         
-        var matches = /\/\/[ ]+\@include (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@include (.*)/g.exec(this._script);
         
         for (var i = 1; i < matches.length; i++) {
             
@@ -100,7 +96,7 @@ var KSGMUS = Class.create({
         
         var _excludes = [];
         
-        var matches = /\/\/[ ]+\@exclude (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@exclude (.*)/g.exec(this._script);
         
         for (var i = 1; i < matches.length; i++) {
             
@@ -111,13 +107,13 @@ var KSGMUS = Class.create({
     },
     getDescription: function () {
         
-        var matches = /\/\/[ ]+\@description (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@description (.*)/g.exec(this._script);
         
         return matches[1];
     },
     getIcon: function () {
         
-        var matches = /\/\/[ ]+\@icon (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@icon (.*)/g.exec(this._script);
         
         return matches[1];
     },
@@ -125,7 +121,7 @@ var KSGMUS = Class.create({
         
         var _matches = [];
         
-        var matches = /\/\/[ ]+\@match (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@match (.*)/g.exec(this._script);
         
         for (var i = 1; i < matches.length; i++) {
             
@@ -136,13 +132,13 @@ var KSGMUS = Class.create({
     },
     getName: function () {
         
-        var matches = /\/\/[ ]+\@name (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@name (.*)/g.exec(this._script);
         
         return matches[1];
     },
     getNamespace: function () {
         
-        var matches = /\/\/[ ]+\@namespace (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@namespace (.*)/g.exec(this._script);
         
         return matches[1];
     },
@@ -150,7 +146,7 @@ var KSGMUS = Class.create({
         
         var _requires = [];
         
-        var matches = /\/\/[ ]+\@match (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@match (.*)/g.exec(this._script);
         
         for (var i = 1; i < matches.length; i++) {
             
@@ -163,7 +159,7 @@ var KSGMUS = Class.create({
         
         var _resources = [];
         
-        var matches = /\/\/[ ]+\@resource (.*) (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@resource (.*) (.*)/g.exec(this._script);
         
         for (var i = 1; i < matches.length; i++) {
             
@@ -174,19 +170,19 @@ var KSGMUS = Class.create({
     },
     getRunAt: function () {
         
-        var matches = /\/\/[ ]+\@run-at (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@run-at (.*)/g.exec(this._script);
         
         return matches[1];
     },
     hasUnwrap: function () {
         
-        var _hasUnwrap = /\/\/[ ]+\@unwrap (.*)/g.test(this._script);
+        var _hasUnwrap = /[\/]{2} \@unwrap (.*)/g.test(this._script);
         
         return _hasUnwrap;
     },
     getVersion: function () {
         
-        var matches = /\/\/[ ]+\@version (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@version (.*)/g.exec(this._script);
         
         return matches[1];
     }
