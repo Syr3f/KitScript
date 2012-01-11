@@ -14,7 +14,7 @@
 
 
 
-var SQLStatementsArray = Class.create(KSUtils, {
+var SQLStatementsArray = Class.create(_Utils, {
     
     initialize: function () {
         
@@ -57,7 +57,7 @@ var StorageException = Class.create({
 
 
 
-var ResultSet = Class.create(KSUtils, {
+var ResultSet = Class.create(_Utils, {
     
     initialize: function (resultSet) {
         
