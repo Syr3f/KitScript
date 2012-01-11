@@ -35,9 +35,9 @@ var KSGMException = Class.create({
 
 
 /**
- *  KSGreasemonkeyMetadata (KitScript Greasemonkey Metadata Class)
+ *  KSGMUS (KitScript Greasemonkey User Script Class)
  */
-var KSGreasemonkeyMetadata = Class.create({
+var KSGMUS = Class.create({
     
     initialize: function () {
         
