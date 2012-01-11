@@ -314,6 +314,8 @@ var KitScript = Class.create(KSUtils, {
     
     initialize: function ($super) {
         
+        $super();
+        
         this._isEnabled = true;
         
         this.mainPanel = new KSMainPanel();
@@ -326,8 +328,6 @@ var KitScript = Class.create(KSUtils, {
             
             this.log(e.getMessage());
         }
-        
-        $super();
         
         this.setVerboseLevel(1);
     },
