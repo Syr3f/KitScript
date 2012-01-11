@@ -16,19 +16,72 @@
 
 
 /**
+ *  KSGMException (KitScript Greasemonkey Exception Class)
+ */
+var KSGMException = Class.create({
+    
+    initialize: function (errorId) {
+        
+        this._msg = "";
+        this._errorId = errorId;
+        
+        switch (errorId) {
+            
+            // user script errors (101-399)
+            case 101:
+                this._msg = "User script header is not valid.";
+                break;
+            
+            // Greasemonkey API errors (701-999)
+            case 701:
+                break;
+            default:
+                this._msg = "Undefined user script error.";
+        }
+    },
+    getMessage: function () {
+        
+        return this._msg;
+    },
+    getErrorId: function () {
+        
+        return this._errorId;
+    }
+});
+
+
+
+
+
+/**
  *  KSGMUS (KitScript Greasemonkey User Script Class)
  */
 var KSGMUS = Class.create({
     
-    initialize: function (script) {
+    initialize: function () {
         
-        this._script = script;
+        this._isValid = false;
+        
+        this._validateHeader();
     },
-    hasValidHeader: function () {
+    loadScript: function (scriptStr) {
         
-        var _isValid = /\/\/[ ]+==UserScript==\n.*\/\/[ ]+==\/UserScript==/g.test(this._script);
+        this._script = scriptStr;
         
-        return _isValid;
+        this._validateHeader();
+        
+        if (!this.isValid()) {
+            
+            var _errorId = 101;
+            throw new KSGMException(_errorId);
+        }
+    },
+    _validateHeader: function () {
+        
+        this._isValid = /\/\/[ ]+==UserScript==\n.*\/\/[ ]+==\/UserScript==/g.test(this._script);
+    },
+    isValid: function () {
+        return this._isValid;
     },
     getIncludes: function () {
         
