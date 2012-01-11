@@ -10,6 +10,7 @@
  *  @version 0.1
  */
 
+"use strict";
 
 
 
@@ -262,7 +263,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
     },
-    showSuccess: function (strMsg) {
+    showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
@@ -308,7 +309,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
     },
-    showSuccess: function (strMsg) {
+    showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
@@ -432,7 +433,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
     },
-    showSuccess: function (strMsg) {
+    showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
@@ -462,7 +463,7 @@ var KSAboutKitScriptForm = Class.create(KSContentManager, {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
     },
-    showSuccess: function (strMsg) {
+    showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
@@ -472,6 +473,11 @@ var KSAboutKitScriptForm = Class.create(KSContentManager, {
 
 
 
+/**
+ *  KitScript Class
+ *
+ *  Main class of the extension.
+ */
 var KitScript = Class.create(_Utils, {
     
     initialize: function ($super) {
@@ -564,7 +570,13 @@ var KitScript = Class.create(_Utils, {
 
 
 
-function _ksCommandHandler(event) {
+/**
+ *  =======================================================
+ *  KSSEFH_* (KitScript Safari Extension Function Handlers)
+ *  =======================================================
+ */
+
+function KSSEFH_CommandHandler(event) {
     
     switch (event.command)
     {
@@ -575,7 +587,7 @@ function _ksCommandHandler(event) {
     }
 }
 
-function _ksValidateHandler(event) {
+function KSSEFH_ValidateHandler(event) {
     
     switch (event.command)
     {
@@ -585,6 +597,6 @@ function _ksValidateHandler(event) {
     }
 }
 
-safari.application.addEventListener("command", _ksCommandHandler, false);
-safari.application.addEventListener("validate", _ksValidateHandler, false);
+safari.application.addEventListener("command", KSSEFH_CommandHandler, false);
+safari.application.addEventListener("validate", KSSEFH_ValidateHandler, false);
 

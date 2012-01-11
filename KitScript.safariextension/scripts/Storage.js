@@ -10,10 +10,16 @@
  *  @version 0.1
  */
 
+"use strict";
 
 
 
 
+/**
+ *  SQLStatementsArray Class
+ *
+ *  Holds SQL statements in an Array.
+ */
 var SQLStatementsArray = Class.create(_Utils, {
     
     initialize: function ($super) {
@@ -40,7 +46,11 @@ var SQLStatementsArray = Class.create(_Utils, {
 
 
 
-
+/**
+ *  StorageException Class
+ *
+ *  For Storage exceptions.
+ */
 var StorageException = Class.create({
     
     initialize: function (message) {
@@ -59,6 +69,11 @@ var StorageException = Class.create({
 
 
 
+/**
+ *  ResultSet Class
+ *
+ *  Holds the fetched result set.
+ */
 var ResultSet = Class.create(_Utils, {
     
     initialize: function ($super, resultSet) {
@@ -98,6 +113,11 @@ var ResultSet = Class.create(_Utils, {
 
 
 
+/**
+ *  Storage Class
+ *
+ *  Core Database methods.
+ */
 var Storage = Class.create(_Utils, {
     
     initialize: function ($super, dbName, dbVersion, dbDisplayName, dbSize) {
@@ -170,7 +190,7 @@ var Storage = Class.create(_Utils, {
                 _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
             }
             
-            this.log(_js);
+            transaction.objInstance.log(_js);
             
             eval(_js);
         });
@@ -195,7 +215,7 @@ var Storage = Class.create(_Utils, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT last_insert_rowid() AS "+aliasName+";", [], statementCallback, KSSFH_errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT last_insert_rowid() AS "+aliasName+";", [], statementCallback, SFH_errorHandler);
         
         this.transact(sqlArray);
     }
@@ -204,28 +224,14 @@ var Storage = Class.create(_Utils, {
 
 
 
-/*
-function _statementCallback(transaction, resultSet) {
-    
-    var _db = transaction.objInstance;
-    
-    _db.setResultSet(resultSet);
-    
-    if (resultSet.rows.length > 0)
-        _db.setSuccess(true);
-}
 
-function _nullHandler() {
-    
-}
+/**
+ *  =============================================
+ *  SFH_* (Storage Function Handlers)
+ *  =============================================
+ */
 
-function _successHandler() {
-    
-    console.log('Successful statement!');
-}
-*/
-
-function KSSFH_errorHandler(transaction, error) {
+function SFH_errorHandler(transaction, error) {
     
     var _db = transaction.objInstance;
     
@@ -234,9 +240,8 @@ function KSSFH_errorHandler(transaction, error) {
     _db.setSuccess(false);
 }
 
-/*
-function _killTransaction(transaction, error) {
+function SFH_killTransaction(transaction, error) {
     
     return true;
 }
-*/
+

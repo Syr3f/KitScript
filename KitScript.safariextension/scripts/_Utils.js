@@ -10,10 +10,16 @@
  *  @version 0.1
  */
 
+"use strict";
 
 
 
 
+/**
+ *  _Utils Class
+ *
+ *  Offers basic methods for child classes.
+ */
 var _Utils = Class.create({
 
     initialize: function () {
@@ -40,6 +46,10 @@ var _Utils = Class.create({
             default:
                 // Silence
         }
+    },
+    _: function (msg) {
+        
+        alert(msg);
     }
 });
 

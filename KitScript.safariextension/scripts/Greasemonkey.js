@@ -11,6 +11,7 @@
  *  @version 0.1
  */
 
+"use strict";
 
 
 
@@ -37,9 +38,11 @@ var KSGMException = Class.create({
 /**
  *  KSGreasemonkeyMetadata (KitScript Greasemonkey Metadata Class)
  */
-var KSGreasemonkeyMetadata = Class.create({
+var KSGreasemonkeyMetadata = Class.create(_Utils, {
     
-    initialize: function () {
+    initialize: function ($super) {
+        
+        $super();
         
         this._isHeaderValid = false;
         this._script = "";
@@ -60,11 +63,15 @@ var KSGreasemonkeyMetadata = Class.create({
         return this._isValid;
     },
     
+    
+    
     /**
-     *  =================
-     *  SUPPORTED IN v0.1
-     *  =================
+     *  ========================================================================
+     *  =========================== SUPPORTED IN v0.1 ==========================
+     *  ========================================================================
      */
+    
+    
     
     /**
      *  @name string – KS Mandatory
@@ -222,11 +229,15 @@ var KSGreasemonkeyMetadata = Class.create({
         }
     },
     
+    
+    
     /**
-     *  ===========================
-     *  SUPPORTED IN FUTUR VERSIONS
-     *  ===========================
+     *  ========================================================================
+     *  ===================== SUPPORTED IN FUTUR VERSIONS ======================
+     *  ========================================================================
      */
+    
+    
     
     /**
      *  @icon url
@@ -306,26 +317,26 @@ var KSGreasemonkeyMetadata = Class.create({
 
 
 /**
- *  ================
- *  Greasemonkey API
- *  ================
+ *  KSGreasemonkeyAPI (KitScript Greasemonkey API Class)
  */
-
-
-
-
-
-var KSGGreasemonkeyAPI = Class.create({
+var KSGreasemonkeyAPI = Class.create(_Utils, {
     
-    initialize: function () {
+    initialize: function ($super) {
         
-        
+        $super();
     }
 });
 
 
 
 
+
+/**
+ *  ============================================================================
+ *  ======================== Greasemonkey API Functions ========================
+ *  ======================== Supported in Futur versions =======================
+ *  ============================================================================
+ */
 
 /**
  *  @param string name

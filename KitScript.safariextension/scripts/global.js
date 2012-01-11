@@ -9,6 +9,8 @@
  *  @version 0.1
  */
 
+"use strict";
+
 
 
 
@@ -16,15 +18,20 @@
 // Let $ be to prototype and ks.$ to jQuery within 
 jQuery.noConflict();
 
-// ks KitScript root object
-ks = new KitScript();
+// Load on document ready
+jQuery(document).ready(function ($) {
+    
+    // ks KitScript root object
+    ks = new KitScript();
+    
+    // Debug Verbosity: 0=Silenced,1=Console,2=BrowserAlert
+    ks.setVerbosityLevel(1);
+    
+    // Create DB if not created 
+    if (!ks.db.isDbExistant())
+        ks.db.createTables();
+        
+    // Declare on UI if Enabled or Disabled
+    ks.declareEnabled();
+});
 
-// Debug Verbosity: 0=Silenced,1=Console,2=BrowserAlert
-ks.setVerbosityLevel(1);
-
-// Create DB if not created 
-if (!ks.db.isDbExistant())
-    ks.db.createTables();
-
-// Declare on UI if Enabled or Disabled
-ks.declareEnabled();
