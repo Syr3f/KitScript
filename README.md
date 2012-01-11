@@ -11,12 +11,6 @@
 
 ## KitScript - Safari Extension For User Scripts
 
-> Seraf Dos Santos <webmaster@cyb3r.ca>
->
-> Copyright (c) 2011-2012 Seraf Dos Santos - All rights reserved.
->
-> MIT License
-
 **KitScript** is an open source Safari Extension developed by Seraf Dos Santos and hosted on [GitHub](https://github.com/Syr3f/KitScript).
 
 The project was started in the fall of 2011 and was/is mainly inspired by the defunct (or no more maintained) User Script Safari Extensions/Add-Ons: *GreaseKit* &amp; *NinjaKit*.
@@ -26,8 +20,6 @@ The open source **[KitScript](https://syr3fgithub.com/KitScript)** project has a
 For any bugs, [open an issue on GitHub](https://github.com/Syr3f/KitScript/issues). We're always welcoming pull requests also, keep them coming.
 
 Enjoy!
-
-*Seraf*
 
 - - -
 
@@ -40,8 +32,6 @@ Enjoy!
 
 #### 0.1
 
-Initial version
-
 * Similar functions to Firefox's Greasemonkey w/ Bootstrap toolkit for UI
 * Runs Javascript coded in the user script
 * Loads some @keys of the user script metadata block
@@ -53,3 +43,9 @@ Initial version
     * require
     * version
 * Doesn't Run Greasemonkey API
+
+> Seraf Dos Santos <webmaster@cyb3r.ca>
+>
+> Copyright (c) 2011-2012 Seraf Dos Santos - All rights reserved.
+>
+> MIT License
