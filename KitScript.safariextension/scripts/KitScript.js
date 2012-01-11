@@ -247,13 +247,12 @@ var KSContentManager = Class.create(KSUtils, {
         
         this.hideAlertMsg(_ab);
     },
-    hideAlertMsg: function (alertBoxId) {
+    hideAlertMsg: function (_ab) {
         
-        _fH = "function () {
-            
-            jQuery('"+_ab+"').fadeOut('slow');
-            this.$('"+_ab+"').addClass('hide');
-        }";
+        var _fH = "function () {";
+        _fH += "jQuery('"+_ab+"').fadeOut('slow');";
+        _fH += "this.$('"+_ab+"').addClass('hide');";
+        _fH += "}";
         
         setTimeout(10000,_fH);
     }
@@ -335,19 +334,6 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
     removeGlobalExclude: function () {
         
         
-    },
-    showAlertMsg: function (alertBoxId,strMsg) {
-        
-        this.$('#'+alertBoxId).text(strMsg)
-    },
-    hideAlertMsg: function (alertId) {
-        
-        _fH = "function () {
-            
-            jQuery('"++"').fadeOut('slow');
-        }";
-        
-        setTimeout(10000,);
     }
 });
 
@@ -400,19 +386,6 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     storeUserScript: function (name, desc, excludes, includes, code) {
         
         this.db.insertUserScript(name, desc, excludes, includes, code, 0);
-    },
-    showAlertMsg: function (alertBoxId,strMsg) {
-        
-        this.$('#'+alertBoxId).text(strMsg)
-    },
-    hideAlertMsg: function (alertId) {
-        
-        _fH = "function () {
-            
-            jQuery('"++"').fadeOut('slow');
-        }";
-        
-        setTimeout(10000,);
     }
 });
 
