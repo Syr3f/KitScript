@@ -224,22 +224,26 @@ var KSContentManager = Class.create(KSUtils, {
     showAlertMsg: function (formBaseId,level,strMsg) {
         
         var _lvl = "";
+        var _pre = "";
         
         switch (level) {
             case this.errorLevel:
                 _lvl = "-error";
+                _pre = "<b>Error!</b> ";
                 break;
             case this.warnLevel:
                 _lvl = "-warn";
+                _pre = "<b>Warning!</b> ";
                 break;
             case this.successLevel:
                 _lvl = "-success";
+                _pre = "<b>Hurray!</b> ";
                 break;
         }
         
         var _ab = '#'+formBaseId+"-am"+_lvl;
         
-        this.$(_ab).text(strMsg);
+        this.$(_ab).html(_pre+strMsg);
         
         this.$(_ab).removeClass('hide');
         
@@ -334,6 +338,18 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
     removeGlobalExclude: function () {
         
         
+    },
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showErrorAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
+    showSuccess: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
 });
 
@@ -370,7 +386,11 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             if (e.getErrorId() == 101) {
                 
-                ks.mainPanel.popAlert(e.getMessage());
+                //ks.mainPanel.popAlert(e.getMessage());
+                
+                //alert(e.getMessage());
+                
+                this.showErrorAlert(e.getMessage());
             }
         }
     },
@@ -386,6 +406,18 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     storeUserScript: function (name, desc, excludes, includes, code) {
         
         this.db.insertUserScript(name, desc, excludes, includes, code, 0);
+    },
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showErrorAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
+    showSuccess: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
 });
 
@@ -404,6 +436,18 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         };
         
         $super(this._formIdObj);
+    },
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showErrorAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
+    showSuccess: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
 });
 
@@ -422,6 +466,18 @@ var KSAboutKitScriptForm = Class.create(KSContentManager, {
         };
         
         $super(this._formIdObj);
+    },
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showErrorAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
+    showSuccess: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
 });
 
@@ -538,6 +594,7 @@ function _ksValidateHandler(event) {
     switch (event.command)
     {
         case "open_tab":
+            //
             break;
     }
 }
