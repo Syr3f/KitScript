@@ -1,3 +1,19 @@
+/**
+ *  KitScript - A User Script Safari Extension
+ *
+ *  Storage.js - Javascript file containing storage classes (by Prototype.js)
+ *  used globally in the extension.
+ *
+ *  @author Seraf Dos Santos
+ *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
+ *  @license MIT License
+ *  @version 0.1
+ */
+
+
+
+
+
 
 var SQLStatementsArray = Class.create({
     
@@ -19,6 +35,11 @@ var SQLStatementsArray = Class.create({
     }
 });
 
+
+
+
+
+
 var StorageException = Class.create({
     
     initialize: function (message) {
@@ -32,6 +53,8 @@ var StorageException = Class.create({
         return this._message;
     }
 });
+
+
 
 
 
@@ -67,6 +90,10 @@ var ResultSet = Class.create({
         return null;
     }
 });
+
+
+
+
 
 var Storage = Class.create({
     
@@ -158,6 +185,8 @@ var Storage = Class.create({
         return this._lastResultSet;
     }
 });
+
+
 
 
 

@@ -7,6 +7,7 @@
  *  @author Seraf Dos Santos
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
  *  @license MIT License
+ *  @version 0.1
  */
 
 
