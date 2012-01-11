@@ -183,6 +183,14 @@ var Storage = Class.create({
     getResultSet: function () {
         
         return this._lastResultSet;
+    },
+    getLastInsertRowId: function (fetchCallback, obj) {
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj===null?this:obj), "SELECT last_insert_rowid() AS LastRowId;", [], fetchCallback, _errorHandler);
+        
+        this.transact(sqlArray);
     }
 });
 
@@ -211,11 +219,11 @@ function _successHandler() {
 
 function _errorHandler(transaction, error) {
     
-    var _db = transaction.storageInstance;
+    //var _db = transaction.objInstance;
     
-    console.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
+    alert('Oops.  Error was '+error.message+' (Code '+error.code+')');
     
-    _db.setSuccess(false);
+    //_db.setSuccess(false);
 }
 
 function _killTransaction(transaction, error) {
