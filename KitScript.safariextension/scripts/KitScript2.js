@@ -281,6 +281,10 @@ var KSStorage = Class.create(Storage, {
         this._isDbExistant = false;
         
         $super(this._dbName, this._dbVersion, this._dbDisplayName, this._dbSize);
+        
+        this._dbTableUserScripts = "UserScripts";
+        this._dbTableGlobalExcludes = "GlobalExcludes";
+        this._dbTableKitScript = "KitScript";
     },
     connect: function ($super) {
         
@@ -296,34 +300,35 @@ var KSStorage = Class.create(Storage, {
     },
     _verifyDb: function () {
         
-        this._isDbExistant = false;
-        
         _fH = function (transaction, resultSet) {
             
-            var _db = transaction.storageInstance;
-            
-            _statementCallback(transaction, resultSet);
+            var _db = transaction.objInstance;
             
             if (resultSet.rows.length > 0) {
                 
                 var _row = resultSet.rows.item(0);
                 
-                if (_row['name'] == _db._dbTable) {
+                if (_row['name'] == _db._dbTableUserScripts) {
                     
                     _db._isDbExistant = true;
+                } else {
+                    
+                    //_db.createTables();
+                    
+                    _db._isDbExistant = false;
                 }
             }
         }
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT name FROM sqlite_master WHERE type=? AND name=?;", ["table","UserScripts"], _fH, _errorHandler);
+        sqlArray.push(this, "SELECT name FROM sqlite_master WHERE type=? AND name=?;", ['table',this._dbTableUserScripts], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
-    createTables: function (isDropAllowed) {
+    createTables: function (doDrop) {
         
-        if (isDropAllowed === true) {
+        if (doDrop === true) {
             
             _fH = function () { console.log("Table dropped."); };
             
@@ -347,164 +352,130 @@ var KSStorage = Class.create(Storage, {
         sqlArray.push(this, "INSERT INTO KitScript (enabled) VALUES (1);", [], _fH2, _errorHandler);
         
         this.transact(sqlArray);
-    }
-});
-
-
-
-
-
-var KSUserScriptStorage = Class.create({
-    
-    initialize: function () {
-        
-        this._dbTable = "UserScripts";
     },
-    insert: function (name, desc, includes, excludes, code, disabled) {
+    insertUserScript: function (name, desc, includes, excludes, code, disabled) {
         
         _fH = function () { console.log("Data inserted."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "INSERT INTO "+this._dbTable+" (name, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?);", [name, desc, includes, excludes, code, disabled], _fH, _errorHandler);
+        sqlArray.push(this, "INSERT INTO "+this._dbTableUserScripts+" (name, description, whitelist, blacklist, script, disabled) VALUES (?, ?, ?, ?, ?, ?);", [name, desc, includes, excludes, code, disabled], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
-    update: function (id, name, desc, includes, excludes, code, disabled) {
+    updateUserScript: function (id, name, desc, includes, excludes, code, disabled) {
         
         _fH = function () { console.log("Data updated."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "UPDATE "+this._dbTable+" SET name = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, desc, includes, excludes, code, disabled, id], _fH, _errorHandler);
+        sqlArray.push(this, "UPDATE "+this._dbTableUserScripts+" SET name = ?, description = ?, whitelist = ?, blacklist = ?, script = ?, disabled = ? WHERE id = ?;", [name, desc, includes, excludes, code, disabled, id], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
-    fetch: function (id, fetchCallback) {
+    fetchUserScript: function (id, fetchCallback) {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT * FROM "+this._dbTable+" WHERE id = ?;", [id], fetchCallback, _errorHandler);
+        sqlArray.push(this, "SELECT * FROM "+this._dbTableUserScripts+" WHERE id = ?;", [id], fetchCallback, _errorHandler);
         
         this.transact(sqlArray);
     },
-    fetchAll: function (offset, limit, fetchCallback) {
+    fetchAllUserScripts: function (offset, limit, fetchCallback) {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT * FROM "+this._dbTable+" LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
+        sqlArray.push(this, "SELECT * FROM "+this._dbTableUserScripts+" LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
         
         this.transact(sqlArray);
     },
-    remove: function (id) {
+    removeUserScript: function (id) {
         
         _fH = function () { console.log("Data deleted."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "DELETE FROM "+this._dbTable+" WHERE id = ?;", [id], _fH, _killTransaction);
+        sqlArray.push(this, "DELETE FROM "+this._dbTableUserScripts+" WHERE id = ?;", [id], _fH, _killTransaction);
         
         this.transact(sqlArray);
     },
-    disableScript: function (id) {
+    disableUserScript: function (id) {
         
         _fH = function () { console.log("Script disabled."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "UPDATE "+this._dbTable+" SET disabled = 1 WHERE id = ?;", [id], _fH, _errorHandler);
+        sqlArray.push(this, "UPDATE "+this._dbTableUserScripts+" SET disabled = 1 WHERE id = ?;", [id], _fH, _errorHandler);
         
         this.transact(sqlArray);
-    }
-});
-
-
-
-
-
-var KSGlobalExcludesStorage = Class.create({
-    
-    initialize: function () {
-        
-        this._dbTable = "GlobalExcludes";
     },
-    insert: function (url) {
+    insertGlobalExclude: function (url) {
         
         _fH = function () { console.log("Data inserted."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "INSERT INTO "+this._dbTable+" (url) VALUES (?);", [url], _fH, _errorHandler);
+        sqlArray.push(this, "INSERT INTO "+this._dbTableGlobalExcludes+" (url) VALUES (?);", [url], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
-    update: function (id, url) {
+    updateGlobalExclude: function (id, url) {
         
         _fH = function () { console.log("Data updated."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "UPDATE "+this._dbTable+" SET url = ? WHERE id = ?;", [url, id], _fH, _errorHandler);
+        sqlArray.push(this, "UPDATE "+this._dbTableGlobalExcludes+" SET url = ? WHERE id = ?;", [url, id], _fH, _errorHandler);
         
         this.transact(sqlArray);
     },
-    fetch: function (id, fetchCallback) {
+    fetchGlobalExclude: function (id, fetchCallback) {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT * FROM "+this._dbTable+" WHERE id = ?;", [id], fetchCallback, _errorHandler);
+        sqlArray.push(this, "SELECT * FROM "+this._dbTableGlobalExcludes+" WHERE id = ?;", [id], fetchCallback, _errorHandler);
         
         this.transact(sqlArray);
     },
-    fetchAll: function (offset, limit, fetchCallback) {
+    fetchAllGlobalExcludes: function (offset, limit, fetchCallback) {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT * FROM "+this._dbTable+" LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
+        sqlArray.push(this, "SELECT * FROM "+this._dbTableGlobalExcludes+" LIMIT ?, ?;", [offset, limit], fetchCallback, _errorHandler);
         
         this.transact(sqlArray);
     },
-    remove: function (id) {
+    removeGlobalExclude: function (id) {
         
         _fH = function () { console.log("Data deleted."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "DELETE FROM "+this._dbTable+" WHERE id = ?;", [id], _fH, _killTransaction);
-        
-        this.transact(sqlArray);
-    }
-});
-
-
-
-
-
-var KSKitScriptStorage = Class.create({
-    
-    initialize: function () {
-        
-        this._dbTable = "KitScript";
-    },
-    setEnabled: function () {
-        
-        _fH = function () { console.log("KitScript is enabled."); };
-        
-        sqlArray = new SQLStatementsArray();
-        
-        sqlArray.push(this, "UPDATE "+this._dbTable+" SET enabled = 1 WHERE id = 1;", [], _fH, _errorHandler);
+        sqlArray.push(this, "DELETE FROM "+this._dbTableGlobalExcludes+" WHERE id = ?;", [id], _fH, _killTransaction);
         
         this.transact(sqlArray);
     },
-    setDisabled: function () {
-        
-        alert("3");
-        
-        _fH = function () { console.log("KitScript is disabled."); };
+    isKitScriptEnabled: function (obj, _fetchCallback) {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "UPDATE "+this._dbTable+" SET enabled = 0 WHERE id = 1;", [], _fH, _errorHandler);
+        sqlArray.push(obj, "SELECT enabled FROM "+this._dbTableKitScript+" WHERE id = 1;", [], _fetchCallback, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    setKitScriptEnabled: function (_fH) {
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "UPDATE "+this._dbTableKitScript+" SET enabled = 1 WHERE id = 1;", [], _fH, _errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    setKitScriptDisabled: function (_fH) {
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push(this, "UPDATE "+this._dbTableKitScript+" SET enabled = 0 WHERE id = 1;", [], _fH, _errorHandler);
         
         this.transact(sqlArray);
     }
@@ -521,7 +492,6 @@ var KitScript = Class.create(KSUtils, {
         this._isEnabled = true;
         
         this.db = new KSStorage();
-        this.db.kitScript = new KSKitScriptStorage();
         this.$ = jQuery;
         this.mainPanel = new KSMainPanel();
         this.mainPanel.contentManager = new KSContentManager();
@@ -546,21 +516,60 @@ var KitScript = Class.create(KSUtils, {
     },
     setEnable: function () {
         
+        _fH = function (transaction, resultSet) {
+            
+            jQuery('#toggle-enable-dropdown').text("KitScript is Enabled!");
+        };
+        
         if (!this.isEnabled()) {
             
-            this.db.kitScript.setEnabled();
+            this.db.setKitScriptEnabled(_fH);
             this._isEnabled = true;
-            this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
+            //this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
         }
     },
     setDisable: function () {
         
+        _fH = function () {
+            
+            jQuery('#toggle-enable-dropdown').text("KitScript is Disabled!");
+            
+            console.log("KitScript is disabled.");
+        };
+        
         if (this.isEnabled()) {
             
-            this.db.kitScript.setDisabled();
+            this.db.setKitScriptDisabled(_fH);
             this._isEnabled = false;
-            this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
+            //this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
         }
+    },
+    declareEnabled: function () {
+        
+        _fH = function (transaction, resultSet) {
+            
+            _ks = transaction.objInstance;
+            
+            if (resultSet.rows.length > 0) {
+                
+                _row = resultSet.rows.item(0);
+                
+                if (parseFloat(_row['enabled']) == 1) {
+                    
+                    _ks._isEnabled = true;
+                    
+                    _ks.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
+                } else {
+                    
+                    _ks._isEnabled = false;
+                    
+                    _ks.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
+                }
+            }
+            
+        }
+        
+        this.db.isKitScriptEnabled(this, _fH);
     }
 });
 
