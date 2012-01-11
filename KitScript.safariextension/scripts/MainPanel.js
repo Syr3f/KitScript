@@ -62,7 +62,7 @@ jQuery(document).ready(function ($) {
             
             // Alert Modal
             case '#ks-alert-close':
-                ks.mainPanel.hideAlert();
+                //ks.mainPanel.hideAlert();
                 break;
             
             default:
