@@ -18,7 +18,7 @@ var _Utils = Class.create({
 
     initialize: function () {
         
-        
+        this.$ = jQuery;
     },
     /**
      *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
