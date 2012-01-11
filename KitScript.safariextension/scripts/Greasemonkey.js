@@ -1,5 +1,12 @@
 
-var UserScript = Class.create({
+
+
+
+
+/**
+ *  KSGMUS (KitScript Greasemonkey User Script Class)
+ */
+var KSGMUS = Class.create({
     
     initialize: function (script) {
         
