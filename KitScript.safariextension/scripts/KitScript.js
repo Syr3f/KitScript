@@ -4,7 +4,7 @@
  *  KitScript.js - Javascript file containing base classes (by Prototype.js)
  *  used globally in the extension.
  *
- *  @author Seraf Dos Santos
+ *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
  *  @license MIT License
  *  @version 0.1
@@ -15,57 +15,9 @@
 
 
 /**
- *  KSUtils (KitScript Utilitary Class)
- */
-var KSUtils = Class.create({
-
-    initialize: function () {
-        
-        this._vl = 0;
-        
-        this.db = new KSStorage();
-        this.gm = new KSGMUS();
-        this.$ = jQuery;
-        
-        try {
-            
-            this.db.connect();
-        } catch (e) {
-            
-            this.log(e.getMessage());
-        }
-    },
-    /**
-     *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
-     */
-    setVerbosityLevel: function (verboseLevel) {
-         
-        this._vl = verboseLevel;
-    },
-    log: function (msg) {
-        
-        switch (this._vl) {
-            
-            case 2:
-                alert(msg);
-            case 1:
-                console.log(msg);
-                break;
-            case 0:
-            default:
-                // Silence
-        }
-    }
-});
-
-
-
-
-
-/**
 *  KSBase (KitScript Base Object Class)
 */
-var KSBase = Class.create(KSUtils, {
+var KSBase = Class.create(_Utils, {
 
     initialize: function ($super) {
         
@@ -152,7 +104,7 @@ var KSMainPanel = Class.create(KSBase, {
 /**
  *  KSContentManager (KitScript Content Manager for the Main Panel)
  */
-var KSContentManager = Class.create(KSUtils, {
+var KSContentManager = Class.create(_Utils, {
     
     regisForms: [],
     initialize: function ($super,formIdObj) {
@@ -189,7 +141,7 @@ var KSContentManager = Class.create(KSUtils, {
         else
             return contentId;
     },
-    getTitleByContentId: function (contentId) {
+    _getTitleByContentId: function (contentId) {
         
         _contentId = this._cleanContentIdStr(contentId);
         
@@ -201,7 +153,7 @@ var KSContentManager = Class.create(KSUtils, {
     },
     initContent: function () {
         
-        this._setDocumentTitle(this.getTitleByContentId(this.defaultContentId));
+        this._setDocumentTitle(this._getTitleByContentId(this.defaultContentId));
     },
     transitContent: function (newContentId) {
         
@@ -215,6 +167,7 @@ var KSContentManager = Class.create(KSUtils, {
         
         this._setDocumentTitle(this.getTitleByContentId(_contentId));
     },
+    /*
     popAlert: function (strMsg) {
         
         this.$('#'+this._alertModalId+' > h2').text(strMsg);
@@ -229,6 +182,7 @@ var KSContentManager = Class.create(KSUtils, {
         
         this.$('#'+alertModalId).modal('hide');
     },
+    */
     showAlertMsg: function (formBaseId,level,strMsg) {
         
         var _lvl = "";
@@ -260,8 +214,7 @@ var KSContentManager = Class.create(KSUtils, {
     hideAlertMsg: function (_ab) {
         
         var _sC = "function () {";
-        _sC += "jQuery('"+_ab+"').fadeOut('slow');";
-        _sC += "jQuery('"+_ab+"').addClass('hide');";
+        _sC += "jQuery('"+_ab+"').addClass('hide').fadeOut('slow');";
         _sC += "}";
         
         setTimeout(10000,_sC);
@@ -398,19 +351,16 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     _getHeaderValues: function () {
         
         var _name = this.gm.getName();
-        //alert(_name);
-        var _desc = this.gm.getDescription();
-        //alert(_desc);
         var _space = this.gm.getNamespace();
-        //alert(_space);        
+        var _desc = this.gm.getDescription();
         var _incs = this.gm.getIncludes();
-        //alert(_incs.join(','));
         var _excs = this.gm.getExcludes();
-        //alert(_excs.join(','));
         
         return [_name,_space,_desc,_incs.join(','),_excs.join(',')];
     },
     _storeUserScript: function (name, space, desc, excludes, includes, code) {
+        
+        this.log();
         
         this.db.insertUserScript(KSSHF_blobize(code));
         
@@ -426,7 +376,9 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
                     
                     var _this = trsct.objInstance;
                     
-                    _this.showSuccessAlert("The user script has been stored.");
+                    _this.showSuccessAlert("The user script has been added.");
+                    
+                    _this.transitContent('userscript-manager');
                 }
                 
                 _this.db.insertUserScriptMetadata(this._escQuot(name), this._escQuot(space), this._escQuot(desc), this._escQuot(excludes), this._escQuot(includes), _row['LastRowId'], 0, _sC2, _this);
@@ -520,7 +472,7 @@ var KSAboutKitScriptForm = Class.create(KSContentManager, {
 
 
 
-var KitScript = Class.create(KSUtils, {
+var KitScript = Class.create(_Utils, {
     
     initialize: function ($super) {
         
@@ -551,7 +503,6 @@ var KitScript = Class.create(KSUtils, {
             
             this.db.setKitScriptEnabled(_sC);
             this._isEnabled = true;
-            //this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
         }
     },
     setDisable: function () {
@@ -560,14 +511,13 @@ var KitScript = Class.create(KSUtils, {
             
             jQuery('#toggle-enable-dropdown').text("KitScript is Disabled!");
             
-            console.log("KitScript is disabled.");
+            this.log("KitScript is disabled.");
         };
         
         if (this.isEnabled()) {
             
             this.db.setKitScriptDisabled(_sC);
             this._isEnabled = false;
-            //this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
         }
     },
     declareEnabled: function () {
@@ -595,7 +545,7 @@ var KitScript = Class.create(KSUtils, {
             
         }
         
-        this.db.isKitScriptEnabled(this, _sC);
+        this.db.isKitScriptEnabled(_sC, this);
     }
 });
 
