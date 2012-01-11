@@ -27,3 +27,7 @@ header {
     margin: 25px;
     width: 100%;
 }
+
+.ks-hide {
+    display: none;
+}
