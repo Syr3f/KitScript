@@ -10,7 +10,7 @@
  *  @version 0.1
  */
 
-"use strict";
+//"use strict";
 
 
 
@@ -28,9 +28,9 @@ var SQLStatementsArray = Class.create(_Utils, {
         
         this._sqlStmntsArray = new Array();
     },
-    push: function (storageInstance, sql, arguments, statementCallback, errorCallback) {
+    push: function (storageInstance, sql, params, statementCallback, errorCallback) {
         
-        this._sqlStmntsArray.push(new Array(storageInstance, sql, (arguments.length > 0 ? arguments : null), statementCallback, errorCallback));
+        this._sqlStmntsArray.push(new Array(storageInstance, sql, (params.length > 0 ? params : null), statementCallback, errorCallback));
     },
     getArray: function () {
         
@@ -152,18 +152,33 @@ var Storage = Class.create(_Utils, {
         } catch(e) {
             
             switch (e) {
+                /*
+                case UNKNOWN_ERR:
+                    break;
+                case DATABASE_ERR:
+                    break;
+                case VERSION_ERR:
+                    break;
+                case TOO_LARGE_ERR:
+                    break;
+                case QUOTA_ERR:
+                    break;
+                case SYNTAX_ERR:
+                    break;
+                case CONSTRAINT_ERR:
+                    break;
+                case TIMEOUT_ERR:
+                    break;
+                */
                 case INVALID_STATE_ERR:
                     throw new StorageException('Invalid database version.');
-                    break;
-                case NOT_SUPPORTED:
-                    throw new StorageException('openDatabase not supported');
                     break;
                 default:
                     throw new StorageException('Unknown error '+e+'.');
             }
         }
         
-        return true;
+        return this._isConnected;
     },
     getConn: function () {
         

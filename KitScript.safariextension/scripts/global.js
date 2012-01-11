@@ -9,17 +9,20 @@
  *  @version 0.1
  */
 
-"use strict";
+//"use strict";
 
 
 
 
 
-// Let $ be to prototype and ks.$ to jQuery within 
-jQuery.noConflict();
+// Global KitScript variable
+ks = null;
 
 // Load on document ready
 jQuery(document).ready(function ($) {
+    
+    // Let $ be to prototype and ks.$ to jQuery within 
+    $.noConflict();
     
     // ks KitScript root object
     ks = new KitScript();

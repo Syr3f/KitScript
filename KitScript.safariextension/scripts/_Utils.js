@@ -10,7 +10,7 @@
  *  @version 0.1
  */
 
-"use strict";
+//"use strict";
 
 
 
@@ -29,9 +29,9 @@ var _Utils = Class.create({
     /**
      *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
      */
-    setVerbosityLevel: function (verboseLevel) {
+    setVerbosityLevel: function (verbosityLevel) {
 
-        this.vl = verboseLevel;
+        this.vl = verbosityLevel;
     },
     log: function (msg) {
 
@@ -47,9 +47,13 @@ var _Utils = Class.create({
                 // Silence
         }
     },
-    _: function (msg) {
+    _a: function (msg) {
         
         alert(msg);
+    },
+    _l: function (msg) {
+        
+        console.log(msg);
     }
 });
 

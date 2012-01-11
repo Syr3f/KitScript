@@ -11,7 +11,7 @@
  *  @version 0.1
  */
 
-"use strict";
+//"use strict";
 
 
 
@@ -43,7 +43,6 @@ jQuery(document).ready(function ($) {
             
             // Global Settings Buttons
             case '#ks-gs-btn-add':
-                //alert(1);
                 //ks.mainPanel.globalSettingsForm.addExclude();
                 break;
             case '#ks-gs-btn-edit':
