@@ -11,9 +11,11 @@
 
 ## KitScript - Safari Extension For User Scripts
 
->> Seraf Dos Santos <webmaster@cyb3r.ca>
->> Copyright (c) 2011-2012 Seraf Dos Santos - All rights reserved.
->> MIT License
+> Seraf Dos Santos <webmaster@cyb3r.ca>
+>
+> Copyright (c) 2011-2012 Seraf Dos Santos - All rights reserved.
+>
+> MIT License
 
 **KitScript** is an open source Safari Extension developed by Seraf Dos Santos and hosted on [GitHub](https://github.com/Syr3f/KitScript).
 
