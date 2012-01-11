@@ -52,10 +52,8 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         
         this._script = scriptStr;
         
-        if (!this.isHeaderValid()) {
-            
+        if (!this.isHeaderValid())
             throw new KSGMException("User script metadata block is invalid.");
-        }
     },
     isHeaderValid: function () {
         
