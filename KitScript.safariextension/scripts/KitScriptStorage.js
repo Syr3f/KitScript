@@ -150,14 +150,7 @@ var KSStorage = Class.create(Storage, {
     },
     insertUserScriptMetadata: function (name, space, desc, includes, excludes, usid, disabled, statementCallback, obj) {
         
-        _sC = statementCallback || function () {
-            
-            alert("_sC");
-            
-            ks.mainPanel.contentManager.transitContent('userscript-manager');
-            
-            ks.mainPanel.userScriptsManagerForm.showSuccessAlert('The user script has been added.');
-        };
+        _sC = statementCallback || function () { console.log("User script metadata inserted.") };
         
         sqlArray = new SQLStatementsArray();
         
@@ -167,7 +160,7 @@ var KSStorage = Class.create(Storage, {
     },
     updateUserScriptMetadata: function (id, name, space, desc, includes, excludes, disabled, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("Data updated."); };
+        _sC = statementCallback || function () { console.log("User script metadata updated."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -193,7 +186,7 @@ var KSStorage = Class.create(Storage, {
     },
     removeUserScriptMetadata: function (id, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("Data deleted."); };
+        _sC = statementCallback || function () { console.log("User script metadata deleted."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -203,7 +196,7 @@ var KSStorage = Class.create(Storage, {
     },
     disableUserScript: function (id, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("Script disabled."); };
+        _sC = statementCallback || function () { console.log("User script disabled."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -213,7 +206,7 @@ var KSStorage = Class.create(Storage, {
     },
     insertGlobalExclude: function (url, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("Data inserted."); };
+        _sC = statementCallback || function () { console.log("Global exclude inserted."); };
         
         sqlArray = new SQLStatementsArray();
         
