@@ -5,7 +5,7 @@
  *  MainPanel.js - Javascript file containing functions for the main panel
  *  of the extension.
  *
- *  @author Seraf Dos Santos
+ *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
  *  @license MIT License
  *  @version 0.1
@@ -18,14 +18,15 @@
 // Run on load
 jQuery(document).ready(function ($) {
     
-    var _btnsSels = ['#ks-topmenu * a',
-                        'ul.ks-vertmenu * a',
-                        '#ks-gs-form * a',
-                        '#ks-aus-form * a',
-                        '#ks-alert-modal * a'];
+    var _btnsSelectors = ['#ks-topmenu * a',
+                            'ul.ks-vertmenu * a',
+                            '#ks-gs-form * a',
+                            '#ks-aus-form * a',
+                            '#ks-alert-modal * a'
+                        ];
     
     //
-    $(_btnsSels.join(',')).click(function (evt) {
+    $(_btnsSelectors.join(',')).click(function (evt) {
         
         var _req = $(this).attr("href");
         
