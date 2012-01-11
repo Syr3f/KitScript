@@ -14,6 +14,17 @@
 
 
 
+var DODEBUG = 1;
+
+var _l = function (str) {
+
+    if (DODEBUG)
+        console.log(str);
+}
+
+
+
+
 
 var SQLStatementsArray = Class.create({
     
@@ -164,6 +175,8 @@ var Storage = Class.create({
                 
                 _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
             }
+            
+            _l(_js);
             
             eval(_js);
         });
