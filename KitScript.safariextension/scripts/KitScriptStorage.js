@@ -30,7 +30,7 @@ var KSStorage = Class.create(Storage, {
         
         $super(this._dbName, this._dbVersion, this._dbDisplayName, this._dbSize);
         
-        this._dbTableUserScripts = "UserScripts";
+        this._dbTableUserScriptFiles = "UserScriptFiles";
         this._dbTableUserScriptsMetadata = "UserScriptsMetadata";
         this._dbTableGlobalExcludes = "GlobalExcludes";
         this._dbTableKitScript = "KitScript";
@@ -89,7 +89,7 @@ var KSStorage = Class.create(Storage, {
             
             sqlArray = new SQLStatementsArray();
             
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScripts+';', [], _sC, _errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', [], _sC, _errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptsMetadata+';', [], _sC, _errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableGlobalExcludes+';', [], _sC, _errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableKitScript+';', [], _sC, _errorHandler);
@@ -102,7 +102,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScripts+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', [], _sC1, _errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', [], _sC1, _errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NOT NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _sC1, _errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _sC1, _errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], _sC1, _errorHandler);
@@ -110,44 +110,54 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
-    insertUserScript: function (blob, statementCallback, obj) {
+    /**
+     *  ================
+     *  User Script File
+     *  ================
+     */
+    insertUserScriptFile: function (blob, statementCallback, obj) {
         
         _sC = statementCallback || function () { console.log("User script inserted."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "INSERT INTO "+this._dbTableUserScripts+" (userscript) VALUES (?);", [blob], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "INSERT INTO "+this._dbTableUserScriptFiles+" (userscript) VALUES (?);", [blob], _sC, _errorHandler);
         
         this.transact(sqlArray);
     },
-    updateUserScript: function (code, statementCallback, obj) {
+    updateUserScriptFile: function (code, statementCallback, obj) {
         
         _sC = statementCallback || function () { console.log("User script updated."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableUserScripts+" SET userscript = ? WHERE id = ?;", [code, id], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableUserScriptFiles+" SET userscript = ? WHERE id = ?;", [code, id], _sC, _errorHandler);
         
         this.transact(sqlArray);
     },
-    fetchUserScript: function (id, statementCallback, obj) {
+    fetchUserScriptFile: function (id, statementCallback, obj) {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableUserScripts+" WHERE id = ?;", [id], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableUserScriptFiles+" WHERE id = ?;", [id], statementCallback, _errorHandler);
         
         this.transact(sqlArray);
     },
-    removeUserScript: function (id, statementCallback, obj) {
+    removeUserScriptFile: function (id, statementCallback, obj) {
         
         _sC = statementCallback || function () { console.log("User script deleted."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "DELETE FROM "+this._dbTableUserScripts+" WHERE id = ?;", [id], _sC, _killTransaction);
+        sqlArray.push((obj===null?this:obj), "DELETE FROM "+this._dbTableUserScriptFiles+" WHERE id = ?;", [id], _sC, _killTransaction);
         
         this.transact(sqlArray);
     },
+    /**
+     *  ====================
+     *  User Script Metadata
+     *  ====================
+     */
     insertUserScriptMetadata: function (name, space, desc, includes, excludes, usid, disabled, statementCallback, obj) {
         
         _sC = statementCallback || function () { console.log("User script metadata inserted.") };
@@ -204,6 +214,11 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
+    /**
+     *  ==============
+     *  Global Exclude
+     *  ==============
+     */
     insertGlobalExclude: function (url, statementCallback, obj) {
         
         _sC = statementCallback || function () { console.log("Global exclude inserted."); };
@@ -250,6 +265,11 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
+    /**
+     *  ========================
+     *  Enable/Disable KitScript
+     *  ========================
+     */
     isKitScriptEnabled: function (statementCallback, obj) {
         
         sqlArray = new SQLStatementsArray();
