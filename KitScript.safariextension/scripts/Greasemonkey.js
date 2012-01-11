@@ -301,9 +301,31 @@ var KSGreasemonkeyMetadata = Class.create({
     }
 });
 
-//
-// Greasemonkey
-//
+
+
+
+
+/**
+ *  ================
+ *  Greasemonkey API
+ *  ================
+ */
+
+
+
+
+
+var KSGGreasemonkeyAPI = Class.create({
+    
+    initialize: function () {
+        
+        
+    }
+});
+
+
+
+
 
 /**
  *  @param string name
