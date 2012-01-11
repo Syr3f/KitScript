@@ -48,7 +48,7 @@ jQuery(document).ready(function ($) {
     ks.declareEnabled();
     
     // Init main panel content
-    ks.mainPanel.contentManager.transitContent('#userscript-manager');
+    ks.mainPanel.contentManager.initPanel();
     
     // Convert Markdowns to HTML
     ks.mainPanel.aboutProjectForm.convertMdTxt();

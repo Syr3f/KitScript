@@ -162,6 +162,11 @@ var KSContentManager = Class.create(_Utils, {
         
         this._setDocumentTitle(_ttl);
     },
+    initPanel: function () {
+        
+        this.transitContent('userscript-manager');
+        ks.mainPanel.userScriptsManagerForm.drawTable();
+    },
     /*
     popAlert: function (strMsg) {
         
@@ -238,22 +243,69 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         };
         
         $super(this._formIdObj);
+        
+        this._tableId = this._formIdObj.formBaseId+'-list';
     },
     drawTable: function () {
         
+        var _sC1 = function (trsct,rs) {
+            
+            var _this = trsct.objInstance;
+            
+            var _html = "";
+            
+            if (rs.rows.length > 0) {
+                
+                for (var i=0; i<rs.rows.length; i++) {
+                    
+                    var _row = rs.rows.item(i);
+                    
+                    _html += '<tr id="ks-us-'+_row['id']+'">\n';
+                    
+                        _html += '<td><h3>'+_row['name']+'</h3><span>'+_row['description']+'</span></td>';
+                        _html += '<td><a href="#ks-usm-btn-settings-'+_row['id']+'" class="btn small primary">Settings</a></td>';
+                        _html += '<td><a href="#ks-usm-btn-disable-'+_row['id']+'" class="btn small info">Disable</a></td>';
+                        _html += '<td><a href="#ks-usm-btn-remove-'+_row['id']+'" class="btn small danger">Remove</a></td>\n';
+                    
+                    _html += '</tr>\n';
+                }
+            } else {
+                
+                _html += '<tr>\n';
+                
+                    _html += '<td><h3>No user scripts installed.</h3></td>';
+                
+                _html += '</tr>\n';
+            }
+            
+            _this.$('#'+_this._tableId+' tbody').html(_html);
+        }
+        
+        this.$('#'+this._tableId+' tbody').empty();
+        
+        db.fetchAllUserScriptsMetadata(0,25,_sC1,this);
+    },
+    openUserScriptSettings: function (btnId) {
+        
+        var _usid = this._extractId(btnId);
+        
         
     },
-    openUserScriptSettings: function (id) {
+    disableUserScript: function (btnId) {
+        
+        var _usid = this._extractId(btnId);
         
         
     },
-    disableUserScript: function (id) {
+    deleteUserScript: function (btnId) {
+        
+        var _usid = this._extractId(btnId);
         
         
     },
-    deleteUserScript: function (id) {
+    _extractId: function (btnId) {
         
-        
+        return btnId.substr(btnId.lastIndexOf('-')+1,btnId.length);
     },
     showWarningAlert: function (strMsg) {
         
@@ -380,6 +432,8 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
                     _this2.transitContent('#userscript-manager');
                     
                     ks.mainPanel.userScriptsManagerForm.showSuccessAlert("The user script has been added.");
+                    
+                    ks.mainPanel.userScriptsManagerForm.drawTable();
                 }
                 
                 db.insertUserScriptMetadata(_this._fname, _this._fspace, _this._escQuot(_this._fdesc), _this._fincludes, _this._fexcludes, parseInt(_row[_this._liria]), 0, _sC2, _this);

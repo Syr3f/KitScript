@@ -21,6 +21,7 @@ jQuery(document).ready(function ($) {
     
     var _btnsSelectors = ['#ks-topmenu * a',
                             'ul.ks-vertmenu * a',
+                            '#ks-usm-list * a',
                             '#ks-gs-form * a',
                             '#ks-aus-form * a',
                             '#ks-alert-modal * a'
@@ -39,6 +40,17 @@ jQuery(document).ready(function ($) {
                 break;
             case '#disable-ks':
                 ks.setDisable();
+                break;
+            
+            // User Script Manager
+            case '#ks-usm-btn-settings':
+                ks.mainPanel.userScriptsManagerForm.openUserScriptSettings(_req);
+                break;
+            case '#ks-usm-btn-disable':
+                ks.mainPanel.userScriptsManagerForm.disableUserScript(_req);
+                break;
+            case '#ks-usm-btn-delete':
+                ks.mainPanel.userScriptsManagerForm.deleteUserScript(_req);
                 break;
             
             // Global Settings Buttons
@@ -72,20 +84,3 @@ jQuery(document).ready(function ($) {
     });
 });
 
-
-/*
-
-<tr id="us-{{us_id}}">
-<td><h3>{{us_name}}</h3> <span>{{us_desc}}</span></td>
-<td>
-<button type="button" onclick="ks.mainPanel.managePanel.openUserScriptSettings({{us_id}})" class="btn">Settings</button>
-</td>
-<td>
-<button type="button" onclick="ks.mainPanel.managePanel.disableUserScript({{us_id}})" class="btn">Disable</button>
-</td>
-<td>
-<button type="button" onclick="ks.mainPanel.managePanel.deleteUserScript({{us_id}})" class="btn">Delete</button>
-</td>
-</tr>
-
-*/
