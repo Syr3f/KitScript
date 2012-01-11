@@ -128,11 +128,27 @@ var KSMainPanel = Class.create(KSBase, {
         this.contentManager = null;
         this.globalSettingsForm = null;
         
+        this._alertModalId = 'ks-alert-modal';
+        
         $super();
     },
     openPage: function ($super) {
         
         $super(this._pageName);
+    },
+    popAlert: function (strMsg) {
+        
+        this.$('#'+this._alertModalId+' > h2').text(strMsg);
+        
+        this.showAlert();
+    },
+    showAlert: function () {
+        
+        this.$('#'+this._alertModalId).modal('show');
+    },
+    hideAlert: function () {
+        
+        this.$('#'+this._alertModalId).modal('hide');
     }
 });
 
@@ -177,7 +193,33 @@ var KSNewUserScriptForm = Class.create(KSUtils, {
         
         var _script = this.$('#'+this._textareaId).val();
         
+        try {
+            
+            this.gm.loadScript(_script);
+            
+            var _rec = this._getRecordValues();
+            
+            this.storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_script);
+        } catch (e) {
+            
+            if (e.getErrorId() == 101) {
+                
+                ks.mainPanel.popAlert(e.getMessage());
+            }
+        }
+    },
+    _getRecordValues: function () {
         
+        var _name = this.gm.getName();
+        var _desc = this.gm.getDescription();
+        var _incs = this.gm.getIncludes();
+        var _excs = this.gm.getExcludes();
+        
+        return [_name,_desc,_incs.join(','),_excs.join(',')];
+    },
+    storeUserScript: function (name, desc, excludes, includes, code) {
+        
+        this.db.insertUserScript(name, desc, excludes, includes, code, 0);
     }
 });
 
