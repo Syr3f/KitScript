@@ -449,7 +449,10 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
 
 
 
-var KSAboutKitScriptForm = Class.create(KSContentManager, {
+/**
+ *  KSAboutProjectForm (KitScript About Project Form Class)
+ */
+var KSAboutProjectForm = Class.create(KSContentManager, {
     
     initialize: function ($super) {
         
@@ -472,6 +475,13 @@ var KSAboutKitScriptForm = Class.create(KSContentManager, {
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
+    },
+    convertMdTxt: function () {
+        
+        var _txt = this.$('#ks-abt-md-txt').text();
+        var _html = this.md.toHTML(_txt);
+        
+        this.$('#ks-abt-html-txt').html(_html);
     }
 });
 
@@ -499,7 +509,7 @@ var KitScript = Class.create(_Utils, {
         this.mainPanel.globalSettingsForm = new KSGlobalSettingsForm();
         this.mainPanel.newUserScriptForm = new KSNewUserScriptForm();
         this.mainPanel.userScriptSettingsForm = new KSUserScriptSettingsForm();
-        this.mainPanel.aboutForm = new KSAboutKitScriptForm();
+        this.mainPanel.aboutProjectForm = new KSAboutProjectForm();
         
         try {
             
