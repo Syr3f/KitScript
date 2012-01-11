@@ -26,11 +26,19 @@ var KSUtils = Class.create({
         this.db = new KSStorage();
         this.gm = new KSGMUS();
         this.$ = jQuery;
+        
+        try {
+            
+            this.db.connect();
+        } catch (e) {
+            
+            this.log(e.getMessage());
+        }
     },
     /**
      *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
      */
-    setVerboseLevel: function (verboseLevel) {
+    setVerbosityLevel: function (verboseLevel) {
          
         this._vl = verboseLevel;
     },
@@ -251,12 +259,12 @@ var KSContentManager = Class.create(KSUtils, {
     },
     hideAlertMsg: function (_ab) {
         
-        var _fH = "function () {";
-        _fH += "jQuery('"+_ab+"').fadeOut('slow');";
-        _fH += "this.$('"+_ab+"').addClass('hide');";
-        _fH += "}";
+        var _sC = "function () {";
+        _sC += "jQuery('"+_ab+"').fadeOut('slow');";
+        _sC += "jQuery('"+_ab+"').addClass('hide');";
+        _sC += "}";
         
-        setTimeout(10000,_fH);
+        setTimeout(10000,_sC);
     }
 });
 
@@ -379,33 +387,60 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             this.gm.loadScript(_script);
             
-            var _rec = this._getRecordValues();
+            var _rec = this._getHeaderValues();
             
-            this.storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_script);
+            this._storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_script);
         } catch (e) {
             
-            if (e.getErrorId() == 101) {
-                
-                //ks.mainPanel.popAlert(e.getMessage());
-                
-                //alert(e.getMessage());
-                
-                this.showErrorAlert(e.getMessage());
-            }
+            this.showErrorAlert(e.getMessage());
         }
     },
-    _getRecordValues: function () {
+    _getHeaderValues: function () {
         
         var _name = this.gm.getName();
+        //alert(_name);
         var _desc = this.gm.getDescription();
+        //alert(_desc);
+        var _space = this.gm.getNamespace();
+        //alert(_space);        
         var _incs = this.gm.getIncludes();
+        //alert(_incs.join(','));
         var _excs = this.gm.getExcludes();
+        //alert(_excs.join(','));
         
-        return [_name,_desc,_incs.join(','),_excs.join(',')];
+        return [_name,_space,_desc,_incs.join(','),_excs.join(',')];
     },
-    storeUserScript: function (name, desc, excludes, includes, code) {
+    _storeUserScript: function (name, space, desc, excludes, includes, code) {
         
-        this.db.insertUserScript(name, desc, excludes, includes, code, 0);
+        this.db.insertUserScript(KSSHF_blobize(code));
+        
+        var _sC1 = function (trsct,rs) {
+            
+            var _this = trsct.objInstance;
+            
+            if (rs.rows.length > 0) {
+                
+                var _row = rs.rows.item(0);
+                
+                var _sC2 = function (trsct,rs) {
+                    
+                    var _this = trsct.objInstance;
+                    
+                    _this.showSuccessAlert("The user script has been stored.");
+                }
+                
+                _this.db.insertUserScriptMetadata(this._escQuot(name), this._escQuot(space), this._escQuot(desc), this._escQuot(excludes), this._escQuot(includes), _row['LastRowId'], 0, _sC2, _this);
+            } else {
+                
+                _this.showErrorAlert("The user script couldn't be stored.");
+            }
+        }
+        
+        this.db.getLastInsertRowId(_sC1, this);
+    },
+    _escQuot: function (str) {
+        
+        return str.replace("'","\'","gm");
     },
     showWarningAlert: function (strMsg) {
         
@@ -415,7 +450,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
     },
-    showSuccess: function (strMsg) {
+    showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
@@ -500,16 +535,6 @@ var KitScript = Class.create(KSUtils, {
         this.mainPanel.newUserScriptForm = new KSNewUserScriptForm();
         this.mainPanel.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainPanel.aboutForm = new KSAboutKitScriptForm();
-        
-        try {
-            
-            this.db.connect();
-        } catch (e) {
-            
-            this.log(e.getMessage());
-        }
-        
-        this.setVerboseLevel(1);
     },
     isEnabled: function () {
         
@@ -517,21 +542,21 @@ var KitScript = Class.create(KSUtils, {
     },
     setEnable: function () {
         
-        _fH = function (transaction, resultSet) {
+        _sC = function (transaction, resultSet) {
             
             jQuery('#toggle-enable-dropdown').text("KitScript is Enabled!");
         };
         
         if (!this.isEnabled()) {
             
-            this.db.setKitScriptEnabled(_fH);
+            this.db.setKitScriptEnabled(_sC);
             this._isEnabled = true;
             //this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
         }
     },
     setDisable: function () {
         
-        _fH = function () {
+        _sC = function () {
             
             jQuery('#toggle-enable-dropdown').text("KitScript is Disabled!");
             
@@ -540,14 +565,14 @@ var KitScript = Class.create(KSUtils, {
         
         if (this.isEnabled()) {
             
-            this.db.setKitScriptDisabled(_fH);
+            this.db.setKitScriptDisabled(_sC);
             this._isEnabled = false;
             //this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
         }
     },
     declareEnabled: function () {
         
-        _fH = function (transaction, resultSet) {
+        _sC = function (transaction, resultSet) {
             
             _ks = transaction.objInstance;
             
@@ -570,7 +595,7 @@ var KitScript = Class.create(KSUtils, {
             
         }
         
-        this.db.isKitScriptEnabled(this, _fH);
+        this.db.isKitScriptEnabled(this, _sC);
     }
 });
 
