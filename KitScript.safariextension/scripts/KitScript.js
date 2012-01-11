@@ -128,27 +128,134 @@ var KSMainPanel = Class.create(KSBase, {
         this.contentManager = null;
         this.globalSettingsForm = null;
         
-        this._alertModalId = 'ks-alert-modal';
-        
         $super();
     },
     openPage: function ($super) {
         
         $super(this._pageName);
+    }
+});
+
+
+
+
+
+/**
+ *  KSContentManager (KitScript Content Manager for the Main Panel)
+ */
+var KSContentManager = Class.create(KSUtils, {
+    
+    initialize: function ($super) {
+        
+        $super();
+        
+        this.defaultContentId = 'userscript-manager';
+        
+        this._currentContentId = this.defaultContentId;
+        this._previousContentId = null;
+        
+        this.errorLevel = 1;
+        this.warnLevel = 2;
+        this.successLevel = 3;
+    },
+    _hideContent: function (contentId) {
+        
+        this.$('#'+contentId).css('display','none');
+    },
+    _showContent: function (contentId) {
+        
+        this.$('#'+contentId).css('display','block');
+    },
+    _setDocumentTitle: function (newTitle) {
+        
+        document.title = "KitScript | "+newTitle;
+    },
+    _cleanContentIdStr: function (contentId) {
+        
+        if (contentId.substr(0,1) == '#')
+            return contentId.substr(1,contentId.length);
+        else
+            return contentId;
+    },
+    getTitleByContentId: function (contentId) {
+        
+        _contentId = this._cleanContentIdStr(contentId);
+        
+        //for (var i=0; i < this.contents.length; i++) {
+        //    
+        //    if (this.contents[i].id == _contentId)
+        //        return this.contents[i].title;
+        //}
+        
+        for (var i=0; i<this.subclasses.length; i++) {
+            
+            if (this.subclasses[i]._formIdObj.id == _contentId)
+                return this.subclasses[i]._formIdObj.title;
+        }
+    },
+    initContent: function () {
+        
+        this._setDocumentTitle(this.getTitleByContentId(this.defaultContentId));
+    },
+    transitContent: function (newContentId) {
+        
+        _contentId = this._cleanContentIdStr(newContentId);
+        
+        this._previousContentId = this._currentContentId;
+        this._currentContentId = _contentId;
+        
+        this._hideContent(this._previousContentId);
+        this._showContent(this._currentContentId);
+        
+        this._setDocumentTitle(this.getTitleByContentId(_contentId));
     },
     popAlert: function (strMsg) {
         
         this.$('#'+this._alertModalId+' > h2').text(strMsg);
         
-        this.showAlert();
+        this.showModalAlert();
     },
-    showAlert: function () {
+    showModalAlert: function (alertModalId) {
         
-        this.$('#'+this._alertModalId).modal('show');
+        this.$('#'+alertModalId).modal('show');
     },
-    hideAlert: function () {
+    hideModalAlert: function (alertModalId) {
         
-        this.$('#'+this._alertModalId).modal('hide');
+        this.$('#'+alertModalId).modal('hide');
+    },
+    showAlertMsg: function (formBaseId,level,strMsg) {
+        
+        var _lvl = "";
+        
+        switch (level) {
+            case this.errorLevel:
+                _lvl = "-error";
+                break;
+            case this.warnLevel:
+                _lvl = "-warn";
+                break;
+            case this.successLevel:
+                _lvl = "-success";
+                break;
+        }
+        
+        var _ab = '#'+formBaseId+"-am"+_lvl;
+        
+        this.$(_ab).text(strMsg);
+        
+        this.$(_ab).removeClass('hide');
+        
+        this.hideAlertMsg(_ab);
+    },
+    hideAlertMsg: function (alertBoxId) {
+        
+        _fH = "function () {
+            
+            jQuery('"+_ab+"').fadeOut('slow');
+            this.$('"+_ab+"').addClass('hide');
+        }";
+        
+        setTimeout(10000,_fH);
     }
 });
 
@@ -156,23 +263,91 @@ var KSMainPanel = Class.create(KSBase, {
 
 
 
-var KSGlobalSettingsForm = Class.create(KSUtils, {
+/**
+ *  KSUserScriptsManagerForm (KitScript User Scripts Manager For Class)
+ */
+var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     
     initialize: function ($super) {
         
-        $super();
+        this._formIdObj = {
+            id: "userscript-manager",
+            title: "User Script Manager",
+            formBaseId: "ks-usm"
+        };
+        
+        $super(this._formIdObj);
     },
-    addExclude: function () {
+    openUserScriptSettings: function (id) {
+        
+        
+    },
+    disableUserScript: function (id) {
+        
+        
+    },
+    deleteUserScript: function (id) {
+        
+        
+    },
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showErrorAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
+    showSuccess: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
+    }
+});
+
+
+
+
+
+/**
+ *  KSGlobalSettingsForm (KitScript Global Settings Form Class)
+ */
+var KSGlobalSettingsForm = Class.create(KSContentManager, {
+    
+    initialize: function ($super) {
+        
+        this._formIdObj = {
+            
+            id: "global-settings",
+            title: "Global Settings",
+            formBaseId: "ks-gs"
+        };
+        
+        $super(this._formIdObj);
+    },
+    addGlobalExclude: function () {
         
         this.$('#ks-gs-add-modal').modal('show');
     },
-    editExclude: function () {
+    editGlobalExclude: function () {
         
         
     },
-    removeExclude: function () {
+    removeGlobalExclude: function () {
         
         
+    },
+    showAlertMsg: function (alertBoxId,strMsg) {
+        
+        this.$('#'+alertBoxId).text(strMsg)
+    },
+    hideAlertMsg: function (alertId) {
+        
+        _fH = "function () {
+            
+            jQuery('"++"').fadeOut('slow');
+        }";
+        
+        setTimeout(10000,);
     }
 });
 
@@ -180,14 +355,19 @@ var KSGlobalSettingsForm = Class.create(KSUtils, {
 
 
 
-var KSNewUserScriptForm = Class.create(KSUtils, {
+var KSNewUserScriptForm = Class.create(KSContentManager, {
     
     initialize: function ($super) {
         
-        $super();
+        this._formIdObj = {
+            id: "new-userscript",
+            title: "User Script Editor",
+            formBaseId: "ks-aus"
+        };
         
-        this._formId = 'ks-aus-form';
-        this._textareaId = 'ks-aus-script';
+        $super(this._formIdObj);
+        
+        this._textareaId = this._formIdObj.formBaseId+'-script';
     },
     addUserScript: function () {
         
@@ -220,131 +400,55 @@ var KSNewUserScriptForm = Class.create(KSUtils, {
     storeUserScript: function (name, desc, excludes, includes, code) {
         
         this.db.insertUserScript(name, desc, excludes, includes, code, 0);
-    }
-});
-
-
-
-
-
-var KSUserScriptsManagerForm = Class.create(KSUtils, {
-    
-    initialize: function ($super) {
-        
-        $super();
     },
-    openUserScriptSettings: function (id) {
+    showAlertMsg: function (alertBoxId,strMsg) {
         
-        
+        this.$('#'+alertBoxId).text(strMsg)
     },
-    disableUserScript: function (id) {
+    hideAlertMsg: function (alertId) {
         
-        
-    },
-    deleteUserScript: function (id) {
-        
-        
-    }
-});
-
-
-
-
-
-var KSUserScriptSettingsForm = Class.create(KSUtils, {
-    
-    initialize: function ($super) {
-        
-        $super();
-    }
-});
-
-
-
-
-/**
- *  KSContentManager (KitScript Content Manager for the Main Panel)
- */
-var KSContentManager = Class.create(KSUtils, {
-    
-    initialize: function ($super) {
-        
-        $super();
-        
-        this.contents = [
-            {
-                id: "userscript-manager",
-                title: "User Script Manager"
-            },
-            {
-                id: "global-settings",
-                title: "Global Settings"
-            },
-            {
-                id: "new-userscript",
-                title: "User Script Editor"
-            },
-            {
-                id: "about",
-                title: "About KitScript"
-            }
-        ];
-        
-        this.defaultContentId = this.contents[0].id;
-        
-        this._currentContentId = this.defaultContentId;
-        this._previousContentId = null;
-        
-        
-        this.globalSettingsForm = new KSGlobalSettingsForm();
-        this.newUserScriptForm = new KSNewUserScriptForm();
-        this.userScriptsManager = new KSUserScriptsManagerForm();
-        this.userScriptSettingsForm = new KSUserScriptSettingsForm();
-    },
-    _hideContent: function (contentId) {
-        
-        this.$('#'+contentId).css('display','none');
-    },
-    _showContent: function (contentId) {
-        
-        this.$('#'+contentId).css('display','block');
-    },
-    _setDocumentTitle: function (newTitle) {
-        
-        document.title = "KitScript | "+newTitle;
-    },
-    _cleanContentIdStr: function (contentId) {
-        
-        if (contentId.substr(0,1) == '#')
-            return contentId.substr(1,contentId.length);
-        else
-            return contentId;
-    },
-    getTitleByContentId: function (contentId) {
-        
-        _contentId = this._cleanContentIdStr(contentId);
-        
-        for (var i=0; i < this.contents.length; i++) {
+        _fH = "function () {
             
-            if (this.contents[i].id == _contentId)
-                return this.contents[i].title;
-        }
-    },
-    initContent: function () {
+            jQuery('"++"').fadeOut('slow');
+        }";
         
-        this._setDocumentTitle(this.getTitleByContentId(this.defaultContentId));
-    },
-    transitContent: function (newContentId) {
+        setTimeout(10000,);
+    }
+});
+
+
+
+
+
+var KSUserScriptSettingsForm = Class.create(KSContentManager, {
+    
+    initialize: function ($super) {
         
-        _contentId = this._cleanContentIdStr(newContentId);
+        this._formIdObj = {
+            id: "userscript-settings",
+            title: "User Script Settings",
+            formBaseId: "ks-uss"
+        };
         
-        this._previousContentId = this._currentContentId;
-        this._currentContentId = _contentId;
+        $super(this._formIdObj);
+    }
+});
+
+
+
+
+
+var KSAboutKitScriptForm = Class.create(KSContentManager, {
+    
+    initialize: function ($super) {
         
-        this._hideContent(this._previousContentId);
-        this._showContent(this._currentContentId);
+        this._formIdObj = {
+            id: "about",
+            title: "About KitScript",
+            formBaseId: "ks-abt"
+        };
         
-        this._setDocumentTitle(this.getTitleByContentId(_contentId));
+        $super(this._formIdObj);
     }
 });
 
