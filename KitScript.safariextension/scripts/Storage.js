@@ -16,7 +16,9 @@
 
 var SQLStatementsArray = Class.create(_Utils, {
     
-    initialize: function () {
+    initialize: function ($super) {
+        
+        $super();
         
         this._sqlStmntsArray = new Array();
     },
@@ -59,7 +61,9 @@ var StorageException = Class.create({
 
 var ResultSet = Class.create(_Utils, {
     
-    initialize: function (resultSet) {
+    initialize: function ($super, resultSet) {
+        
+        $super();
         
         this._resultSet = resultSet;
     },
@@ -96,7 +100,9 @@ var ResultSet = Class.create(_Utils, {
 
 var Storage = Class.create(_Utils, {
     
-    initialize: function (dbName, dbVersion, dbDisplayName, dbSize) {
+    initialize: function ($super, dbName, dbVersion, dbDisplayName, dbSize) {
+        
+        $super();
         
         this._lastResultSet = null;
         this._isSuccess = false;
