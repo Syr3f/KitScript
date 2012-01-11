@@ -480,6 +480,9 @@ var KitScript = Class.create(_Utils, {
         
         this._isEnabled = true;
         
+        this.db = new KSStorage();
+        this.gm = new KSGreasemonkeyMetadata();
+        
         this.mainPanel = new KSMainPanel();
         this.mainPanel.contentManager = new KSContentManager();
         this.mainPanel.userScriptsManagerForm = new KSUserScriptsManagerForm();
