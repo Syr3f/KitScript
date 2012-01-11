@@ -3,7 +3,7 @@
  *
  *  Global.js - Javascript file containing initial methods & function calls.
  *
- *  @author Seraf Dos Santos
+ *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
  *  @license MIT License
  *  @version 0.1
@@ -20,10 +20,11 @@ jQuery.noConflict();
 ks = new KitScript();
 
 // Debug Verbosity: 0=Silenced,1=Console,2=BrowserAlert
-ks.setVerbosityLevel(0);
+ks.setVerbosityLevel(1);
 
 // Create DB if not created 
 if (!ks.db.isDbExistant())
     ks.db.createTables();
 
+// Declare on UI if Enabled or Disabled
 ks.declareEnabled();

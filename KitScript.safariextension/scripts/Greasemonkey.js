@@ -5,7 +5,7 @@
  *  (by Prototype.js) used globally in the extension & implementing core
  *  Greasemonkey API.
  *
- *  @author Seraf Dos Santos
+ *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
  *  @license MIT License
  *  @version 0.1

@@ -4,7 +4,7 @@
  *  KitScriptStorage.js - Javascript file containing the main storage class
  *  (by Prototype.js) used globally in the extension.
  *
- *  @author Seraf Dos Santos
+ *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
  *  @license MIT License
  *  @version 0.1
