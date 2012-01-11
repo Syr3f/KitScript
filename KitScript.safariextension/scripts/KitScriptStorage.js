@@ -77,7 +77,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT name FROM sqlite_master WHERE type=? AND name=?;", ['table',this._dbTableUserScriptsMetadata], _sC, _errorHandler);
+        sqlArray.push(this, "SELECT name FROM sqlite_master WHERE type=? AND name=?;", ['table',this._dbTableUserScriptsMetadata], _sC, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -89,10 +89,10 @@ var KSStorage = Class.create(Storage, {
             
             sqlArray = new SQLStatementsArray();
             
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', [], _sC, _errorHandler);
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptsMetadata+';', [], _sC, _errorHandler);
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableGlobalExcludes+';', [], _sC, _errorHandler);
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableKitScript+';', [], _sC, _errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', [], _sC, KSSFH_errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptsMetadata+';', [], _sC, KSSFH_errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableGlobalExcludes+';', [], _sC, KSSFH_errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableKitScript+';', [], _sC, KSSFH_errorHandler);
             
             this.transact(sqlArray);
         }
@@ -102,11 +102,11 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', [], _sC1, _errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NOT NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _sC1, _errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _sC1, _errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], _sC1, _errorHandler);
-        sqlArray.push(this, "INSERT INTO "+this._dbTableKitScript+" (enabled) VALUES (1);", [], _sC2, _errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', [], _sC1, KSSFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NOT NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _sC1, KSSFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _sC1, KSSFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], _sC1, KSSFH_errorHandler);
+        sqlArray.push(this, "INSERT INTO "+this._dbTableKitScript+" (enabled) VALUES (1);", [], _sC2, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -121,7 +121,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "INSERT INTO "+this._dbTableUserScriptFiles+" (userscript) VALUES (?);", [blob], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "INSERT INTO "+this._dbTableUserScriptFiles+" (userscript) VALUES (?);", [blob], _sC, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -131,7 +131,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableUserScriptFiles+" SET userscript = ? WHERE id = ?;", [code, id], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableUserScriptFiles+" SET userscript = ? WHERE id = ?;", [code, id], _sC, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -139,7 +139,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableUserScriptFiles+" WHERE id = ?;", [id], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableUserScriptFiles+" WHERE id = ?;", [id], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -164,7 +164,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "INSERT INTO "+this._dbTableUserScriptsMetadata+" (name, namespace, description, includes, excludes, userscript_id, disabled) VALUES (?, ?, ?, ?, ?, ?, ?);", [name, space, desc, includes, excludes, usid, disabled], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "INSERT INTO "+this._dbTableUserScriptsMetadata+" (name, namespace, description, includes, excludes, userscript_id, disabled) VALUES (?, ?, ?, ?, ?, ?, ?);", [name, space, desc, includes, excludes, usid, disabled], _sC, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -174,7 +174,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableUserScriptsMetadata+" SET name = ?, namespace = ?, description = ?, includes = ?, excludes = ?, disabled = ? WHERE id = ?;", [name, space, desc, includes, excludes, disabled, id], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableUserScriptsMetadata+" SET name = ?, namespace = ?, description = ?, includes = ?, excludes = ?, disabled = ? WHERE id = ?;", [name, space, desc, includes, excludes, disabled, id], _sC, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -182,7 +182,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -190,7 +190,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableUserScriptsMetadata+" LIMIT ?, ?;", [offset, limit], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableUserScriptsMetadata+" LIMIT ?, ?;", [offset, limit], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -210,7 +210,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableUserScriptsMetadata+" SET disabled = 1 WHERE id = ?;", [id], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableUserScriptsMetadata+" SET disabled = 1 WHERE id = ?;", [id], _sC, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -225,7 +225,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "INSERT INTO "+this._dbTableGlobalExcludes+" (url) VALUES (?);", [url], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "INSERT INTO "+this._dbTableGlobalExcludes+" (url) VALUES (?);", [url], _sC, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -235,7 +235,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableGlobalExcludes+" SET url = ? WHERE id = ?;", [url, id], _sC, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableGlobalExcludes+" SET url = ? WHERE id = ?;", [url, id], _sC, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -243,7 +243,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableGlobalExcludes+" WHERE id = ?;", [id], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableGlobalExcludes+" WHERE id = ?;", [id], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -251,7 +251,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableGlobalExcludes+" LIMIT ?, ?;", [offset, limit], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT * FROM "+this._dbTableGlobalExcludes+" LIMIT ?, ?;", [offset, limit], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -274,7 +274,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT enabled FROM "+this._dbTableKitScript+" WHERE id = 1;", [], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT enabled FROM "+this._dbTableKitScript+" WHERE id = 1;", [], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -282,7 +282,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableKitScript+" SET enabled = 1 WHERE id = 1;", [], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableKitScript+" SET enabled = 1 WHERE id = 1;", [], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -290,7 +290,7 @@ var KSStorage = Class.create(Storage, {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableKitScript+" SET enabled = 0 WHERE id = 1;", [], statementCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "UPDATE "+this._dbTableKitScript+" SET enabled = 0 WHERE id = 1;", [], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     }
