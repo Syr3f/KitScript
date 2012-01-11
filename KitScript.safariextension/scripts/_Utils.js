@@ -32,11 +32,11 @@ var _Utils = Class.create({
      */
     setVerbosityLevel: function (verbosityLevel) {
 
-        this.vl = verbosityLevel;
+        _Utils.vl = verbosityLevel;
     },
     log: function (msg) {
 
-        switch (this.vl) {
+        switch (_Utils.vl) {
 
             case 2:
                 alert(msg);
