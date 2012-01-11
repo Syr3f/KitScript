@@ -14,40 +14,41 @@
 
 
 
- /**
-  *  KSUtils (KitScript Utilitary Class)
-  */
- var KSUtils = Class.create({
+/**
+ *  KSUtils (KitScript Utilitary Class)
+ */
+var KSUtils = Class.create({
 
-     initialize: function () {
-
-         this._vl = 0;
-         this.db = new KSStorage();
-         this.gm = new KSGMUS();
-         this.$ = jQuery;
-     },
-     /**
-      *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
-      */
-     setVerboseLevel: function (verboseLevel) {
-
-         this._vl = verboseLevel;
-     },
-     log: function (msg) {
-
-         switch (this._vl) {
-
-             case 2:
-                 alert(msg);
-             case 1:
-                 console.log(msg);
-                 break;
-             case 0:
-             default:
-                 // Silence
-         }
-     }
- });
+    initialize: function () {
+        
+        this._vl = 0;
+        
+        this.db = new KSStorage();
+        this.gm = new KSGMUS();
+        this.$ = jQuery;
+    },
+    /**
+     *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
+     */
+    setVerboseLevel: function (verboseLevel) {
+         
+        this._vl = verboseLevel;
+    },
+    log: function (msg) {
+        
+        switch (this._vl) {
+            
+            case 2:
+                alert(msg);
+            case 1:
+                console.log(msg);
+                break;
+            case 0:
+            default:
+                // Silence
+        }
+    }
+});
 
 
 
@@ -145,9 +146,12 @@ var KSMainPanel = Class.create(KSBase, {
  */
 var KSContentManager = Class.create(KSUtils, {
     
-    initialize: function ($super) {
+    regisForms: [],
+    initialize: function ($super,formIdObj) {
         
         $super();
+        
+        this.regisForms.push(formIdObj);
         
         this.defaultContentId = 'userscript-manager';
         
@@ -181,16 +185,10 @@ var KSContentManager = Class.create(KSUtils, {
         
         _contentId = this._cleanContentIdStr(contentId);
         
-        //for (var i=0; i < this.contents.length; i++) {
-        //    
-        //    if (this.contents[i].id == _contentId)
-        //        return this.contents[i].title;
-        //}
-        
-        for (var i=0; i<this.subclasses.length; i++) {
+        for (var i=1; i<this.regisForms.length; i++) {
             
-            if (this.subclasses[i]._formIdObj.id == _contentId)
-                return this.subclasses[i]._formIdObj.title;
+            if (this.regisForms[i].id == _contentId)
+                return this.regisForms[i].title;
         }
     },
     initContent: function () {
@@ -257,6 +255,8 @@ var KSContentManager = Class.create(KSUtils, {
         setTimeout(10000,_fH);
     }
 });
+
+KSContentManager.regisForms = [];
 
 
 
@@ -347,7 +347,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         
         this._formIdObj = {
             id: "new-userscript",
-            title: "User Script Editor",
+            title: "New User Script",
             formBaseId: "ks-aus"
         };
         
@@ -439,7 +439,6 @@ var KitScript = Class.create(KSUtils, {
         
         this.mainPanel = new KSMainPanel();
         this.mainPanel.contentManager = new KSContentManager();
-        
         this.mainPanel.userScriptsManagerForm = new KSUserScriptsManagerForm();
         this.mainPanel.globalSettingsForm = new KSGlobalSettingsForm();
         this.mainPanel.newUserScriptForm = new KSNewUserScriptForm();
