@@ -10,7 +10,7 @@
  *  @version 0.1
  */
 
-"use strict";
+//"use strict";
 
 
 
@@ -43,7 +43,7 @@ var KSStorage = Class.create(Storage, {
             _db = $super();
         } catch (e) {
             
-            console.log(e.getMessage());
+            throw new StorageException(e.getMessage());
         }
         
         this._verifyDb();
@@ -64,15 +64,10 @@ var KSStorage = Class.create(Storage, {
                 
                 var _row = resultSet.rows.item(0);
                 
-                if (_row['name'] == _db._dbTableUserScriptsMetadata) {
-                    
+                if (_row['name'] == _db._dbTableUserScriptsMetadata)
                     _db._isDbExistant = true;
-                } else {
-                    
-                    //_db.createTables();
-                    
+                else
                     _db._isDbExistant = false;
-                }
             }
         }
         
