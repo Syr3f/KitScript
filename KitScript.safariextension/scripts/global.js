@@ -43,5 +43,8 @@ jQuery(document).ready(function ($) {
     //    var _State = ks.nav.getState();
     //    ks.nav.log(_State.data, _State.title, _State.url);
     //});
+    
+    // Convert Markdowns to HTML
+    ks.mainPanel.aboutProjectForm.convertMdTxt();
 });
 
