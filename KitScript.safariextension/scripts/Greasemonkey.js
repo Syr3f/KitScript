@@ -153,9 +153,9 @@ function GM_deleteValue(name) {
 
 /**
  *  @param string name
- *  @param mixed default Default result to be returned
+ *  @param mixed defaultVal Default result to be returned
  */
-function GM_getValue(name, default) {
+function GM_getValue(name, defaultVal) {
     
     
 }
