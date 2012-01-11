@@ -195,17 +195,18 @@ var Storage = Class.create(_Utils, {
         this.setSuccess(false);
         
         this._DB.transaction(function (transaction) {
+            "use strict";
             
-            eval("transaction.__proto__.objInstance = _sqls[0][0]");
+            eval("transaction.__proto__.objInstance = _sqls[0][0];");
             
             var _js = "";
             
-            for (var i = 0; i < _sqls.length; i++) {
+            for (var i=0; i<_sqls.length; i++) {
                 
                 _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
             }
             
-            transaction.objInstance.log(_js);
+            //transaction.objInstance.log(_js);
             
             eval(_js);
         });
