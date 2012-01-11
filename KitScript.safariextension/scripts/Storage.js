@@ -4,7 +4,7 @@
  *  Storage.js - Javascript file containing storage classes (by Prototype.js)
  *  used globally in the extension.
  *
- *  @author Seraf Dos Santos
+ *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
  *  @license MIT License
  *  @version 0.1
@@ -14,19 +14,7 @@
 
 
 
-var DODEBUG = 1;
-
-var _l = function (str) {
-
-    if (DODEBUG)
-        console.log(str);
-}
-
-
-
-
-
-var SQLStatementsArray = Class.create({
+var SQLStatementsArray = Class.create(KSUtils, {
     
     initialize: function () {
         
@@ -69,7 +57,7 @@ var StorageException = Class.create({
 
 
 
-var ResultSet = Class.create({
+var ResultSet = Class.create(KSUtils, {
     
     initialize: function (resultSet) {
         
@@ -106,7 +94,7 @@ var ResultSet = Class.create({
 
 
 
-var Storage = Class.create({
+var Storage = Class.create(_Utils, {
     
     initialize: function (dbName, dbVersion, dbDisplayName, dbSize) {
         
@@ -176,7 +164,7 @@ var Storage = Class.create({
                 _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
             }
             
-            _l(_js);
+            this.log(_js);
             
             eval(_js);
         });
@@ -197,11 +185,11 @@ var Storage = Class.create({
         
         return this._lastResultSet;
     },
-    getLastInsertRowId: function (fetchCallback, obj) {
+    getLastInsertRowId: function (aliasName, statementCallback, obj) {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj===null?this:obj), "SELECT last_insert_rowid() AS LastRowId;", [], fetchCallback, _errorHandler);
+        sqlArray.push((obj===null?this:obj), "SELECT last_insert_rowid() AS "+aliasName+";", [], statementCallback, KSSFH_errorHandler);
         
         this.transact(sqlArray);
     }
@@ -210,7 +198,7 @@ var Storage = Class.create({
 
 
 
-
+/*
 function _statementCallback(transaction, resultSet) {
     
     var _db = transaction.objInstance;
@@ -229,18 +217,20 @@ function _successHandler() {
     
     console.log('Successful statement!');
 }
+*/
 
-function _errorHandler(transaction, error) {
+function KSSFH_errorHandler(transaction, error) {
     
-    //var _db = transaction.objInstance;
+    var _db = transaction.objInstance;
     
-    alert('Oops.  Error was '+error.message+' (Code '+error.code+')');
+    _db.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
     
-    //_db.setSuccess(false);
+    _db.setSuccess(false);
 }
 
+/*
 function _killTransaction(transaction, error) {
     
     return true;
 }
-
+*/
