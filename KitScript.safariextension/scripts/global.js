@@ -9,3 +9,4 @@ ks = new KitScript();
 if (!ks.db.isDbExistant())
     ks.db.createTables();
 
+ks.declareEnabled();
