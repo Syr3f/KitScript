@@ -9,13 +9,13 @@
 	<key>CFBundleDisplayName</key>
 	<string>KitScript</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.cyb3rca.kitScript</string>
+	<string>com.cyb3rca.safari.kitScript</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.1</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>0.1</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
