@@ -57,11 +57,11 @@ jQuery(document).ready(function ($) {
                 break;
             
             // Global Settings Buttons
-            case '#ks-gs-btn-add':
-                //ks.mainPanel.globalSettingsForm.addExclude();
+            case '#ks-gs-action-register':
+                ks.mainPanel.globalSettingsForm.registerExclude();
                 break;
-            case '#ks-gs-btn-edit':
-                //ks.mainPanel.globalSettingsForm.editExclude();
+            case '#ks-gs-action-update':
+                ks.mainPanel.globalSettingsForm.updateExclude();
                 break;
             case '#ks-gs-btn-remove':
                 ks.mainPanel.globalSettingsForm.removeExclude();
