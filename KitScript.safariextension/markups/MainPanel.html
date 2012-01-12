@@ -188,15 +188,15 @@
             
             <form id="ks-gs-form">
               <div class="span9 well">
-                <select class="medium span9" style="width:520px;" size="18" multiple>
+                <select id="ks-gs-list" class="medium span9" style="width:520px;" size="18" multiple>
                   <option value=""></option>
                 </select>
                 <span class="help-block">Enter the global exclusion URLs by clicking the "Add" button below. To edit or remove a URL, select it in the list above and then click the button below.</span>
               </div>
               <div class="span9 well">
-                <a class="btn small primary" href="#ks-gs-btn-add" data-controls-modal="ks-gs-add-modal" data-backdrop="true" data-keyboard="true">Add</a>
-                <a class="btn small success disabled" href="#ks-gs-btn-edit" data-controls-modal="ks-gs-edit-modal" data-backdrop="true" data-keyboard="true">Edit</a>
-                <a class="btn small danger disabled" href="#ks-gs-btn-remove">Remove</a>
+                <a class="btn small primary" href="#ks-gs-btn-add">Add</a><!--  data-controls-modal="ks-gs-add-modal" data-backdrop="true" data-keyboard="true" -->
+                <a class="btn small success disabled" href="#ks-gs-btn-edit" id="ks-gs-btn-edit">Edit</a><!-- data-controls-modal="ks-gs-edit-modal" data-backdrop="true" data-keyboard="true" -->
+                <a class="btn small danger disabled" href="#ks-gs-btn-remove" id="ks-gs-btn-remove">Remove</a>
               </div>
             </form>
             
@@ -205,11 +205,9 @@
                 <a href="#" class="close">&times;</a>
                 <h3>Add a Global Exclusion URL</h3>
               </header>
-              <div class="modal-body">
-                <form>
-                  <input class="span9" id="ks-gs-input-new" value="">
-                </form>
-              </div>
+              <form class="modal-body">
+                <input type="text" class="span9" id="ks-gs-input-new" value="" autofocus>
+              </form>
               <footer class="modal-footer">
                 <a href="#ks-gs-action-register" class="btn primary">Add</a>
               </footer>
@@ -220,11 +218,10 @@
                 <a href="#" class="close">&times;</a>
                 <h3>Edit a Global Exclusion URL</h3>
               </header>
-              <div class="modal-body">
-                <form>
-                  <input class="span9" id="ks-gs-input-edit" value="">
-                </form>
-              </div>
+              <form class="modal-body">
+                <input type="hidden" class="span9" id="ks-gs-edit-id" value="">
+                <input type="text" class="span9" id="ks-gs-input-edit-url" value="" autofocus>
+              </form>
               <footer class="modal-footer">
                 <a href="#ks-gs-action-update" class="btn primary">Update</a>
               </footer>

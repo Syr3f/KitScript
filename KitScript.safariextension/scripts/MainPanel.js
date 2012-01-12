@@ -23,6 +23,8 @@ jQuery(document).ready(function ($) {
                             'ul.ks-vertmenu * a',
                             '#ks-usm-list * a',
                             '#ks-gs-form * a',
+                            '#ks-gs-add-modal * a',
+                            '#ks-gs-edit-modal * a',
                             '#ks-aus-form * a',
                             '#ks-alert-modal * a'
                         ];
@@ -57,14 +59,20 @@ jQuery(document).ready(function ($) {
                 break;
             
             // Global Settings Buttons
+            case '#ks-gs-btn-add':
+                ks.mainPanel.globalSettingsForm.addGlobalExclude();
+                break;
+            case '#ks-gs-btn-edit':
+                ks.mainPanel.globalSettingsForm.editGlobalExclude();
+                break;
             case '#ks-gs-action-register':
-                ks.mainPanel.globalSettingsForm.registerExclude();
+                ks.mainPanel.globalSettingsForm.registerGlobalExclude();
                 break;
             case '#ks-gs-action-update':
-                ks.mainPanel.globalSettingsForm.updateExclude();
+                ks.mainPanel.globalSettingsForm.updateGlobalExclude();
                 break;
             case '#ks-gs-btn-remove':
-                ks.mainPanel.globalSettingsForm.removeExclude();
+                ks.mainPanel.globalSettingsForm.removeGlobalExclude();
                 break;
             
             // New User Script
@@ -82,6 +90,13 @@ jQuery(document).ready(function ($) {
             default:
                 ks.mainPanel.contentManager.transitContent(_req);
         }
+    });
+    
+    // Global Settings List Events
+    $("#ks-gs-list").change(function (evt) {
+        
+        $("#ks-gs-btn-edit").removeClass('disabled');
+        $("#ks-gs-btn-remove").removeClass('disabled');
     });
 });
 

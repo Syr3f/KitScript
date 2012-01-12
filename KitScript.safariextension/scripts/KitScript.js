@@ -165,7 +165,16 @@ var KSContentManager = Class.create(_Utils, {
     initPanel: function () {
         
         this.transitContent('userscript-manager');
+        
+        // User Scripts Manager
         ks.mainPanel.userScriptsManagerForm.drawTable();
+        
+        // Global Settings
+        ks.mainPanel.globalSettingsForm.emptyList();
+        ks.mainPanel.globalSettingsForm.fillList();
+        
+        // About
+        ks.mainPanel.aboutProjectForm.convertMdTxt();
     },
     /*
     popAlert: function (strMsg) {
@@ -340,18 +349,131 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         };
         
         $super(this._formIdObj);
+        
+        this._addModalId = this._formIdObj.formBaseId+'-add-modal';
+        this._editModalId = this._formIdObj.formBaseId+'-edit-modal';
+        
+        this._listId = this._formIdObj.formBaseId+'-list';
+        this._inNewId = this._formIdObj.formBaseId+'-input-new';
+        this._inEditId = this._formIdObj.formBaseId+'-input-edit-url';
+        this._editId = this._formIdObj.formBaseId+'-edit-id';
     },
     addGlobalExclude: function () {
         
-        this.$('#ks-gs-add-modal').modal('show');
+        this.$('#'+this._addModalId).modal({
+            keyboard: true,
+            backdrop: true,
+            show: true
+        });
+    },
+    registerGlobalExclude: function () {
+        
+        this.$('#'+this._addModalId).modal('hide');
+        
+        var _val = this.$('#'+this._inNewId).val();
+        
+        this.$('#'+this._inNewId).val("");
+        
+        if (_val.length > 0) {
+            
+            var _fn = function (trsct,rs) {
+                
+                var _this = trsct.objInstance;
+                
+                _this.emptyList();
+                _this.fillList();
+            }
+            
+            db.insertGlobalExclude(_val,_fn,this);
+        }
     },
     editGlobalExclude: function () {
         
+        if (this.$('#'+this._listId+' option:selected').val() !== null) {
+            
+            this.$('#'+this._editModalId).modal({
+                keyboard: true,
+                backdrop: true,
+                show: true
+            });
+            
+            var _id = this.$('#'+this._listId+' option:selected').val();
+            var _url = this.$('#'+this._listId+' option:selected').text();
+            
+            this.$('#'+this._editId).val(_id);
+            this.$('#'+this._inEditId).val(_url);
+        } else {
+            
+            this._a('Please select a URL to edit it.');
+        }
+    },
+    updateGlobalExclude: function () {
         
+        this.$('#'+this._editModalId).modal('hide');
+        
+        this.$("#ks-gs-btn-edit").addClass('disabled');
+        this.$("#ks-gs-btn-remove").addClass('disabled');
+        
+        var _id = this.$('#'+this._editId).val();
+        var _url = this.$('#'+this._inEditId).val();
+        
+        this.$('#'+this._editId).val("");
+        this.$('#'+this._inEditId).val("");
+        
+        if (_url.length > 0) {
+            
+            var _fn = function (trsct,rs) {
+                
+                var _this = trsct.objInstance;
+                
+                _this.emptyList();
+                _this.fillList();
+            }
+            
+            db.updateGlobalExclude(_id, _url,_fn,this);
+        }
     },
     removeGlobalExclude: function () {
         
+        this.$("#ks-gs-btn-edit").addClass('disabled');
+        this.$("#ks-gs-btn-remove").addClass('disabled');
         
+        var _id = this.$('#'+this._listId+' option:selected').val();
+        
+        var _fn = function (trsct,rs) {
+            
+            var _this = trsct.objInstance;
+            
+            _this.emptyList();
+            _this.fillList();
+        }
+        
+        db.deleteGlobalExclude(_id,_fn,this)
+    },
+    emptyList: function () {
+        
+        this.$('#'+this._listId).empty();
+    },
+    fillList: function () {
+        
+        var _fn = function (trsct,rs) {
+            
+            var _this = trsct.objInstance;
+            
+            if (rs.rows.length > 0) {
+                
+                for (var i=0; i<rs.rows.length; i++) {
+                    
+                    var _row = rs.rows.item(i);
+                    
+                    var _html = '<option value="'+_row['id']+'">'+_row['url']+'</option>';
+                    
+                    _this.$('#'+_this._listId).append(_html);
+                }
+            }
+        }
+        
+        db.fetchAllGlobalExcludes(0,1000,_fn,this);
     },
     showWarningAlert: function (strMsg) {
         
