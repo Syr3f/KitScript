@@ -50,7 +50,7 @@
 		<dict/>
 	</dict>
 	<key>Description</key>
-	<string>A Safari Extension for User Scripts.</string>
+	<string>A User Script Manager For Safari.</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>

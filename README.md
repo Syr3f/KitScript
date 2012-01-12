@@ -9,7 +9,7 @@
                                      |_|         
 ```
 
-## KitScript - Safari Extension For User Scripts
+## KitScript - A User Script Manager For Safari
 
 **KitScript** is an open source Safari Extension developed by Seraf Dos Santos and hosted on [GitHub](https://github.com/Syr3f/KitScript).
 
