@@ -64,7 +64,7 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>http://kitscript.cyb3r.ca/latest/manifest.plist</string>
+	<string>http://latest.kitscript.com/manifest.plist</string>
 	<key>Website</key>
 	<string>http://syr3f.github.com/KitScript</string>
 </dict>
