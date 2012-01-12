@@ -66,6 +66,6 @@
 	<key>Update Manifest URL</key>
 	<string>http://latest.kitscript.com/manifest.plist</string>
 	<key>Website</key>
-	<string>http://syr3f.github.com/KitScript</string>
+	<string>http://www.kitscript.com/</string>
 </dict>
 </plist>
