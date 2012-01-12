@@ -139,7 +139,7 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
-    removeUserScriptFile: function (id, statementCallback, obj) {
+    deleteUserScriptFile: function (id, statementCallback, obj) {
         
         _sC = statementCallback || function () { console.log("User script deleted."); };
         
@@ -190,7 +190,7 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
-    removeUserScriptMetadata: function (id, statementCallback, obj) {
+    deleteUserScriptMetadata: function (id, statementCallback, obj) {
         
         _sC = statementCallback || function () { console.log("User script metadata deleted."); };
         
@@ -251,7 +251,7 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
-    removeGlobalExclude: function (id, statementCallback, obj) {
+    deleteGlobalExclude: function (id, statementCallback, obj) {
         
         _sC = statementCallback || function () { console.log("Data deleted."); };
         
