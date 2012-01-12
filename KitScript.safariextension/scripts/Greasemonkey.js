@@ -66,7 +66,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
     
     /**
      *  ========================================================================
-     *  =========================== SUPPORTED IN v0.1 ==========================
+     *  === V === V === V === V === SUPPORTED IN v0.1 === V === V === V === V ==
      *  ========================================================================
      */
     
@@ -77,7 +77,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      *
      *  - The combination of namespace and name is the unique identifier for a Greasemonkey script.
      *
-     *  @returns string
+     *  @returns String
      */
     getName: function () {
         
@@ -96,7 +96,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      *
      *  - The combination of namespace and name is the unique identifier for a Greasemonkey script.
      *
-     *  @returns string
+     *  @returns String
      */
     getNamespace: function () {
         
@@ -113,7 +113,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
     /**
      *  @description string – KS Mandatory
      *
-     *  @returns string
+     *  @returns String
      */
     getDescription: function () {
         
@@ -213,7 +213,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      *  KS v0.1:
      *  - No auto-update implemented
      *
-     *  @returns string
+     *  @returns String
      */
     getVersion: function () {
         
@@ -241,7 +241,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
     /**
      *  @icon url
      *
-     *
+     *  @returns String
      */
     getIcon: function () {
         
@@ -252,7 +252,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
     /**
      *  @match pattern
      *
-     *
+     *  @returns Array
      */
     getMatches: function () {
         
@@ -270,7 +270,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
     /**
      *  @resource url
      *
-     *
+     *  @returns Array
      */
     getResources: function () {
         
@@ -289,6 +289,8 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      *  @run-at "document-end" | "document-start"
      *
      *  - Supports two values: document-end and document-start. 
+     *
+     *  @returns String
      */
     getRunAt: function () {
         
@@ -302,6 +304,8 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      *  @unwrap void
      *
      *  - This key is strongly recommended to only be used for debugging purposes.
+     *
+     *  @returns Boolean
      */
     hasUnwrap: function () {
         
@@ -333,7 +337,7 @@ var KSGreasemonkeyAPI = Class.create(_Utils, {
 /**
  *  ============================================================================
  *  ======================== Greasemonkey API Functions ========================
- *  ======================== Supported in Futur versions =======================
+ *  ======================== Supported In Futur Versions =======================
  *  ============================================================================
  */
 

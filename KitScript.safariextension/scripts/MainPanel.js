@@ -27,7 +27,7 @@ jQuery(document).ready(function ($) {
                             '#ks-alert-modal * a'
                         ];
     
-    //
+    // All Button Events of KitScript
     $(_btnsSelectors.join(',')).click(function (evt) {
         
         var _req = $(this).attr("href");
@@ -35,11 +35,10 @@ jQuery(document).ready(function ($) {
         switch (_req) {
             case '#null':
                 break;
-            case '#enable-ks':
-                ks.setEnable();
-                break;
-            case '#disable-ks':
-                ks.setDisable();
+            
+            // Alert Modal
+            case '#ks-alert-close':
+                //ks.mainPanel.hideAlert();
                 break;
             
             // User Script Manager
@@ -51,6 +50,10 @@ jQuery(document).ready(function ($) {
                 break;
             case '#ks-usm-btn-delete':
                 ks.mainPanel.userScriptsManagerForm.deleteUserScript(_req);
+                break;
+            
+            // User Script Settings
+            case '#':
                 break;
             
             // Global Settings Buttons
@@ -69,15 +72,13 @@ jQuery(document).ready(function ($) {
                 ks.mainPanel.newUserScriptForm.addUserScript();
                 break;
             
-            // User Script Settings
-            case '#':
+            // Toolbar & Menu Buttons
+            case '#enable-ks':
+                ks.setEnable();
                 break;
-            
-            // Alert Modal
-            case '#ks-alert-close':
-                //ks.mainPanel.hideAlert();
+            case '#disable-ks':
+                ks.setDisable();
                 break;
-            
             default:
                 ks.mainPanel.contentManager.transitContent(_req);
         }

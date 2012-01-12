@@ -18,7 +18,7 @@
 /**
  *  _Utils Class
  *
- *  Offers basic methods for child classes.
+ *  Offers basic methods & Objects for child classes.
  */
 var _Utils = Class.create({
 

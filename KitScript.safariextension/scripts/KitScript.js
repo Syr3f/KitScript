@@ -17,8 +17,8 @@
 
 
 /**
-*  KSBase (KitScript Base Object Class)
-*/
+ *  KSBase (KitScript Base Object Class)
+ */
 var KSBase = Class.create(_Utils, {
 
     initialize: function ($super) {
@@ -371,6 +371,9 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
 
 
 
+/**
+ *  KSNewUserScriptForm (KitScript New User Script Form Class)
+ */
 var KSNewUserScriptForm = Class.create(KSContentManager, {
     
     initialize: function ($super) {
@@ -475,6 +478,9 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
 
 
 
+/**
+ *  KSUserScriptSettingsForm (KitScript User Script Settings Form Class)
+ */
 var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     initialize: function ($super) {
@@ -660,5 +666,6 @@ function KSSEFH_ValidateHandler(event) {
 }
 
 safari.application.addEventListener("command", KSSEFH_CommandHandler, false);
+
 safari.application.addEventListener("validate", KSSEFH_ValidateHandler, false);
 

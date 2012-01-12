@@ -195,7 +195,7 @@ var Storage = Class.create(_Utils, {
         this.setSuccess(false);
         
         this._DB.transaction(function (transaction) {
-            "use strict";
+            //"use strict";
             
             eval("transaction.__proto__.objInstance = _sqls[0][0];");
             
@@ -205,8 +205,6 @@ var Storage = Class.create(_Utils, {
                 
                 _js += "transaction.executeSql('"+_sqls[i][1]+"', "+(_sqls[i][2] === null ? null : "new Array('"+_sqls[i][2].join("','")+"')")+", "+_sqls[i][3]+', '+_sqls[i][4]+');';
             }
-            
-            //transaction.objInstance.log(_js);
             
             eval(_js);
         });
@@ -249,11 +247,11 @@ var Storage = Class.create(_Utils, {
 
 function SFH_errorHandler(transaction, error) {
     
-    var _db = transaction.objInstance;
+    var _this = transaction.objInstance;
     
-    _db.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
+    _this.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
     
-    _db.setSuccess(false);
+    _this.setSuccess(false);
 }
 
 function SFH_killTransaction(transaction, error) {

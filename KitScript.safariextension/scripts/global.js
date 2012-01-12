@@ -15,22 +15,22 @@
 
 
 
-// Global KitScript variable
+// Global KitScript Root Variables
 ks = null, db = null;
 
-// Load on document ready
+// Run On Document Ready
 jQuery(document).ready(function ($) {
     
-    // Let $ be to prototype and ks.$ to jQuery within 
+    // Let $ Be To Prototype And ks.$ To jQuery 
     $.noConflict();
     
-    // ks KitScript root object
+    // ks KitScript Root Object
     ks = new KitScript();
     
-    // db Database root object
+    // db Database Root Object
     db = new KSStorage();
     
-    // Connect db
+    // Connect Db
     try {
         db.connect();
     } catch (e) {
@@ -40,17 +40,17 @@ jQuery(document).ready(function ($) {
     // Debug Verbosity: 0=Silenced,1=Console,2=BrowserAlert
     ks.setVerbosityLevel(1);
     
-    // Create DB if not created 
+    // Create DB If Not Created 
     if (!db.isDbExistant())
         db.createTables();
         
-    // Declare on UI if Enabled or Disabled
+    // Declare On UI If Enabled Or Disabled
     ks.declareEnabled();
     
-    // Init main panel content
+    // Init Main Panel Content
     ks.mainPanel.contentManager.initPanel();
     
-    // Convert Markdowns to HTML
+    // Convert Markdowns To HTML
     ks.mainPanel.aboutProjectForm.convertMdTxt();
 });
 
