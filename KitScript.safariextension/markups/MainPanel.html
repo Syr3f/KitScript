@@ -107,9 +107,9 @@
           <a href="#" class="close">&times;</a>
           <h3>KitScript Alert</h3>
         </header>
-        <content class="modal-body">
+        <section class="modal-body">
           <h2></h2>
-        </content>
+        </section>
         <footer class="modal-footer">
           <a href="#ks-alert-close" class="btn primary">Close</a>
         </footer>
@@ -122,11 +122,11 @@
 
       <!-- User Scripts Manager - DEFAULT PANEL -->
       <section class="content" id="userscript-manager">
-        <div class="page-header">
+        <header class="page-header">
           <h1>User Scripts Manager <small>Manage your User Scripts on this panel</small></h1>
-        </div>
+        </header>
         <div class="row">
-          <div class="span10">
+          <section class="span10">
             <h2>User Scripts</h2>
             
             <div id="ks-usm-am-warn" class="alert-message warning hide">
@@ -147,8 +147,8 @@
               </tbody>
             </table>
 
-          </div>
-          <div class="span4">
+          </section>
+          <aside class="span4">
             <h3>KitScript</h3>
 
             <ul class="unstyled ks-vertmenu">
@@ -158,7 +158,7 @@
               <li><a href="#about">About KitScript</a></li>
             </ul>
 
-          </div>
+          </aside>
         </div>
       </section>
       <!-- /User Scripts Manager -->
@@ -169,11 +169,11 @@
 
       <!-- Global Settings -->
       <section class="content" id="global-settings" style="display:none;">
-        <div class="page-header">
+        <header class="page-header">
           <h1>Global Settings <small>Tweak KitScript's global settings here</small></h1>
-        </div>
+        </header>
         <div class="row">
-          <div class="span10">
+          <section class="span10">
             <h2>Global Exclusion URLs</h2>
             
             <div id="ks-gs-am-warn" class="alert-message warning hide">
@@ -200,38 +200,38 @@
               </div>
             </form>
             
-            <div id="ks-gs-add-modal" class="modal hide fade">
-              <div class="modal-header">
+            <section id="ks-gs-add-modal" class="modal hide fade">
+              <header class="modal-header">
                 <a href="#" class="close">&times;</a>
                 <h3>Add a Global Exclusion URL</h3>
-              </div>
+              </header>
               <div class="modal-body">
                 <form>
                   <input class="span9" id="ks-gs-input-new" value="">
                 </form>
               </div>
-              <div class="modal-footer">
+              <footer class="modal-footer">
                 <a href="#ks-gs-action-add" class="btn primary">Add</a>
-              </div>
-            </div>
+              </footer>
+            </section>
             
-            <div id="ks-gs-edit-modal" class="modal hide fade">
-              <div class="modal-header">
+            <section id="ks-gs-edit-modal" class="modal hide fade">
+              <header class="modal-header">
                 <a href="#" class="close">&times;</a>
                 <h3>Edit a Global Exclusion URL</h3>
-              </div>
+              </header>
               <div class="modal-body">
                 <form>
                   <input class="span9" id="ks-gs-input-edit" value="">
                 </form>
               </div>
-              <div class="modal-footer">
+              <footer class="modal-footer">
                 <a href="#ks-gs-action-update" class="btn primary">Update</a>
-              </div>
-            </div>
+              </footer>
+            </section>
             
-          </div>
-          <div class="span4">
+          </section>
+          <aside class="span4">
             <h3>KitScript</h3>
             
             <ul class="unstyled ks-vertmenu">
@@ -241,7 +241,7 @@
               <li><a href="#about">About KitScript</a></li>
             </ul>
             
-          </div>
+          </aside>
         </div>
       </section>
       <!-- /Global Settings -->
@@ -252,11 +252,12 @@
 
       <!-- New User Script -->
       <section class="content" id="new-userscript" style="display:none;">
-        <div class="page-header">
+        <header class="page-header">
           <h1>New User Scripts <small>Add your new User Script with the editor</small></h1>
-        </div>
+        </header>
         <div class="row">
-          <div class="span10">
+          
+          <section class="span10">
             <h2>Add a User Script</h2>
             
             <div id="ks-aus-am-warn" class="alert-message warning hide">
@@ -279,8 +280,9 @@
               </div>
             </form>
             
-          </div>
-          <div class="span4">
+          </section>
+          
+          <aside class="span4">
             <h3>KitScript</h3>
             
             <ul class="unstyled ks-vertmenu">
@@ -290,7 +292,7 @@
               <li><a href="#about">About KitScript</a></li>
             </ul>
             
-          </div>
+          </aside>
         </div>
       </section>
       <!-- /New User Script -->
@@ -300,15 +302,16 @@
 
       <!-- About KitScript -->
       <section class="content" id="about" style="display:none;">
-        <div class="page-header">
+        <header class="page-header">
           <h1>About KitScript <small>Stuff about the User Script Safari Extension</small></h1>
-        </div>
+        </header>
         <div class="row">
           
-          <div id="ks-abt-html-txt" class="span10">
+          <section id="ks-abt-html-txt" class="span10">
               
-          </div>
-          <div class="span4">
+          </section>
+          
+          <aside class="span4">
             <h3>KitScript</h3>
             
             <ul class="unstyled ks-vertmenu">
@@ -318,7 +321,7 @@
               <li><a href="#about">About KitScript</a></li>
             </ul>
             
-          </div>
+          </aside>
         </div>
       </section>
       <!-- /About KitScript -->
@@ -326,8 +329,7 @@
 
 
 
-<!-- Markdowns -->
-
+<!-- About KitScript Markdown -->
 <div id="ks-abt-md-txt" class="ks-hide">
 ## About The Safari Extension
 
@@ -359,8 +361,7 @@ Initial version
 
 * Doesn't Run Greasemonkey API
 </div>
-
-<!-- /Markdowns -->
+<!-- /About KitScript Markdown -->
 
 
 
