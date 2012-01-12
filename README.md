@@ -44,6 +44,8 @@ Enjoy!
     * version
 * Doesn't Run Greasemonkey API
 
+- - -
+
 > Seraf Dos Santos <webmaster@cyb3r.ca>
 >
 > Copyright (c) 2011-2012 Seraf Dos Santos - All rights reserved.
