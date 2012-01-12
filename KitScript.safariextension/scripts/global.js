@@ -49,8 +49,5 @@ jQuery(document).ready(function ($) {
     
     // Init Main Panel Content
     ks.mainPanel.contentManager.initPanel();
-    
-    // Convert Markdowns To HTML
-    ks.mainPanel.aboutProjectForm.convertMdTxt();
 });
 
