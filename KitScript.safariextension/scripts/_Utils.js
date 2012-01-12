@@ -1,5 +1,5 @@
 /**
- *  KitScript - A User Script Safari Extension
+ *  KitScript - A User Script Manager For Safari
  *
  *  _Utils.js - Javascript file containing utilitary classes (by Prototype.js)
  *  used globally in the extension.

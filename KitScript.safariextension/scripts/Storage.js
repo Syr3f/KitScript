@@ -1,5 +1,5 @@
 /**
- *  KitScript - A User Script Safari Extension
+ *  KitScript - A User Script Manager For Safari
  *
  *  Storage.js - Javascript file containing storage classes (by Prototype.js)
  *  used globally in the extension.

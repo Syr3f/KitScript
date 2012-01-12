@@ -1,5 +1,5 @@
 /**
- *  KitScript - A User Script Safari Extension
+ *  KitScript - A User Script Manager For Safari
  *
  *  Global.js - Javascript file containing initial methods & function calls.
  *

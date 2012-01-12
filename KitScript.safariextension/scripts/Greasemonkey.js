@@ -1,5 +1,5 @@
 /**
- *  KitScript - A User Script Safari Extension
+ *  KitScript - A User Script Manager For Safari
  *
  *  Greasemonkey.js - Javascript file containing Greasemonkey classes
  *  (by Prototype.js) used globally in the extension & implementing core

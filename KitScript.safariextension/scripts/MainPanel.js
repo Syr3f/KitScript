@@ -1,6 +1,6 @@
 
 /**
- *  KitScript - A User Script Safari Extension
+ *  KitScript - A User Script Manager For Safari
  *
  *  MainPanel.js - Javascript file containing functions for the main panel
  *  of the extension.
