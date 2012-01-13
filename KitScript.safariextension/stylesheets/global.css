@@ -13,6 +13,8 @@
 
 
 
+/* Generic Styles */
+
 body {
     font-family: "Gill Sans", sans-serif;
     color: #333;
@@ -23,11 +25,18 @@ header {
     padding-top: 50px;
 }
 
-.container {
-    margin: 25px;
-    width: 100%;
-}
-
 .ks-hide {
     display: none;
+}
+
+textarea, select, input[type="text"] {
+    background-color: #FFFBEB;
+}
+
+/* Add User Script Content */
+
+.ks-aus-sssmall {
+    font-family: "New Courier", Courier, serif;
+    font-size: 0.8em;
+    line-height: 1em;
 }

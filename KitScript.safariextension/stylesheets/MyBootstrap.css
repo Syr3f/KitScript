@@ -1,7 +1,7 @@
 /**
  *  KitScript - A User Script Manager For Safari
  *
- *  MainPanel.css - CSS file containing main panel styles.
+ *  MyBootstrap.css - CSS file containing overriding Bootstrap styles.
  *
  *  @author Seraf Dos Santos
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
@@ -29,6 +29,10 @@ body {
     margin-top: 50px;
 }
 .container {
+/*
+    margin: 25px;
+    width: 100%;
+*/
     margin-right: auto;
     margin-left: auto   ;
     width: 820px; /* downsize our container to make the content feel a bit tighter and more cohesive. NOTE: this removes two full columns from the grid, meaning you only go to 14 columns and not 16. */
@@ -72,12 +76,4 @@ body {
 
 .topbar {
     margin-top: -25px;
-}
-
-/* Add User Script Content */
-
-.ks-aus-sssmall {
-    font-family: "New Courier", Courier, serif;
-    font-size: 0.8em;
-    line-height: 1em;
 }
