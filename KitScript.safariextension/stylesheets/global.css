@@ -29,14 +29,22 @@ header {
     display: none;
 }
 
-textarea, select, input[type="text"] {
-    background-color: #FFFBEB;
+textarea, select, option, input[type="text"] {
+    background-color: #FFFEEE;
 }
 
-/* Add User Script Content */
+/* Global Excludes */
 
-.ks-aus-sssmall {
+#ks-gs-list {
+    height: 280px;
+    width:520px;
+}
+
+/* New User Script */
+
+#ks-aus-script {
     font-family: "New Courier", Courier, serif;
     font-size: 0.8em;
     line-height: 1em;
+    height: 280px;
 }

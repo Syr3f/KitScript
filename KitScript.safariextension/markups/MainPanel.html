@@ -51,7 +51,7 @@
     <script src="../scripts/lib/bootstrap-1.4.0/bootstrap-dropdown.js" type="text/javascript" charset="utf-8"></script>
     <script src="../scripts/lib/bootstrap-1.4.0/bootstrap-modal.js" type="text/javascript" charset="utf-8"></script>
     <!-- script src="../scripts/lib/bootstrap-1.4.0/bootstrap-popover.js" type="text/javascript" charset="utf-8"></script -->
-    <script src="../scripts/lib/bootstrap-1.4.0/bootstrap-scrollspy.js" type="text/javascript" charset="utf-8"></script>
+    <!-- script src="../scripts/lib/bootstrap-1.4.0/bootstrap-scrollspy.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap-1.4.0/bootstrap-tabs.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/bootstrap-1.4.0/bootstrap-twipsy.js" type="text/javascript" charset="utf-8"></script -->
     
@@ -76,7 +76,7 @@
   </head>
   <body>
     
-    <div class="topbar" id="ks-topmenu" data-dropdown="dropdown" data-scrollspy="scrollspy">
+    <div class="topbar" id="ks-topmenu" data-dropdown="dropdown" >
       <div class="fill">
         <nav class="container">
           <a class="brand" href="#userscript-manager">KitScript</a>          
@@ -89,7 +89,7 @@
               </ul>
             </li>
             <li><a href="#global-settings">Global Settings</a></li>
-            <li class="active"><a href="#userscript-manager">User Scripts Manager</a></li>
+            <li><a href="#userscript-manager">User Scripts Manager</a></li>
             <li><a href="#new-userscript">New User Script</a></li>
             <li><a href="#about">About KitScript</a></li>
           </ul>
@@ -125,7 +125,7 @@
       <!-- User Scripts Manager - DEFAULT PANEL -->
       <section class="content" id="userscript-manager">
         <header class="page-header">
-          <h1>User Scripts Manager <small>Manage your User Scripts on this panel</small></h1>
+          <h1>User Scripts Manager <small>Manage your user scripts on this panel</small></h1>
         </header>
         <div class="row">
           <section class="span10">
@@ -172,7 +172,7 @@
       <!-- Global Settings -->
       <section class="content" id="global-settings" style="display:none;">
         <header class="page-header">
-          <h1>Global Settings <small>Tweak KitScript's global settings here</small></h1>
+          <h1>Global Settings <small>Set the global excludes of your user scripts on this panel</small></h1>
         </header>
         <div class="row">
           <section class="span10">
@@ -190,7 +190,7 @@
             
             <form id="ks-gs-form">
               <div class="span9 well">
-                <select id="ks-gs-list" class="medium span9" style="width:520px;" size="18" multiple>
+                <select id="ks-gs-list" class="span9" size="18" autofocus>
                   <option value=""></option>
                 </select>
                 <span class="help-block">Enter the global exclusion URLs by clicking the "Add" button below. To edit or remove a URL, select it in the list above and then click the button below.</span>
@@ -252,7 +252,7 @@
       <!-- New User Script -->
       <section class="content" id="new-userscript" style="display:none;">
         <header class="page-header">
-          <h1>New User Scripts <small>Add your new User Script with the editor</small></h1>
+          <h1>New User Scripts <small>Paste your new user script below</small></h1>
         </header>
         <div class="row">
           
@@ -271,7 +271,7 @@
             
             <form id="ks-aus-form">
               <div class="span9 well">
-                <textarea id="ks-aus-script" rows="30" class="ks-aus-sssmall span9" autofocus></textarea>
+                <textarea id="ks-aus-script" class="span9" autofocus></textarea>
                 <span class="help-block">Enter or paste the user script code in the field above and press the "Add" button below to add the script in KitScript's database.</span>
               </div>
               <div class="span9 well">

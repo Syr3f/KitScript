@@ -26,7 +26,9 @@ body {
 .container > footer {
     position: relative;
     display: block;
+/*
     margin-top: 50px;
+*/
 }
 .container {
 /*
@@ -42,7 +44,7 @@ body {
 .content {
     background-color: #fff;
     padding: 20px;
-    margin: -40px -20px; /* negative indent the amount of the padding to maintain the grid system */
+    margin: 10px -20px; /* negative indent the amount of the padding to maintain the grid system */
     -webkit-border-radius: 0 0 6px 6px;
        -moz-border-radius: 0 0 6px 6px;
             border-radius: 0 0 6px 6px;
@@ -75,5 +77,7 @@ body {
 }
 
 .topbar {
+/*
     margin-top: -25px;
+*/
 }
