@@ -22,6 +22,40 @@
 		<real>10485760</real>
 		<key>Global Page</key>
 		<string>markups/MainPanel.html</string>
+		<key>Menus</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>KS_M1</string>
+				<key>Menu Items</key>
+				<array>
+					<dict>
+						<key>Checked State</key>
+						<real>1</real>
+						<key>Command</key>
+						<string>toggle_enable</string>
+						<key>Identifier</key>
+						<string>KS_MI1</string>
+						<key>Title</key>
+						<string>Enabled</string>
+					</dict>
+					<dict>
+						<key>Identifier</key>
+						<string>KS_MI2</string>
+						<key>Separator</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>Disabled</key>
+						<true/>
+						<key>Identifier</key>
+						<string>KS_MI3</string>
+						<key>Title</key>
+						<string>No Scripts for this URL</string>
+					</dict>
+				</array>
+			</dict>
+		</array>
 		<key>Toolbar Items</key>
 		<array>
 			<dict>
@@ -30,7 +64,7 @@
 				<key>Identifier</key>
 				<string>KS_TI1</string>
 				<key>Image</key>
-				<string>images/add.png</string>
+				<string>images/cog.png</string>
 				<key>Label</key>
 				<string>KitScript</string>
 				<key>Menu</key>
