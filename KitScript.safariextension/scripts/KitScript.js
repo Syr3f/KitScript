@@ -278,6 +278,29 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
                     
                     _html += '</tr>\n';
                 }
+                
+                _this.$("#ks-usm-list * a").click(function (evt) {
+                    
+                    var _req = _this.$(this).attr('href');
+                    
+                    var _ptrns = [
+                        /#ks-usm-settings-[0-9]+/,
+                        /#ks-usm-disable-[0-9]+/,
+                        /#ks-usm-remove-[0-9]+/
+                    ];
+                    
+                    if (_ptrns[0].test(_req)) {
+                        
+                        ks.mainPanel.userScriptsManagerForm.openUserScriptSettings(_req);
+                    } else if (_ptrns[1].test(_req)) {
+                        
+                        ks.mainPanel.userScriptsManagerForm.disableUserScript(_req);
+                    } else if (_ptrns[2].test(_req)) {
+                        
+                        ks.mainPanel.userScriptsManagerForm.deleteUserScript(_req);
+                    }
+                });
+                
             } else {
                 
                 _html += '<tr>\n';

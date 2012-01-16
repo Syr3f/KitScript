@@ -44,15 +44,15 @@ jQuery(document).ready(function ($) {
                 break;
             
             // User Script Manager
-            case '#ks-usm-btn-settings':
-                ks.mainPanel.userScriptsManagerForm.openUserScriptSettings(_req);
-                break;
-            case '#ks-usm-btn-disable':
-                ks.mainPanel.userScriptsManagerForm.disableUserScript(_req);
-                break;
-            case '#ks-usm-btn-delete':
-                ks.mainPanel.userScriptsManagerForm.deleteUserScript(_req);
-                break;
+            //case '#ks-usm-btn-settings':
+            //    ks.mainPanel.userScriptsManagerForm.openUserScriptSettings(_req);
+            //    break;
+            //case '#ks-usm-btn-disable':
+            //    ks.mainPanel.userScriptsManagerForm.disableUserScript(_req);
+            //    break;
+            //case '#ks-usm-btn-delete':
+            //    ks.mainPanel.userScriptsManagerForm.deleteUserScript(_req);
+            //    break;
             
             // User Script Settings
             case '#':
