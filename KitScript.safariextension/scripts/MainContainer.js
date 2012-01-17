@@ -73,25 +73,34 @@ jQuery(document).ready(function ($) {
                 break;
             // User Settings Excludes
             case '#ks-uss-us-excl-btn-add':
+                alert('add user exclude');
                 break;
             case '#ks-uss-us-excl-btn-edit':
+                alert('edit user exclude');
                 break;
             case '#ks-uss-us-excl-btn-remove':
+                alert('remove user exclude');
                 break;
             // User Settings Includes
             case '#ks-uss-us-incl-btn-add':
+                alert('add user include');
                 break;
             case '#ks-uss-us-incl-btn-edit':
+                alert('edit user include');
                 break;
             case '#ks-uss-us-incl-btn-remove':
+                alert('remove user include');
                 break;
             // Script Settings
-            case '#ks-uss-ss-btn-touexcl':
+            case '#ks-uss-ss-btn-add-usexcl':
+                alert('add to user excludes');
                 break;
-            case '#ks-uss-ss-btn-touincl':
+            case '#ks-uss-ss-btn-add-usincl':
+                alert('add to user includes');
                 break;
             // Script Editor
             case '#ks-uss-se-btn-update':
+                ks.mainContainer.userScriptSettings.updateUserScript();
                 break;
             
             // Toolbar & Menu Buttons
