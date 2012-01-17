@@ -42,21 +42,6 @@ jQuery(document).ready(function ($) {
                 //ks.mainContainer.hideAlert();
                 break;
             
-            // User Script Manager
-            //case '#ks-usm-btn-settings':
-            //    ks.mainContainer.userScriptsManagerForm.openUserScriptSettings(_req);
-            //    break;
-            //case '#ks-usm-btn-disable':
-            //    ks.mainContainer.userScriptsManagerForm.disableUserScript(_req);
-            //    break;
-            //case '#ks-usm-btn-delete':
-            //    ks.mainContainer.userScriptsManagerForm.deleteUserScript(_req);
-            //    break;
-            
-            // User Script Settings
-            case '#':
-                break;
-            
             // Global Settings Buttons
             case '#ks-gs-btn-add':
                 ks.mainContainer.globalSettingsForm.addGlobalExclude();
