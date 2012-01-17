@@ -365,22 +365,32 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         var _usid = this._extractId(btnId);
         
+        alert(_usid);
+        
         var _fC = function (trsct, rs) {
+            
+            alert("_fC");
             
             var _this = trsct.objInstance;
             
-            var _fC2 = function (trsct, rs) {
+            var _fC2 = function (trsct2, rs2) {
                 
-                var _this = trsct.objInstance;
+                alert("_fC");
                 
-                _this.drawTable();
-                _this.showSuccessAlert('User script has been deleted.');
+                var _this2 = trsct2.objInstance;
+                
+                _this2.drawTable();
+                _this2.showSuccessAlert('User script has been deleted.');
             }
             
-            db.deleteUserScriptMetadata(_usid, _fC2, _this);
+            _this._db.deleteUserScriptMetadata(_this._usid, _fC2, _this);
+            delete _this._db;
         }
         
         try {
+            
+            this.__proto__._db = db;
+            this.__proto__._usid = _usid;
             
             db.deleteUserScriptFile(_usid, _fC, this);
         } catch (e) {
