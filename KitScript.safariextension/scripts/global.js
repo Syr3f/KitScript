@@ -46,8 +46,5 @@ jQuery(document).ready(function ($) {
         
     // Declare On UI If Enabled Or Disabled
     ks.declareEnabled();
-    
-    // Init Main Panel Content
-    ks.mainContainer.contentManager.initPanel();
 });
 

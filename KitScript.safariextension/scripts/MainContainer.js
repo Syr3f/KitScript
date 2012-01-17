@@ -2,8 +2,7 @@
 /**
  *  KitScript - A User Script Manager For Safari
  *
- *  MainPanel.js - Javascript file containing functions for the main panel
- *  of the extension.
+ *  MainContainer.js - Javascript file for the main container of the extension.
  *
  *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
@@ -98,5 +97,8 @@ jQuery(document).ready(function ($) {
         $("#ks-gs-btn-edit").removeClass('disabled');
         $("#ks-gs-btn-remove").removeClass('disabled');
     });
+    
+    // Init Main Panel Content
+    ks.mainContainer.contentManager.showMainContainer();
 });
 

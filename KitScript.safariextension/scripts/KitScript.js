@@ -27,7 +27,7 @@ var KSBase = Class.create(_Utils, {
         
         this._isTabOpen = false;
         
-        this.defaultPage = 'MainPanel.html';
+        this.defaultPage = 'MainContainer.html';
         
         this._previousPage = null;
         this._currentPage = this.defaultPage;
@@ -87,7 +87,7 @@ var KSMainContainer = Class.create(KSBase, {
     
     initialize: function ($super) {
         
-        this._pageName = "MainPanel.html";
+        this._pageName = "MainContainer.html";
         this.contentManager = null;
         this.globalSettingsForm = null;
         
@@ -162,7 +162,7 @@ var KSContentManager = Class.create(_Utils, {
         
         this._setDocumentTitle(_ttl);
     },
-    initPanel: function () {
+    showMainContainer: function () {
         
         this.transitContent('userscript-manager');
         
