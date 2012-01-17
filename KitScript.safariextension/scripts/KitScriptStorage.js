@@ -46,7 +46,7 @@ var KSStorage = Class.create(Storage, {
             throw new StorageException(e.getMessage());
         }
         
-        this._verifyDb();
+        //this.verifyDb();
         
         return _db;
     },
@@ -54,28 +54,25 @@ var KSStorage = Class.create(Storage, {
         
         return this._isDbExistant;
     },
-    _verifyDb: function () {
-        
-        _sC = function (transaction, resultSet) {
-            
-            var _db = transaction.objInstance;
-            
-            if (resultSet.rows.length > 0) {
-                
-                var _row = resultSet.rows.item(0);
-                
-                if (_row['name'] == _db._dbTableUserScriptsMetadata)
-                    _db._isDbExistant = true;
-                else
-                    _db._isDbExistant = false;
-            }
-        }
+    verifyDb: function () {
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT name FROM sqlite_master WHERE type=? AND name=?;", ['table',this._dbTableUserScriptsMetadata], _sC, SFH_errorHandler);
+        sqlArray.push(this, "SELECT enabled FROM "+this._dbTableKitScript+";", [], this._dbq_onQueryAnyTable, SFH_errorHandler);
         
         this.transact(sqlArray);
+    },
+    _dbq_onQueryAnyTable: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        if (resultSet.rows.length > 0)
+            _this._isDbExistant = true;
+        else {
+            _this.createTables();
+            _this.insertInitData();
+        }
+            
     },
     createTables: function (doDrop) {
         
@@ -103,6 +100,8 @@ var KSStorage = Class.create(Storage, {
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], _sC1, SFH_errorHandler);
         
         this.transact(sqlArray);
+        
+        _this._isDbExistant = true;
     },
     insertInitData:function () {
         

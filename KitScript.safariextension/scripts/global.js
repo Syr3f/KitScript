@@ -39,10 +39,6 @@ jQuery(document).ready(function ($) {
     
     // Debug Verbosity: 0=Silenced,1=Console,2=BrowserAlert
     ks.setVerbosityLevel(1);
-    
-    // Create DB If Not Created 
-    if (!db.isDbExistant())
-        db.createTables();
         
     // Declare On UI If Enabled Or Disabled
     ks.declareEnabled();
