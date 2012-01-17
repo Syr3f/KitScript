@@ -36,8 +36,14 @@
     <!-- script src="../scripts/lib/jquery/jquery-ui-1.8.16.custom.min.js" type="text/javascript" charset="utf-8"></script -->
     
     <!-- = prototype.js = -->
-    <script src="../scripts/lib/prototype/prototype-1.7.0.0.min.js" type="text/javascript" charset="utf-8"></script>
     <!-- script src="../scripts/lib/prototype/prototype-1.6.1.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="../scripts/lib/prototype/prototype-1.7.0.0.min.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- = prototype.js ~ /src = -->
+    <script src="../scripts/lib/prototype/src/object.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/lib/prototype/src/function.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/lib/prototype/src/enumerable.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/lib/prototype/src/array.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../scripts/lib/prototype/src/class.js" type="text/javascript" charset="utf-8"></script>
     
     <!-- = Backbone.js = -->
     <!-- script src="../scripts/lib/backbone/json2-10.20.2011.min.js" type="text/javascript" charset="utf-8"></script -->
@@ -330,7 +336,6 @@
                 <section>
                   <label for="ks-uss-us-excl-list">Excluded pages:</label><br>
                   <select id="ks-uss-us-excl-list" class="span9" size="8">
-                    <option value=""></option>
                   </select>
                 </section>
                 <aside>
@@ -342,7 +347,6 @@
                 <section>
                   <label for="ks-uss-us-incl-list">Included pages:</label><br>
                   <select id="ks-uss-us-incl-list" class="span9" size="8">
-                    <option value=""></option>
                   </select>
                 </section>
                 <aside>
@@ -364,7 +368,7 @@
                     <option value=""></option>
                   </select>
                   <div class="ks-right">
-                    <a href="#ks-uss-ss-btn-add-usincl" class="btn xsmall primary">Add as user include</a>                    
+                    <a href="#ks-uss-ss-btn-add-usincl" id="ks-uss-ss-btn-add-usincl" class="btn xsmall primary disabled">Add as user include</a>                    
                   </div>
                 </section>
                 
@@ -374,7 +378,7 @@
                     <option value=""></option>
                   </select>
                   <div class="ks-right">
-                    <a href="#ks-uss-ss-btn-add-usexcl" class="btn xsmall primary">Add as user exclude</a><br>
+                    <a href="#ks-uss-ss-btn-add-usexcl" id="ks-uss-ss-btn-add-usexcl" class="btn xsmall primary disabled">Add as user exclude</a><br>
                   </div>
                 </section>
                 

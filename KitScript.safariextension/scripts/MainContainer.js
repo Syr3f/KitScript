@@ -92,11 +92,11 @@ jQuery(document).ready(function ($) {
                 alert('remove user include');
                 break;
             // Script Settings
-            case '#ks-uss-ss-btn-add-usexcl':
-                alert('add to user excludes');
-                break;
             case '#ks-uss-ss-btn-add-usincl':
-                alert('add to user includes');
+                ks.mainContainer.userScriptSettingsForm.addToUserInclusion();
+                break;
+            case '#ks-uss-ss-btn-add-usexcl':
+                ks.mainContainer.userScriptSettingsForm.addToUserExclusion();
                 break;
             // Script Editor
             case '#ks-uss-se-btn-update':
@@ -120,6 +120,16 @@ jQuery(document).ready(function ($) {
         
         $("#ks-gs-btn-edit").removeClass('disabled');
         $("#ks-gs-btn-remove").removeClass('disabled');
+    });
+    
+    // User Script Settings ~ Script Settings Lists Events
+    $('#ks-uss-ss-excl-list').change(function (evt) {
+        
+        $('#ks-uss-ss-btn-add-usincl').removeClass('disabled');
+    });
+    $('#ks-uss-ss-incl-list').change(function (evt) {
+        
+        $('#ks-uss-ss-btn-add-usexcl').removeClass('disabled');
     });
     
     // Init Main Panel Content

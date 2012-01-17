@@ -815,11 +815,62 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
     },
     
-    addToUserExclusion: function () {
-        
-    },
     addToUserInclusion: function () {
         
+        var _txt = this.$('#ks-uss-ss-excl-list option:selected').text();
+        
+        this.$('#ks-uss-us-incl-list').append('<option>'+_txt+'</option>');
+        
+        this._updateUserSettings();
+    },
+    addToUserExclusion: function () {
+        
+        var _txt = this.$('#ks-uss-ss-incl-list option:selected').text();
+        
+        this.$('#ks-uss-us-excl-list').append('<option>'+_txt+'</option>');
+        
+        this._updateUserSettings();
+    },
+    _updateUserSettings: function () {
+        
+        var _metaId = this.getLoadedMetaId();
+        
+        var _excls = this._getUserExclusions();
+        var _incls = this._getUserInclusions();
+        
+        try {
+            db.updateUserScriptUserSettings(_metaId, _incls, _excls, this._dbq_onUpdateUserSettings, this);
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
+    },
+    _getUserExclusions: function () {
+        
+        var _strs = [];
+        
+        this.$('#ks-uss-us-excl-list option').each(function (idx, el) {
+            
+            _strs.push(jQuery(el).text());
+        });
+        
+        return _strs.join(',');
+    },
+    _getUserInclusions: function () {
+        
+        var _strs = [];
+        
+        this.$('#ks-uss-us-incl-list option').each(function (idx, el) {
+            
+            _strs.push(jQuery(el).text());
+        });
+        
+        return _strs.join(',');
+    },
+    _dbq_onUpdateUserSettings: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.showSuccessAlert("The user settings have been updated.");
     },
     
     updateUserScript: function () {
