@@ -48,6 +48,6 @@ jQuery(document).ready(function ($) {
     ks.declareEnabled();
     
     // Init Main Panel Content
-    ks.mainPanel.contentManager.initPanel();
+    ks.mainContainer.contentManager.initPanel();
 });
 
