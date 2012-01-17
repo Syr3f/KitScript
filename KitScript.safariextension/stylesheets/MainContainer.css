@@ -1,7 +1,7 @@
 /**
  *  KitScript - A User Script Manager For Safari
  *
- *  Global.css - CSS file containing base styles.
+ *  MainContainer.css - Stylesheet for the MainContainer.html file.
  *
  *  @author Seraf Dos Santos
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
@@ -47,4 +47,11 @@ textarea, select, option, input[type="text"] {
     font-size: 0.8em;
     line-height: 1em;
     height: 280px;
+}
+
+/* User Script Settings */
+
+#ks-uss-usersets-lists {
+    height: 120px;
+    width: 520px;
 }
