@@ -372,18 +372,32 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         this.__proto__._db = db;
         this.__proto__._metaId = _metaId;
         
-        try {
-            db.deleteUserScriptFile(_metaId, this._dbq_onDeleteUserScript, this);
-        } catch (e) {
-            this.showFailureAlert(e.getMessage());
+        db.fetchUserScriptFileIdByMetaId(_metaId, this._dbq_onFetchUserScriptFileId, this);
+    },
+    _dbq_onFetchUserScriptFileId: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        if (resultSet.rows.length > 0) {
+            
+            var _row = resultSet.rows.item(0);
+            
+            var _usId = _row['userscript_id'];
+            
+            try {
+                db.deleteUserScriptFile(_usId, _this._dbq_onDeleteUserScriptFile, _this);
+            } catch (e) {
+                _this.showFailureAlert(e.getMessage());
+            }
+        } else {
+            _this.showFailureAlert("Couldn't fetch the user script id.");
         }
     },
     _dbq_onDeleteUserScriptFile: function (transact, resultSet) {
         
         var _this = transact.objInstance;
         
-        _this._db.deleteUserScriptMetadata(_this._metaId, _this._dbq_onDeleteUserScriptMeta, _this);
-        delete _this._db;
+        db.deleteUserScriptMetadata(_this._metaId, _this._dbq_onDeleteUserScriptMeta, _this);
     },
     _dbq_onDeleteUserScriptMeta: function (transact, resultSet) {
         
@@ -597,7 +611,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             ks.gmmd.loadScript(_script);
             
-            var _rec = this._getHeaderValues();
+            var _rec = this._getUserScriptHeaderValues();
             
             this._storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_script);
         } catch (e) {
@@ -605,7 +619,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             this.showErrorAlert(e.getMessage());
         }
     },
-    _getHeaderValues: function () {
+    _getUserScriptHeaderValues: function () {
         
         var _name = ks.gmmd.getName();
         var _space = ks.gmmd.getNamespace();
@@ -645,7 +659,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             var _row = resultSet.rows.item(0);
             
-            db.insertUserScriptMetadata(_this._fname, _this._fspace, _this._escQuot(_this._fdesc), _this._fincludes, _this._fexcludes, parseInt(_row[_this._liria]), 0, null, null, _this._dbq_onCreateUserScriptMeta, _this);
+            db.insertUserScriptMetadata(_this.sqlClean(_this._fname), _this.sqlClean(_this._fspace), _this.sqlClean(_this._fdesc), _this.sqlClean(_this._fincludes), _this.sqlClean(_this._fexcludes), parseInt(_row[_this._liria]), 0, null, null, _this._dbq_onCreateUserScriptMeta, _this);
         } else
             _this.showErrorAlert("The user script couldn't be stored.");
     },
@@ -659,10 +673,6 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         ks.mainContainer.userScriptsManagerForm.drawTable();
         
         _this.$('#ks-aus-script').val('');
-    },
-    _escQuot: function (str) {
-        
-        return str.replace("'","\\'","gm");
     },
     showSuccessAlert: function (strMsg) {
         
@@ -718,6 +728,10 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     setLoadedScriptId: function (usId) {
         
         this.$("#ks-uss-us-scriptid").val(usId);
+    },
+    getUserScript: function () {
+        
+        return this.$('#ks-uss-script').val();
     },
     loadData: function (metaId) {
         
@@ -810,18 +824,80 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     updateUserScript: function () {
         
-        var _usId = this.getLoadedScriptId();
-        var _usStr = this.$('#ks-uss-script').val();
+        var _metaId = this.getLoadedMetaId();
         
         try {
-            db.updateUserScriptFile(_usId, KSSHF_blobize(_usStr), this._dbq_onUpdateUserScriptFile, this);
+            db.isUserScriptEnabled(_metaId, this._dbq_onQueryUserScriptEnabled, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
+        }
+    },
+    _dbq_onQueryUserScriptEnabled: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        if (resultSet.rows.length > 0) {
+
+            var _row = resultSet.rows.item(0);
+            
+            var _isEnabled = parseInt(_row['disabled']);
+            
+            var _usId = _this.getLoadedScriptId();
+            var _usStr = _this.getUserScript();
+            
+            ks.gmmd.loadScript(_usStr);
+            
+            var _rec = _this._getUserScriptHeaderValues();
+            
+            _this.updateUserScriptMetadata(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4], _isEnabled);
+        } else {
+            _this.showFailureAlert("Couldn't update the user script.");
+        }
+    },
+    _getUserScriptHeaderValues: function () {
+        
+        var _name = ks.gmmd.getName();
+        var _space = ks.gmmd.getNamespace();
+        var _desc = ks.gmmd.getDescription();
+        var _incs = ks.gmmd.getIncludes();
+        var _excs = ks.gmmd.getExcludes();
+        
+        return [_name,_space,_desc,_incs.join(','),_excs.join(',')];
+    },
+    updateUserScriptMetadata: function (name, space, desc, includes, excludes, disabled) {
+        
+        var _metaId = this.getLoadedMetaId();
+        
+        try {
+            db.updateUserScriptMetadata(_metaId, this.sqlClean(name), this.sqlClean(space), this.sqlClean(desc), this.sqlClean(excludes), this.sqlClean(includes), disabled, null, null, this._dbq_onUpdateMetadata, this);
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
+    },
+    _dbq_onUpdateMetadata: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this._a('_dbq_onUpdateMetadata');
+        
+        try {
+            
+            var _usId = _this.getLoadedScriptId();
+            var _usStr = _this.getUserScript();
+            
+            db.updateUserScriptFile(_usId, KSSHF_blobize(_usStr), _this._dbq_onUpdateUserScriptFile, _this);
+        } catch (e) {
+            _this.showFailureAlert(e.getMessage());
         }
     },
     _dbq_onUpdateUserScriptFile: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        
+        _this._a('_dbq_onUpdateUserScriptFile');
+        
+        // Reload data
+        _this.loadData(_this.getLoadedMetaId());
         
         _this.showSuccessAlert("User script has been updated.");
     },
@@ -891,6 +967,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         this._emptyScriptSettings();
         this._emptyScriptEditor();
     },
+    
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
