@@ -210,6 +210,16 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
+    enableUserScript: function (id, statementCallback, obj) {
+        
+        _sC = statementCallback || function () { console.log("User script enabled."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET disabled = 0 WHERE id = ?;", [id], _sC, SFH_errorHandler);
+        
+        this.transact(sqlArray);
+    },
     /**
      *  ==============
      *  Global Exclude

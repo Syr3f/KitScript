@@ -111,6 +111,8 @@ var KSContentManager = Class.create(_Utils, {
     regisForms: [],
     initialize: function ($super,formIdObj) {
         
+        this._maxAlert = 7000;
+        
         $super();
         
         this.regisForms.push(formIdObj);
@@ -227,7 +229,7 @@ var KSContentManager = Class.create(_Utils, {
         
         var _f = function (_abId) { jQuery(_abId).fadeOut('slow') };
         
-        setTimeout(_f,10000,alertBoxId);
+        setTimeout(_f,this._maxAlert,alertBoxId);
     }
 });
 
@@ -261,10 +263,9 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         var _sC1 = function (trsct,rs) {
             
             var _this = trsct.objInstance;
-            
-            _this._a("_sC1");
-            
             var _html = "";
+            
+            var _sttOn = 'Enabled', _sttOff = 'Disabled';
             
             if (rs.rows.length > 0) {
                 
@@ -272,41 +273,22 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
                     
                     var _row = rs.rows.item(i);
                     
+                    if (parseInt(_row['disabled']) === 1)
+                        var _lbl = 'important', _stt = "OFF";
+                    else
+                        var _lbl = 'notice', _stt = "ON";
+                    
+                    var _sttCmd = (_stt==="ON"?_sttOff.substr(0,_sttOff.length-1):_sttOn.substr(0,_sttOn.length-1));
+                    
                     _html += '<tr id="ks-us-'+_row['id']+'">\n';
                     
-                        _html += '<td><h3>'+_row['name']+'</h3><span>'+_row['description']+'</span></td>';
+                        _html += '<td><h3>'+_row['name']+' <span class="label '+_lbl+'">'+_stt+'</span></h3><span>'+_row['description']+'</span></td>';
                         _html += '<td><a href="#ks-usm-btn-settings-'+_row['id']+'" class="btn small primary">Settings</a></td>';
-                        _html += '<td><a href="#ks-usm-btn-disable-'+_row['id']+'" class="btn small info">Disable</a></td>';
-                        _html += '<td><a href="#ks-usm-btn-remove-'+_row['id']+'" class="btn small danger">Remove</a></td>\n';
+                        _html += '<td><a href="#ks-usm-btn-'+_sttCmd.toLowerCase()+'-'+_row['id']+'" class="btn small info">'+_sttCmd+'</a></td>';
+                        _html += '<td><a href="#ks-usm-btn-remove-'+_row['id']+'" class="btn small danger">Delete</a></td>\n';
                     
                     _html += '</tr>\n';
                 }
-                
-                // Create Event Handler For Table Buttons
-                _this.$("#ks-usm-list * a").click(function (evt) {
-                    
-                    alert(1);
-                    
-                    var _req = _this.$(this).attr('href');
-                    
-                    var _ptrns = [
-                        /#ks-usm-settings-[0-9]+/,
-                        /#ks-usm-disable-[0-9]+/,
-                        /#ks-usm-remove-[0-9]+/
-                    ];
-                    
-                    if (_ptrns[0].test(_req)) {
-                        
-                        ks.mainContainer.userScriptsManagerForm.openUserScriptSettings(_req);
-                    } else if (_ptrns[1].test(_req)) {
-                        
-                        ks.mainContainer.userScriptsManagerForm.disableUserScript(_req);
-                    } else if (_ptrns[2].test(_req)) {
-                        
-                        ks.mainContainer.userScriptsManagerForm.deleteUserScript(_req);
-                    }
-                });
-                
             } else {
                 
                 _html += '<tr>\n';
@@ -317,11 +299,23 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
             }
             
             _this.$('#'+_this._tableId+' tbody').html(_html);
+            
+            _this.$("#ks-usm-list * a").click({_form:_this}, function (evt) {
+                
+                var _req = _this.$(this).attr('href');
+                
+                if (/#ks-usm-btn-settings-[0-9]+/.test(_req))
+                    evt.data._form.openUserScriptSettings(_req);
+                else if (/#ks-usm-btn-disable-[0-9]+/.test(_req))
+                    evt.data._form.disableUserScript(_req);
+                else if (/#ks-usm-btn-enable-[0-9]+/.test(_req))
+                    evt.data._form.enableUserScript(_req);
+                else if (/#ks-usm-btn-remove-[0-9]+/.test(_req))
+                    evt.data._form.deleteUserScript(_req);
+            });
         }
         
         this.$('#'+this._tableId+' tbody').empty();
-        
-        this._a("drawTable");
         
         db.fetchAllUserScriptsMetadata(0,25,_sC1,this);
     },
@@ -329,19 +323,69 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         var _usid = this._extractId(btnId);
         
-        this._a("openUserScriptSettings");
+        
     },
     disableUserScript: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
-        this._a("disableUserScript");
+        var _fC = function (trsct, rs) {
+            
+            var _this = trsct.objInstance;
+            
+            _this.drawTable();
+            _this.showSuccessAlert('User script has been disabled.');
+        }
+        
+        try {
+            db.disableUserScript(_usid, _fC, this);
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
+    },
+    enableUserScript: function (btnId) {
+        
+        var _usid = this._extractId(btnId);
+        
+        var _fC = function (trsct, rs) {
+            
+            var _this = trsct.objInstance;
+            
+            _this.drawTable();
+            _this.showSuccessAlert('User script has been enabled.');
+        }
+        
+        try {
+            db.enableUserScript(_usid, _fC, this);
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
     },
     deleteUserScript: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
-        this._a("deleteUserScript");
+        var _fC = function (trsct, rs) {
+            
+            var _this = trsct.objInstance;
+            
+            var _fC2 = function (trsct, rs) {
+                
+                var _this = trsct.objInstance;
+                
+                _this.drawTable();
+                _this.showSuccessAlert('User script has been deleted.');
+            }
+            
+            db.deleteUserScriptMetadata(_usid, _fC2, _this);
+        }
+        
+        try {
+            
+            db.deleteUserScriptFile(_usid, _fC, this);
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
     },
     _extractId: function (btnId) {
         
@@ -654,7 +698,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
 
 /**
  *  KSUserScriptSettingsForm (KitScript User Script Settings Form Class)
- */
+ *
 var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     initialize: function ($super) {
@@ -679,7 +723,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
     }
-});
+});*/
 
 
 
@@ -731,7 +775,7 @@ var KitScript = Class.create(_Utils, {
         this.mainContainer.userScriptsManagerForm = new KSUserScriptsManagerForm();
         this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
         this.mainContainer.newUserScriptForm = new KSNewUserScriptForm();
-        this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
+        //this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
     },
     isEnabled: function () {
