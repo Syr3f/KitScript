@@ -81,9 +81,9 @@ var KSBase = Class.create(_Utils, {
 
 
 /**
- *  KSMainPanel (KitScript User Scripts Main Panel Class)
+ *  KSMainContainer (KitScript User Scripts Main Container Class)
  */
-var KSMainPanel = Class.create(KSBase, {
+var KSMainContainer = Class.create(KSBase, {
     
     initialize: function ($super) {
         
@@ -104,7 +104,7 @@ var KSMainPanel = Class.create(KSBase, {
 
 
 /**
- *  KSContentManager (KitScript Content Manager for the Main Panel)
+ *  KSContentManager (KitScript Content Manager for the Main Container)
  */
 var KSContentManager = Class.create(_Utils, {
     
@@ -167,14 +167,14 @@ var KSContentManager = Class.create(_Utils, {
         this.transitContent('userscript-manager');
         
         // User Scripts Manager
-        ks.mainPanel.userScriptsManagerForm.drawTable();
+        ks.mainContainer.userScriptsManagerForm.drawTable();
         
         // Global Settings
-        ks.mainPanel.globalSettingsForm.emptyList();
-        ks.mainPanel.globalSettingsForm.fillList();
+        ks.mainContainer.globalSettingsForm.emptyList();
+        ks.mainContainer.globalSettingsForm.fillList();
         
         // About
-        ks.mainPanel.aboutProjectForm.convertMdTxt();
+        ks.mainContainer.aboutProjectForm.convertMdTxt();
     },
     /*
     popAlert: function (strMsg) {
@@ -261,6 +261,8 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
             
             var _this = trsct.objInstance;
             
+            _this._a("_sC1");
+            
             var _html = "";
             
             if (rs.rows.length > 0) {
@@ -279,7 +281,10 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
                     _html += '</tr>\n';
                 }
                 
+                // Create Event Handler For Table Buttons
                 _this.$("#ks-usm-list * a").click(function (evt) {
+                    
+                    alert(1);
                     
                     var _req = _this.$(this).attr('href');
                     
@@ -291,13 +296,13 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
                     
                     if (_ptrns[0].test(_req)) {
                         
-                        ks.mainPanel.userScriptsManagerForm.openUserScriptSettings(_req);
+                        ks.mainContainer.userScriptsManagerForm.openUserScriptSettings(_req);
                     } else if (_ptrns[1].test(_req)) {
                         
-                        ks.mainPanel.userScriptsManagerForm.disableUserScript(_req);
+                        ks.mainContainer.userScriptsManagerForm.disableUserScript(_req);
                     } else if (_ptrns[2].test(_req)) {
                         
-                        ks.mainPanel.userScriptsManagerForm.deleteUserScript(_req);
+                        ks.mainContainer.userScriptsManagerForm.deleteUserScript(_req);
                     }
                 });
                 
@@ -315,42 +320,44 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         this.$('#'+this._tableId+' tbody').empty();
         
+        this._a("drawTable");
+        
         db.fetchAllUserScriptsMetadata(0,25,_sC1,this);
     },
     openUserScriptSettings: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
-        
+        this._a("openUserScriptSettings");
     },
     disableUserScript: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
-        
+        this._a("disableUserScript");
     },
     deleteUserScript: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
-        
+        this._a("deleteUserScript");
     },
     _extractId: function (btnId) {
         
         return btnId.substr(btnId.lastIndexOf('-')+1,btnId.length);
     },
-    showWarningAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
-    },
-    showErrorAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showFailureAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
 });
 
 
@@ -407,7 +414,14 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
                 _this.fillList();
             }
             
-            db.insertGlobalExclude(_val,_fn,this);
+            try {
+                
+                db.insertGlobalExclude(_val,_fn,this);
+                _this.showSuccessAlert("URL has been registered.");
+            } catch (e) {
+                
+                this.showFailureAlert(e.getMessage());
+            }
         }
     },
     editGlobalExclude: function () {
@@ -453,7 +467,14 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
                 _this.fillList();
             }
             
-            db.updateGlobalExclude(_id, _url,_fn,this);
+            try {
+                
+                db.updateGlobalExclude(_id, _url,_fn,this);
+                _this.showSuccessAlert("URL has been updated.");
+            } catch (e) {
+                
+                this.showFailureAlert(e.getMessage());
+            }
         }
     },
     removeGlobalExclude: function () {
@@ -471,7 +492,14 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
             _this.fillList();
         }
         
-        db.deleteGlobalExclude(_id,_fn,this)
+        try {
+            
+            db.deleteGlobalExclude(_id,_fn,this);
+            _this.showSuccessAlert("URL has been deleted.");
+        } catch (e) {
+            
+            this.showFailureAlert(e.getMessage());
+        }
     },
     emptyList: function () {
         
@@ -498,18 +526,18 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         
         db.fetchAllGlobalExcludes(0,1000,_fn,this);
     },
-    showWarningAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
-    },
-    showErrorAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showFailureAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
 });
 
 
@@ -579,9 +607,9 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
                     
                     _this2.transitContent('#userscript-manager');
                     
-                    ks.mainPanel.userScriptsManagerForm.showSuccessAlert("The user script has been added.");
+                    ks.mainContainer.userScriptsManagerForm.showSuccessAlert("The user script has been added.");
                     
-                    ks.mainPanel.userScriptsManagerForm.drawTable();
+                    ks.mainContainer.userScriptsManagerForm.drawTable();
                 }
                 
                 db.insertUserScriptMetadata(_this._fname, _this._fspace, _this._escQuot(_this._fdesc), _this._fincludes, _this._fexcludes, parseInt(_row[_this._liria]), 0, _sC2, _this);
@@ -605,18 +633,18 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         
         return str.replace("'","\\'","gm");
     },
-    showWarningAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
-    },
-    showErrorAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showFailureAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
 });
 
 
@@ -638,18 +666,18 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         $super(this._formIdObj);
     },
-    showWarningAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
-    },
-    showErrorAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     }
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showFailureAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    },
 });
 
 
@@ -670,18 +698,6 @@ var KSAboutProjectForm = Class.create(KSContentManager, {
         };
         
         $super(this._formIdObj);
-    },
-    showWarningAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
-    },
-    showErrorAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
-    showSuccessAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
     },
     convertMdTxt: function () {
         
@@ -709,13 +725,13 @@ var KitScript = Class.create(_Utils, {
         
         this.gmmd = new KSGreasemonkeyMetadata();
         
-        this.mainPanel = new KSMainPanel();
-        this.mainPanel.contentManager = new KSContentManager();
-        this.mainPanel.userScriptsManagerForm = new KSUserScriptsManagerForm();
-        this.mainPanel.globalSettingsForm = new KSGlobalSettingsForm();
-        this.mainPanel.newUserScriptForm = new KSNewUserScriptForm();
-        this.mainPanel.userScriptSettingsForm = new KSUserScriptSettingsForm();
-        this.mainPanel.aboutProjectForm = new KSAboutProjectForm();
+        this.mainContainer = new KSMainContainer();
+        this.mainContainer.contentManager = new KSContentManager();
+        this.mainContainer.userScriptsManagerForm = new KSUserScriptsManagerForm();
+        this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
+        this.mainContainer.newUserScriptForm = new KSNewUserScriptForm();
+        this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
+        this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
     },
     isEnabled: function () {
         
@@ -794,8 +810,8 @@ function KSSEFH_CommandHandler(event) {
     switch (event.command)
     {
         case "open_tab":
-            ks.mainPanel.openTab();
-            ks.mainPanel.setTabPage(ks.mainPanel.defaultPage);
+            ks.mainContainer.openTab();
+            ks.mainContainer.setTabPage(ks.mainContainer.defaultPage);
             break;
     }
 }
