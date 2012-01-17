@@ -533,11 +533,11 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         
         var _this = transact.objInstance;
         
-        if (rs.rows.length > 0) {
+        if (resultSet.rows.length > 0) {
             
-            for (var i=0; i<rs.rows.length; i++) {
+            for (var i=0; i<resultSet.rows.length; i++) {
                 
-                var _row = rs.rows.item(i);
+                var _row = resultSet.rows.item(i);
                 
                 var _html = '<option value="'+_row['id']+'">'+_row['url']+'</option>';
                 
