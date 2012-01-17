@@ -33,6 +33,12 @@ textarea, select, option, input[type="text"] {
     background-color: #FFFEEF;
 }
 
+/* User Script Manager */
+
+#ks-usm-list * a {
+    text-align: center;
+}
+
 /* Global Excludes */
 
 #ks-gs-list {
@@ -42,7 +48,7 @@ textarea, select, option, input[type="text"] {
 
 /* New User Script */
 
-#ks-aus-script, #ks-uss-script {
+#ks-aus-script {
     font-family: "New Courier", Courier, serif;
     font-size: 0.8em;
     line-height: 1em;
@@ -52,26 +58,32 @@ textarea, select, option, input[type="text"] {
 /* User Script Settings */
 
 #ks-uss-us-excl-list, #ks-uss-us-incl-list {
-    height: 140px;
-    width: 400px;
+    height: 160px;
+    width: 380px;
 }
 
-#ks-uss-usersets section {
-    
+#ks-uss-tab-usersets section {
     float: left;
-    width: 400px;
 }
 
-#ks-uss-usersets aside {
-    
+#ks-uss-tab-usersets aside {
     padding-top: 20px;
-    width: 100px;
     float: right;
     clear: right;
-    text-align: left;
+    text-align: center;
 }
 
-#ks-uss-usersets * a {
+#ks-uss-tab-usersets * a {
     margin: 5px;
 }
 
+#ks-uss-tab-scriptedit .right {
+    text-align: right;
+}
+
+#ks-uss-script {
+    font-family: "New Courier", Courier, serif;
+    font-size: 0.8em;
+    line-height: 1em;
+    height: 270px;
+}

@@ -285,10 +285,10 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
                 
                 _html += '<tr id="ks-us-'+_row['id']+'">\n';
                 
-                    _html += '<td><h3>'+_row['name']+' <span class="label '+_lbl+'">'+_stt+'</span></h3><span>'+_row['description']+'</span></td>';
-                    _html += '<td><a href="#ks-usm-btn-settings-'+_row['id']+'" class="btn small primary">Settings</a></td>';
-                    _html += '<td><a href="#ks-usm-btn-'+_sttCmd.toLowerCase()+'-'+_row['id']+'" class="btn small info">'+_sttCmd+'</a></td>';
-                    _html += '<td><a href="#ks-usm-btn-remove-'+_row['id']+'" class="btn small danger">Delete</a></td>\n';
+                    _html += '<td class="span8"><h3>'+_row['name']+' <span class="label '+_lbl+'">'+_stt+'</span></h3><span>'+_row['description']+'</span></td>';
+                    _html += '<td class="span2"><a href="#ks-usm-btn-settings-'+_row['id']+'" class="btn small span2 primary">Settings</a></td>';
+                    _html += '<td class="span2"><a href="#ks-usm-btn-'+_sttCmd.toLowerCase()+'-'+_row['id']+'" class="btn small span2 info">'+_sttCmd+'</a></td>';
+                    _html += '<td class="span2"><a href="#ks-usm-btn-remove-'+_row['id']+'" class="btn small span2 danger">Delete</a></td>\n';
                 
                 _html += '</tr>\n';
             }
@@ -686,6 +686,9 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         };
         
         $super(this._formIdObj);
+        
+        this._$previousTabId = null;
+        this._$currentTabId = "#ks-uss-tab-usersets";
     },
     loadData: function (usId) {
         
@@ -701,12 +704,18 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         var _this = transact.objInstance;
         
-        alert("Yeah!")
-    },
-    switchTab: function () {
-        
         
     },
+    switchTab: function ($tabId) {
+        
+        this._$previousTabId = this._$currentTabId;
+        this._$currentTabId = $tabId;
+        
+        this.$(this._$previousTabId).hide();
+        this.$(this._$currentTabId).show();
+        
+    },
+    
     addUserExclusionUrl: function () {
         
     },

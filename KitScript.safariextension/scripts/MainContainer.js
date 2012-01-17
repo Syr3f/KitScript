@@ -25,6 +25,7 @@ jQuery(document).ready(function ($) {
                             '#ks-gs-add-modal * a',
                             '#ks-gs-edit-modal * a',
                             '#ks-aus-form * a',
+                            '#ks-uss-form * a',
                             '#ks-alert-modal * a'
                         ];
     
@@ -65,22 +66,19 @@ jQuery(document).ready(function ($) {
                 break;
             
             // User Script Settings
-            // =Tabs
             case '#ks-uss-tab-usersets':
-                break;
             case '#ks-uss-tab-scriptsets':
-                break;
             case '#ks-uss-tab-scriptedit':
+                ks.mainContainer.userScriptSettingsForm.switchTab(_req);
                 break;
-            // User Settings
-            // =Excludes
+            // User Settings Excludes
             case '#ks-uss-us-excl-btn-add':
                 break;
             case '#ks-uss-us-excl-btn-edit':
                 break;
             case '#ks-uss-us-excl-btn-remove':
                 break;
-            // =Includes
+            // User Settings Includes
             case '#ks-uss-us-incl-btn-add':
                 break;
             case '#ks-uss-us-incl-btn-edit':
