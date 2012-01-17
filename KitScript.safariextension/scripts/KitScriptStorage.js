@@ -78,7 +78,7 @@ var KSStorage = Class.create(Storage, {
         
         if (doDrop === true) {
             
-            _sC = function () { console.log("Table dropped."); };
+            var _sC = function () { console.log("Table dropped."); };
             
             sqlArray = new SQLStatementsArray();
             
@@ -120,7 +120,7 @@ var KSStorage = Class.create(Storage, {
      */
     insertUserScriptFile: function (blob, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script inserted."); };
+        var _sC = statementCallback || function () { console.log("User script inserted."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -128,13 +128,13 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
-    updateUserScriptFile: function (code, statementCallback, obj) {
+    updateUserScriptFile: function (id, blob, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script updated."); };
+        var _sC = statementCallback || function () { console.log("User script updated."); };
         
         sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptFiles+" SET userscript = ? WHERE id = ?;", [code, id], _sC, SFH_errorHandler);
+        sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptFiles+" SET userscript = ? WHERE id = ?;", [blob, id], _sC, SFH_errorHandler);
         
         this.transact(sqlArray);
     },
@@ -148,7 +148,7 @@ var KSStorage = Class.create(Storage, {
     },
     deleteUserScriptFile: function (id, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script deleted."); };
+        var _sC = statementCallback || function () { console.log("User script deleted."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -163,7 +163,7 @@ var KSStorage = Class.create(Storage, {
      */
     insertUserScriptMetadata: function (name, space, desc, includes, excludes, usid, disabled, user_includes, user_excludes, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script metadata inserted.") };
+        var _sC = statementCallback || function () { console.log("User script metadata inserted.") };
         
         sqlArray = new SQLStatementsArray();
         
@@ -173,7 +173,7 @@ var KSStorage = Class.create(Storage, {
     },
     updateUserScriptMetadata: function (id, name, space, desc, includes, excludes, disabled, user_includes, user_excludes, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script metadata updated."); };
+        var _sC = statementCallback || function () { console.log("User script metadata updated."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -199,7 +199,7 @@ var KSStorage = Class.create(Storage, {
     },
     deleteUserScriptMetadata: function (id, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script metadata deleted."); };
+        var _sC = statementCallback || function () { console.log("User script metadata deleted."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -209,7 +209,7 @@ var KSStorage = Class.create(Storage, {
     },
     updateUserScriptUserSettings: function (id, user_includes, user_excludes, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script (user settings) updated."); };
+        var _sC = statementCallback || function () { console.log("User script (user settings) updated."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -219,7 +219,7 @@ var KSStorage = Class.create(Storage, {
     },
     disableUserScript: function (id, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script disabled."); };
+        var _sC = statementCallback || function () { console.log("User script disabled."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -229,7 +229,7 @@ var KSStorage = Class.create(Storage, {
     },
     enableUserScript: function (id, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("User script enabled."); };
+        var _sC = statementCallback || function () { console.log("User script enabled."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -244,7 +244,7 @@ var KSStorage = Class.create(Storage, {
      */
     insertGlobalExclude: function (url, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("Global exclude inserted."); };
+        var _sC = statementCallback || function () { console.log("Global exclude inserted."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -254,7 +254,7 @@ var KSStorage = Class.create(Storage, {
     },
     updateGlobalExclude: function (id, url, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("Data updated."); };
+        var _sC = statementCallback || function () { console.log("Data updated."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -280,7 +280,7 @@ var KSStorage = Class.create(Storage, {
     },
     deleteGlobalExclude: function (id, statementCallback, obj) {
         
-        _sC = statementCallback || function () { console.log("Data deleted."); };
+        var _sC = statementCallback || function () { console.log("Data deleted."); };
         
         sqlArray = new SQLStatementsArray();
         
