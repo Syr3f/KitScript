@@ -21,7 +21,7 @@ jQuery(document).ready(function ($) {
     
     var _btnsSelectors = ['#ks-topmenu * a',
                             'ul.ks-vertmenu * a',
-                            '#ks-usm-list * a',
+                            //'#ks-usm-list * a',
                             '#ks-gs-form * a',
                             '#ks-gs-add-modal * a',
                             '#ks-gs-edit-modal * a',
@@ -40,18 +40,18 @@ jQuery(document).ready(function ($) {
             
             // Alert Modal
             case '#ks-alert-close':
-                //ks.mainPanel.hideAlert();
+                //ks.mainContainer.hideAlert();
                 break;
             
             // User Script Manager
             //case '#ks-usm-btn-settings':
-            //    ks.mainPanel.userScriptsManagerForm.openUserScriptSettings(_req);
+            //    ks.mainContainer.userScriptsManagerForm.openUserScriptSettings(_req);
             //    break;
             //case '#ks-usm-btn-disable':
-            //    ks.mainPanel.userScriptsManagerForm.disableUserScript(_req);
+            //    ks.mainContainer.userScriptsManagerForm.disableUserScript(_req);
             //    break;
             //case '#ks-usm-btn-delete':
-            //    ks.mainPanel.userScriptsManagerForm.deleteUserScript(_req);
+            //    ks.mainContainer.userScriptsManagerForm.deleteUserScript(_req);
             //    break;
             
             // User Script Settings
@@ -60,24 +60,24 @@ jQuery(document).ready(function ($) {
             
             // Global Settings Buttons
             case '#ks-gs-btn-add':
-                ks.mainPanel.globalSettingsForm.addGlobalExclude();
+                ks.mainContainer.globalSettingsForm.addGlobalExclude();
                 break;
             case '#ks-gs-btn-edit':
-                ks.mainPanel.globalSettingsForm.editGlobalExclude();
+                ks.mainContainer.globalSettingsForm.editGlobalExclude();
                 break;
             case '#ks-gs-action-register':
-                ks.mainPanel.globalSettingsForm.registerGlobalExclude();
+                ks.mainContainer.globalSettingsForm.registerGlobalExclude();
                 break;
             case '#ks-gs-action-update':
-                ks.mainPanel.globalSettingsForm.updateGlobalExclude();
+                ks.mainContainer.globalSettingsForm.updateGlobalExclude();
                 break;
             case '#ks-gs-btn-remove':
-                ks.mainPanel.globalSettingsForm.removeGlobalExclude();
+                ks.mainContainer.globalSettingsForm.removeGlobalExclude();
                 break;
             
             // New User Script
             case '#ks-aus-btn-add':
-                ks.mainPanel.newUserScriptForm.addUserScript();
+                ks.mainContainer.newUserScriptForm.addUserScript();
                 break;
             
             // Toolbar & Menu Buttons
@@ -88,7 +88,7 @@ jQuery(document).ready(function ($) {
                 ks.setDisable();
                 break;
             default:
-                ks.mainPanel.contentManager.transitContent(_req);
+                ks.mainContainer.contentManager.transitContent(_req);
         }
     });
     
