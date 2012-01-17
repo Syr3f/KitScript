@@ -79,7 +79,7 @@ jQuery(document).ready(function ($) {
                 alert('edit user exclude');
                 break;
             case '#ks-uss-us-excl-btn-remove':
-                alert('remove user exclude');
+                ks.mainContainer.userScriptSettingsForm.removeUserExclusion();
                 break;
             // User Settings Includes
             case '#ks-uss-us-incl-btn-add':
@@ -89,7 +89,7 @@ jQuery(document).ready(function ($) {
                 alert('edit user include');
                 break;
             case '#ks-uss-us-incl-btn-remove':
-                alert('remove user include');
+                ks.mainContainer.userScriptSettingsForm.removeUserInclusion();
                 break;
             // Script Settings
             case '#ks-uss-ss-btn-add-usincl':
@@ -127,17 +127,11 @@ jQuery(document).ready(function ($) {
     // User Script Settings ~ User Settings Lists Events
     $('#ks-uss-us-excl-list').change(function (evt) {
         
-        $('#ks-uss-us-excl-btn-edit').removeClass('disabled');
-        $('#ks-uss-us-excl-btn-edit').addClass('info');
-        $('#ks-uss-us-excl-btn-remove').removeClass('disabled');
-        $('#ks-uss-us-excl-btn-remove').addClass('danger');
+        ks.mainContainer.userScriptSettingsForm.activateExclusionBtns();
     });
     $('#ks-uss-us-incl-list').change(function (evt) {
         
-        $('#ks-uss-us-incl-btn-edit').removeClass('disabled');
-        $('#ks-uss-us-incl-btn-edit').addClass('info');
-        $('#ks-uss-us-incl-btn-remove').removeClass('disabled');
-        $('#ks-uss-us-incl-btn-remove').addClass('danger');
+        ks.mainContainer.userScriptSettingsForm.activateInclusionBtns();
     });
     
     // User Script Settings ~ Script Settings Lists Events

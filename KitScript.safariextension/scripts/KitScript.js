@@ -795,24 +795,110 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         this.$(this._$currentTabId).show();
     },
     
-    addUserExclusionUrl: function () {
+    addUserExclusion: function () {
         
     },
-    editUserExclusionUrl: function () {
+    editUserExclusion: function () {
         
     },
-    removeUserExclusionUrl: function () {
+    removeUserExclusion: function () {
         
+        this.disactivateExclusionBtns();
+        
+        this.$('#ks-uss-us-excl-list option:selected').remove();
+        
+        this._updateUserSettings();
+        this._emptyUserSettingsList();
+        this._fillUserSettingsLists();
+    },
+    activateExclusionBtns: function () {
+        
+        this.$('#ks-uss-us-excl-btn-edit').removeClass('disabled');
+        this.$('#ks-uss-us-excl-btn-edit').addClass('info');
+        this.$('#ks-uss-us-excl-btn-remove').removeClass('disabled');
+        this.$('#ks-uss-us-excl-btn-remove').addClass('danger');
+    },
+    disactivateExclusionBtns: function () {
+        
+        this.$('#ks-uss-us-excl-btn-edit').addClass('disabled');
+        this.$('#ks-uss-us-excl-btn-edit').removeClass('info');
+        this.$('#ks-uss-us-excl-btn-remove').addClass('disabled');
+        this.$('#ks-uss-us-excl-btn-remove').removeClass('danger');
     },
     
-    addUserInclusionUrl: function () {
+    addUserInclusion: function () {
         
     },
-    editUserInclusionUrl: function () {
+    editUserInclusion: function () {
         
     },
-    removeUserInclusionUrl: function () {
+    removeUserInclusion: function () {
         
+        this.disactivateInclusionBtns();
+        
+        this.$('#ks-uss-us-incl-list option:selected').remove();
+        
+        this._updateUserSettings();
+        this._emptyUserSettingsList();
+        this._fillUserSettingsLists();
+    },
+    activateInclusionBtns: function () {
+        
+        this.$('#ks-uss-us-incl-btn-edit').removeClass('disabled');
+        this.$('#ks-uss-us-incl-btn-edit').addClass('info');
+        this.$('#ks-uss-us-incl-btn-remove').removeClass('disabled');
+        this.$('#ks-uss-us-incl-btn-remove').addClass('danger');
+    },
+    disactivateInclusionBtns: function () {
+        
+        this.$('#ks-uss-us-incl-btn-edit').addClass('disabled');
+        this.$('#ks-uss-us-incl-btn-edit').removeClass('info');
+        this.$('#ks-uss-us-incl-btn-remove').addClass('disabled');
+        this.$('#ks-uss-us-incl-btn-remove').removeClass('danger');
+    },
+    
+    _emptyUserSettingsLists: function () {
+        
+        this.$('#ks-uss-us-excl-list').empty();
+        this.$('#ks-uss-us-incl-list').empty();
+    },
+    _fillUserSettingsLists: function () {
+        
+        var _metaId = this.getLoadedMetaId();
+        
+        db.fetchUserScriptMetadata(_metaId, this._dbq_onFetchMetadata, this);
+    },
+    _dbq_onFetchMetadata: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        if (resultSet.rows.length > 0) {
+            
+            var _row = resultSet.rows.item(0);
+            
+            _this._fillExclusionsList(_row['user_excludes']);
+            _this._fillInclusionsList(_row['user_includes']);
+        } else {
+            _this.showFailureAlert("Couldn't fetch user script metadata.");
+        }
+    },
+    _fillExclusionsList: function (exclsCsv) {
+        
+        var _arrExcls = exclsCsv.split(',');
+        
+        for (var i=0; i<_arrExcls.length; i++) {
+            
+            this.$('#ks-uss-us-excl-list').append('<option>'+_arrExcls[i]+'</option>');
+        }
+    },
+    _fillInclusionsList: function (inclsCsv) {
+        
+        var _arrIncls = inclsCsv.split(',');
+        
+        for (var i=0; i<_arrIncls.length; i++) {
+            
+            this.$('#ks-uss-us-incl-list').append('<option>'+_arrIncls[i]+'</option>');
+        }
     },
     
     addToUserInclusion: function () {
