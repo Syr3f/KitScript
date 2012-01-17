@@ -100,7 +100,7 @@ jQuery(document).ready(function ($) {
                 break;
             // Script Editor
             case '#ks-uss-se-btn-update':
-                ks.mainContainer.userScriptSettings.updateUserScript();
+                ks.mainContainer.userScriptSettingsForm.updateUserScript();
                 break;
             
             // Toolbar & Menu Buttons

@@ -745,6 +745,8 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
             _this._fillUserSettingsExcludes(_row['user_excludes']);
             _this._fillUserSettingsIncludes(_row['user_includes']);
             
+            _this.setLoadedScriptId(_row['userscript_id']);
+            
             _this.loadUserScriptFile(_row['userscript_id']);
         } else
             _this.showFailureAlert("Could not fetch the user script metadata.");
@@ -808,7 +810,20 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     updateUserScript: function () {
         
+        var _usId = this.getLoadedScriptId();
+        var _usStr = this.$('#ks-uss-script').val();
         
+        try {
+            db.updateUserScriptFile(_usId, KSSHF_blobize(_usStr), this._dbq_onUpdateUserScriptFile, this);
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
+    },
+    _dbq_onUpdateUserScriptFile: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.showSuccessAlert("User script has been updated.");
     },
     
     _fillUserSettingsExcludes: function (excludesStr) {
