@@ -260,144 +260,130 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     },
     drawTable: function () {
         
-        var _sC1 = function (trsct,rs) {
+        this.$('#'+this._tableId+' tbody').empty();
+        
+        db.fetchAllUserScriptsMetadata(0,25,this._dbq_onFetchUserScripts,this);
+    },
+    _dbq_onFetchUserScripts: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        var _html = "";
+        var _sttOn = 'Enabled', _sttOff = 'Disabled';
+        
+        if (resultSet.rows.length > 0) {
             
-            var _this = trsct.objInstance;
-            var _html = "";
-            
-            var _sttOn = 'Enabled', _sttOff = 'Disabled';
-            
-            if (rs.rows.length > 0) {
+            for (var i=0; i<resultSet.rows.length; i++) {
                 
-                for (var i=0; i<rs.rows.length; i++) {
-                    
-                    var _row = rs.rows.item(i);
-                    
-                    if (parseInt(_row['disabled']) === 1)
-                        var _lbl = 'important', _stt = "OFF";
-                    else
-                        var _lbl = 'notice', _stt = "ON";
-                    
-                    var _sttCmd = (_stt==="ON"?_sttOff.substr(0,_sttOff.length-1):_sttOn.substr(0,_sttOn.length-1));
-                    
-                    _html += '<tr id="ks-us-'+_row['id']+'">\n';
-                    
-                        _html += '<td><h3>'+_row['name']+' <span class="label '+_lbl+'">'+_stt+'</span></h3><span>'+_row['description']+'</span></td>';
-                        _html += '<td><a href="#ks-usm-btn-settings-'+_row['id']+'" class="btn small primary">Settings</a></td>';
-                        _html += '<td><a href="#ks-usm-btn-'+_sttCmd.toLowerCase()+'-'+_row['id']+'" class="btn small info">'+_sttCmd+'</a></td>';
-                        _html += '<td><a href="#ks-usm-btn-remove-'+_row['id']+'" class="btn small danger">Delete</a></td>\n';
-                    
-                    _html += '</tr>\n';
-                }
-            } else {
+                var _row = resultSet.rows.item(i);
                 
-                _html += '<tr>\n';
+                if (parseInt(_row['disabled']) === 1)
+                    var _lbl = 'important', _stt = "OFF";
+                else
+                    var _lbl = 'notice', _stt = "ON";
                 
-                    _html += '<td><h3>No user scripts installed.</h3></td>';
+                var _sttCmd = (_stt==="ON"?_sttOff.substr(0,_sttOff.length-1):_sttOn.substr(0,_sttOn.length-1));
+                
+                _html += '<tr id="ks-us-'+_row['id']+'">\n';
+                
+                    _html += '<td><h3>'+_row['name']+' <span class="label '+_lbl+'">'+_stt+'</span></h3><span>'+_row['description']+'</span></td>';
+                    _html += '<td><a href="#ks-usm-btn-settings-'+_row['id']+'" class="btn small primary">Settings</a></td>';
+                    _html += '<td><a href="#ks-usm-btn-'+_sttCmd.toLowerCase()+'-'+_row['id']+'" class="btn small info">'+_sttCmd+'</a></td>';
+                    _html += '<td><a href="#ks-usm-btn-remove-'+_row['id']+'" class="btn small danger">Delete</a></td>\n';
                 
                 _html += '</tr>\n';
             }
+        } else {
             
-            _this.$('#'+_this._tableId+' tbody').html(_html);
+            _html += '<tr>\n';
             
-            _this.$("#ks-usm-list * a").click({_form:_this}, function (evt) {
-                
-                var _req = _this.$(this).attr('href');
-                
-                if (/#ks-usm-btn-settings-[0-9]+/.test(_req))
-                    evt.data._form.openUserScriptSettings(_req);
-                else if (/#ks-usm-btn-disable-[0-9]+/.test(_req))
-                    evt.data._form.disableUserScript(_req);
-                else if (/#ks-usm-btn-enable-[0-9]+/.test(_req))
-                    evt.data._form.enableUserScript(_req);
-                else if (/#ks-usm-btn-remove-[0-9]+/.test(_req))
-                    evt.data._form.deleteUserScript(_req);
-            });
+                _html += '<td><h3>No user scripts installed.</h3></td>';
+            
+            _html += '</tr>\n';
         }
         
-        this.$('#'+this._tableId+' tbody').empty();
+        _this.$('#'+_this._tableId+' tbody').html(_html);
         
-        db.fetchAllUserScriptsMetadata(0,25,_sC1,this);
+        _this.$("#ks-usm-list * a").click({_form:_this}, function (evt) {
+            
+            var _req = _this.$(this).attr('href');
+            
+            if (/#ks-usm-btn-settings-[0-9]+/.test(_req))
+                evt.data._form.openUserScriptSettings(_req);
+            else if (/#ks-usm-btn-disable-[0-9]+/.test(_req))
+                evt.data._form.disableUserScript(_req);
+            else if (/#ks-usm-btn-enable-[0-9]+/.test(_req))
+                evt.data._form.enableUserScript(_req);
+            else if (/#ks-usm-btn-remove-[0-9]+/.test(_req))
+                evt.data._form.deleteUserScript(_req);
+        });
     },
     openUserScriptSettings: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
         this.transitContent('userscript-settings');
-        
-        this.$("#ks-uss-us-id").val(_usid);
+        ks.mainContainer.userScriptSettingsForm.loadData(_usid);
     },
     disableUserScript: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
-        var _fC = function (trsct, rs) {
-            
-            var _this = trsct.objInstance;
-            
-            _this.drawTable();
-            _this.showSuccessAlert('User script has been disabled.');
-        }
-        
         try {
-            db.disableUserScript(_usid, _fC, this);
+            db.disableUserScript(_usid, this._dbq_onDisableRequest, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
+    },
+    _dbq_onDisableRequest: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.drawTable();
+        _this.showSuccessAlert('User script has been disabled.');
     },
     enableUserScript: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
-        var _fC = function (trsct, rs) {
-            
-            var _this = trsct.objInstance;
-            
-            _this.drawTable();
-            _this.showSuccessAlert('User script has been enabled.');
-        }
-        
         try {
-            db.enableUserScript(_usid, _fC, this);
+            db.enableUserScript(_usid, this._dbq_onEnableRequest, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
+    },
+    _dbq_onEnableRequest: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.drawTable();
+        _this.showSuccessAlert('User script has been enabled.');
     },
     deleteUserScript: function (btnId) {
         
         var _usid = this._extractId(btnId);
         
-        alert(_usid);
-        
-        var _fC = function (trsct, rs) {
-            
-            alert("_fC");
-            
-            var _this = trsct.objInstance;
-            
-            var _fC2 = function (trsct2, rs2) {
-                
-                alert("_fC");
-                
-                var _this2 = trsct2.objInstance;
-                
-                _this2.drawTable();
-                _this2.showSuccessAlert('User script has been deleted.');
-            }
-            
-            _this._db.deleteUserScriptMetadata(_this._usid, _fC2, _this);
-            delete _this._db;
-        }
+        this.__proto__._db = db;
+        this.__proto__._usid = _usid;
         
         try {
-            
-            this.__proto__._db = db;
-            this.__proto__._usid = _usid;
-            
-            db.deleteUserScriptFile(_usid, _fC, this);
+            db.deleteUserScriptFile(_usid, this._dbq_onDeleteUserScript, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
+    },
+    _dbq_onDeleteUserScriptFile: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this._db.deleteUserScriptMetadata(_this._usid, _this._dbq_onDeleteUserScriptMeta, _this);
+        delete _this._db;
+    },
+    _dbq_onDeleteUserScriptMeta: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.drawTable();
+        _this.showSuccessAlert('User script has been deleted.');
     },
     _extractId: function (btnId) {
         
@@ -463,20 +449,10 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         
         if (_val.length > 0) {
             
-            var _fn = function (trsct,rs) {
-                
-                var _this = trsct.objInstance;
-                
-                _this.emptyList();
-                _this.fillList();
-            }
-            
             try {
-                
-                db.insertGlobalExclude(_val,_fn,this);
+                db.insertGlobalExclude(_val,this._dbq_onQueryGlobalExcludes,this);
                 this.showSuccessAlert("URL has been registered.");
             } catch (e) {
-                
                 this.showFailureAlert(e.getMessage());
             }
         }
@@ -516,20 +492,10 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         
         if (_url.length > 0) {
             
-            var _fn = function (trsct,rs) {
-                
-                var _this = trsct.objInstance;
-                
-                _this.emptyList();
-                _this.fillList();
-            }
-            
             try {
-                
-                db.updateGlobalExclude(_id, _url,_fn,this);
+                db.updateGlobalExclude(_id, _url,this._dbq_onQueryGlobalExcludes,this);
                 this.showSuccessAlert("URL has been updated.");
             } catch (e) {
-                
                 this.showFailureAlert(e.getMessage());
             }
         }
@@ -541,22 +507,19 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         
         var _id = this.$('#'+this._listId+' option:selected').val();
         
-        var _fn = function (trsct,rs) {
-            
-            var _this = trsct.objInstance;
-            
-            _this.emptyList();
-            _this.fillList();
-        }
-        
         try {
-            
-            db.deleteGlobalExclude(_id,_fn,this);
+            db.deleteGlobalExclude(_id,this._dbq_onQueryGlobalExcludes,this);
             this.showSuccessAlert("URL has been deleted.");
         } catch (e) {
-            
             this.showFailureAlert(e.getMessage());
         }
+    },
+    _dbq_onQueryGlobalExcludes: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.emptyList();
+        _this.fillList();
     },
     emptyList: function () {
         
@@ -564,24 +527,23 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
     },
     fillList: function () {
         
-        var _fn = function (trsct,rs) {
+        db.fetchAllGlobalExcludes(0,1000,this._dbq_onFetchGlobalExcludes,this);
+    },
+    _dbq_onFetchGlobalExcludes: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        if (rs.rows.length > 0) {
             
-            var _this = trsct.objInstance;
-            
-            if (rs.rows.length > 0) {
+            for (var i=0; i<rs.rows.length; i++) {
                 
-                for (var i=0; i<rs.rows.length; i++) {
-                    
-                    var _row = rs.rows.item(i);
-                    
-                    var _html = '<option value="'+_row['id']+'">'+_row['url']+'</option>';
-                    
-                    _this.$('#'+_this._listId).append(_html);
-                }
+                var _row = rs.rows.item(i);
+                
+                var _html = '<option value="'+_row['id']+'">'+_row['url']+'</option>';
+                
+                _this.$('#'+_this._listId).append(_html);
             }
         }
-        
-        db.fetchAllGlobalExcludes(0,1000,_fn,this);
     },
     showSuccessAlert: function (strMsg) {
         
@@ -646,36 +608,6 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     },
     _storeUserScript: function (name, space, desc, excludes, includes, code) {
         
-        _fH = function () {};
-        
-        db.insertUserScriptFile(KSSHF_blobize(code),_fH,this);
-        
-        var _sC1 = function (trsct,rs) {
-            
-            var _this = trsct.objInstance;
-            
-            if (rs.rows.length > 0) {
-                
-                var _row = rs.rows.item(0);
-                
-                var _sC2 = function (trsct,rs) {
-                    
-                    var _this2 = trsct.objInstance;
-                    
-                    _this2.transitContent('#userscript-manager');
-                    
-                    ks.mainContainer.userScriptsManagerForm.showSuccessAlert("The user script has been added.");
-                    
-                    ks.mainContainer.userScriptsManagerForm.drawTable();
-                }
-                
-                db.insertUserScriptMetadata(_this._fname, _this._fspace, _this._escQuot(_this._fdesc), _this._fincludes, _this._fexcludes, parseInt(_row[_this._liria]), 0, _sC2, _this);
-            } else {
-                
-                _this.showErrorAlert("The user script couldn't be stored.");
-            }
-        }
-        
         this._liria = 'LastInsertId';
         
         this._fname = name;
@@ -684,7 +616,39 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         this._fexcludes = excludes;
         this._fincludes = includes;
         
-        db.getLastInsertRowId(this._liria, _sC1, this);
+        try {
+            db.insertUserScriptFile(KSSHF_blobize(code),this._dbq_onCreateUserScriptFile,this);
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
+    },
+    _dbq_onCreateUserScriptFile: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        db.getLastInsertRowId(_this._liria, _this._dbq_onFetchLastInsertId, _this);
+    },
+    _dbq_onFetchLastInsertId: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        if (resultSet.rows.length > 0) {
+            
+            var _row = resultSet.rows.item(0);
+            
+            db.insertUserScriptMetadata(_this._fname, _this._fspace, _this._escQuot(_this._fdesc), _this._fincludes, _this._fexcludes, parseInt(_row[_this._liria]), 0, _this._dbq_onCreateUserScriptMeta, _this);
+        } else
+            _this.showErrorAlert("The user script couldn't be stored.");
+    },
+    _dbq_onCreateUserScriptMeta: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.transitContent('#userscript-manager');
+        
+        _this.showSuccessAlert("The user script has been added.");
+        
+        ks.mainContainer.userScriptsManagerForm.drawTable();
     },
     _escQuot: function (str) {
         
@@ -722,6 +686,53 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         };
         
         $super(this._formIdObj);
+    },
+    loadData: function (usId) {
+        
+        this.$("#ks-uss-us-id").val(usId);
+        
+        try {
+            db.fetchUserScriptMetadata(usId, this._onFetchUserScriptData, this);
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
+    },
+    _onFetchUserScriptData: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        alert("Yeah!")
+    },
+    switchTab: function () {
+        
+        
+    },
+    addUserExclusionUrl: function () {
+        
+    },
+    editUserExclusionUrl: function () {
+        
+    },
+    removeUserExclusionUrl: function () {
+        
+    },
+    addUserInclusionUrl: function () {
+        
+    },
+    editUserInclusionUrl: function () {
+        
+    },
+    removeUserInclusionUrl: function () {
+        
+    },
+    addToUserExclusion: function () {
+        
+    },
+    addToUserInclusion: function () {
+        
+    },
+    updateScript: function () {
+        
     },
     showSuccessAlert: function (strMsg) {
         
@@ -787,7 +798,7 @@ var KitScript = Class.create(_Utils, {
         this.mainContainer.userScriptsManagerForm = new KSUserScriptsManagerForm();
         this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
         this.mainContainer.newUserScriptForm = new KSNewUserScriptForm();
-        //this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
+        this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
     },
     isEnabled: function () {
@@ -796,59 +807,56 @@ var KitScript = Class.create(_Utils, {
     },
     setEnable: function () {
         
-        _sC = function (transaction, resultSet) {
-            
-            var _ks = transaction.objInstance;
-            
-            _ks.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
-            _ks._isEnabled = true;
-        };
-        
         if (!this.isEnabled()) {
             
-            db.setKitScriptEnabled(_sC, this);
+            db.setKitScriptEnabled(this._dbq_onSetEnable, this);
         }
+    },
+    _dbq_onSetEnable: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
+        _this._isEnabled = true;
     },
     setDisable: function () {
         
-        _sC = function () {
-            
-            var _ks = transaction.objInstance;
-            
-            _ks.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
-            _ks._isEnabled = false;
-        };
-        
         if (this.isEnabled()) {
             
-            db.setKitScriptDisabled(_sC, this);
+            db.setKitScriptDisabled(this._dbq_onSetDisable, this);
         }
+    },
+    _dbq_onSetDisable: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
+        _this._isEnabled = false;
     },
     declareEnabled: function () {
         
-        _sC = function (transaction, resultSet) {
+        db.isKitScriptEnabled(this._dbq_onQueryEnabledState, this);
+    },
+    _dbq_onQueryEnabledState: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        if (resultSet.rows.length > 0) {
             
-            var _ks = transaction.objInstance;
+            var _row = resultSet.rows.item(0);
             
-            if (resultSet.rows.length > 0) {
+            if (parseInt(_row['enabled']) == 1) {
                 
-                var _row = resultSet.rows.item(0);
+                _this._isEnabled = true;
                 
-                if (parseInt(_row['enabled']) == 1) {
-                    
-                    _ks._isEnabled = true;
-                    
-                    _ks.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
-                } else {
-                    
-                    _ks._isEnabled = false;
-                    
-                    _ks.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
-                }
+                _this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
+            } else {
+                
+                _this._isEnabled = false;
+                
+                _this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
             }
         }
-        
-        db.isKitScriptEnabled(_sC, this);
     }
 });
 
