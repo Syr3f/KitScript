@@ -55,6 +55,14 @@ var _Utils = Class.create({
     _l: function (msg) {
         
         console.log(msg);
+    },
+    escQuote: function (str) {
+        
+        return str.replace("'","\\'","gm");
+    },
+    sqlClean: function (str) {
+        
+        return this.escQuote(str.trim());
     }
 });
 
