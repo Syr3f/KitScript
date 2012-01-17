@@ -349,7 +349,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
-    }
+    },
     showWarningAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
@@ -357,7 +357,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     showFailureAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
+    }
 });
 
 
@@ -529,7 +529,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
-    }
+    },
     showWarningAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
@@ -537,7 +537,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
     showFailureAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
+    }
 });
 
 
@@ -636,7 +636,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
-    }
+    },
     showWarningAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
@@ -644,7 +644,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     showFailureAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
+    }
 });
 
 
@@ -669,7 +669,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
-    }
+    },
     showWarningAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
@@ -677,7 +677,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     showFailureAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    },
+    }
 });
 
 
