@@ -94,7 +94,6 @@ var KSStorage = Class.create(Storage, {
         }
         
         _sC1 = function () { console.log("Table created."); };
-        _sC2 = function () { console.log("Data inserted."); };
         
         sqlArray = new SQLStatementsArray();
         
@@ -102,6 +101,15 @@ var KSStorage = Class.create(Storage, {
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NOT NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], _sC1, SFH_errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    insertInitData:function () {
+        
+        _sC2 = function () { console.log("Data inserted."); };
+        
+        sqlArray = new SQLStatementsArray();
+        
         sqlArray.push(this, "INSERT INTO "+this._dbTableKitScript+" (enabled) VALUES (1);", [], _sC2, SFH_errorHandler);
         
         this.transact(sqlArray);
