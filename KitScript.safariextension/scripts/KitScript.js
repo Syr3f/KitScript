@@ -169,6 +169,7 @@ var KSContentManager = Class.create(_Utils, {
         
         this._setDocumentTitle(_ttl);
     },
+
     showMainContainer: function () {
         
         this.transitContent('userscript-manager');
@@ -183,22 +184,6 @@ var KSContentManager = Class.create(_Utils, {
         // About
         ks.mainContainer.aboutProjectForm.convertMdTxt();
     },
-    /*
-    popAlert: function (strMsg) {
-        
-        this.$('#'+this._alertModalId+' > h2').text(strMsg);
-        
-        this.showModalAlert();
-    },
-    showModalAlert: function (alertModalId) {
-        
-        this.$('#'+alertModalId).modal('show');
-    },
-    hideModalAlert: function (alertModalId) {
-        
-        this.$('#'+alertModalId).modal('hide');
-    },
-    */
     showAlertMsg: function (formBaseId,level,strMsg) {
         
         var _lvl = "";
@@ -264,6 +249,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         this._tableId = this._formIdObj.formBaseId+'-list';
     },
+    
     drawTable: function () {
         
         this.$('#'+this._tableId+' tbody').empty();
@@ -323,6 +309,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
                 evt.data._form.deleteUserScript(_req);
         });
     },
+
     openUserScriptSettings: function (btnId) {
         
         var _metaId = this._extractId(btnId);
@@ -331,6 +318,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         ks.mainContainer.userScriptSettingsForm.loadData(_metaId);
         this.transitContent('userscript-settings');
     },
+    
     disableUserScript: function (btnId) {
         
         var _metaId = this._extractId(btnId);
@@ -348,6 +336,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         _this.drawTable();
         _this.showSuccessAlert('User script has been disabled.');
     },
+    
     enableUserScript: function (btnId) {
         
         var _metaId = this._extractId(btnId);
@@ -365,6 +354,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         _this.drawTable();
         _this.showSuccessAlert('User script has been enabled.');
     },
+    
     deleteUserScript: function (btnId) {
         
         var _metaId = this._extractId(btnId);
@@ -406,10 +396,12 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         _this.drawTable();
         _this.showSuccessAlert('User script has been deleted.');
     },
+
     _extractId: function (btnId) {
         
         return btnId.substr(btnId.lastIndexOf('-')+1,btnId.length);
     },
+    
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
@@ -453,6 +445,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         this._inEditId = this._formIdObj.formBaseId+'-input-edit-url';
         this._editId = this._formIdObj.formBaseId+'-edit-id';
     },
+
     addGlobalExclude: function () {
         
         this.$('#'+this._addModalId).modal({
@@ -479,6 +472,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
             }
         }
     },
+
     editGlobalExclude: function () {
         
         if (this.$('#'+this._listId+' option:selected').val() !== null) {
@@ -543,6 +537,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         _this.emptyList();
         _this.fillList();
     },
+
     emptyList: function () {
         
         this.$('#'+this._listId).empty();
@@ -567,6 +562,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
             }
         }
     },
+    
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
@@ -603,6 +599,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         
         this._textareaId = this._formIdObj.formBaseId+'-script';
     },
+
     addUserScript: function () {
         
         var _script = this.$('#'+this._textareaId).val();
@@ -674,6 +671,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         
         _this.$('#ks-aus-script').val('');
     },
+    
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
@@ -713,6 +711,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         this._$previousTabId = null;
         this._$currentTabId = _defaultTabId;
     },
+    
     getLoadedMetaId: function () {
         
         return this.$("#ks-uss-us-metaid").val();
@@ -733,6 +732,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         return this.$('#ks-uss-script').val();
     },
+    
     loadData: function (metaId) {
         
         this._emptyAllFields();
