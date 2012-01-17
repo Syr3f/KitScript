@@ -316,6 +316,7 @@ function KSSHF_blobize(str) {
     
     var _blob = "";
     
+    /*
     for (var i=0; i<str.length; i++) {
         
         var _uc = str.charCodeAt(i).toString(16).toUpperCase();
@@ -326,6 +327,9 @@ function KSSHF_blobize(str) {
         
         _blob = _blob.concat('0x',_uc);
     }
+    */
+    
+    _blob = encode64(str);
     
     return _blob;
 }
@@ -334,12 +338,16 @@ function KSSHF_unblobize(blob) {
     
     var _str;
     
+    /*
     for (var i=0; i<blob.length; i+=6) {
         
         var _uc = blob.substr(0+i,6);
         
         _str = _str.concat(String.fromCharCode(_uc));
     }
+    */
+    
+    _str = decode64(blob);
     
     return _str;
 }
