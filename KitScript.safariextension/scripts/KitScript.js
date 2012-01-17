@@ -797,6 +797,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     addUserExclusion: function () {
         
+        
     },
     editUserExclusion: function () {
         
@@ -808,7 +809,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         this.$('#ks-uss-us-excl-list option:selected').remove();
         
         this._updateUserSettings();
-        this._emptyUserSettingsList();
+        this._emptyUserSettings();
         this._fillUserSettingsLists();
     },
     activateExclusionBtns: function () {
@@ -828,6 +829,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     addUserInclusion: function () {
         
+        
     },
     editUserInclusion: function () {
         
@@ -839,7 +841,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         this.$('#ks-uss-us-incl-list option:selected').remove();
         
         this._updateUserSettings();
-        this._emptyUserSettingsList();
+        this._emptyUserSettings();
         this._fillUserSettingsLists();
     },
     activateInclusionBtns: function () {
@@ -857,11 +859,6 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         this.$('#ks-uss-us-incl-btn-remove').removeClass('danger');
     },
     
-    _emptyUserSettingsLists: function () {
-        
-        this.$('#ks-uss-us-excl-list').empty();
-        this.$('#ks-uss-us-incl-list').empty();
-    },
     _fillUserSettingsLists: function () {
         
         var _metaId = this.getLoadedMetaId();
@@ -876,28 +873,10 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
             
             var _row = resultSet.rows.item(0);
             
-            _this._fillExclusionsList(_row['user_excludes']);
-            _this._fillInclusionsList(_row['user_includes']);
+            _this._fillUserSettingsExcludes(_row['user_excludes']);
+            _this._fillUserSettingsIncludes(_row['user_includes']);
         } else {
             _this.showFailureAlert("Couldn't fetch user script metadata.");
-        }
-    },
-    _fillExclusionsList: function (exclsCsv) {
-        
-        var _arrExcls = exclsCsv.split(',');
-        
-        for (var i=0; i<_arrExcls.length; i++) {
-            
-            this.$('#ks-uss-us-excl-list').append('<option>'+_arrExcls[i]+'</option>');
-        }
-    },
-    _fillInclusionsList: function (inclsCsv) {
-        
-        var _arrIncls = inclsCsv.split(',');
-        
-        for (var i=0; i<_arrIncls.length; i++) {
-            
-            this.$('#ks-uss-us-incl-list').append('<option>'+_arrIncls[i]+'</option>');
         }
     },
     
@@ -917,6 +896,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this._updateUserSettings();
     },
+    
     _updateUserSettings: function () {
         
         var _metaId = this.getLoadedMetaId();
