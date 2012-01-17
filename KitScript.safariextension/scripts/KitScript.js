@@ -88,8 +88,13 @@ var KSMainContainer = Class.create(KSBase, {
     initialize: function ($super) {
         
         this._pageName = "MainContainer.html";
+        
         this.contentManager = null;
+        this.userScriptsManagerForm = null;
         this.globalSettingsForm = null;
+        this.newUserScriptForm = null;
+        this.userScriptSettingsForm = null;
+        this.aboutProjectForm = null;
         
         $super();
     },
@@ -320,18 +325,18 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     },
     openUserScriptSettings: function (btnId) {
         
-        var _usid = this._extractUsId(btnId);
+        var _metaId = this._extractId(btnId);
         
-        ks.mainContainer.userScriptSettingsForm.setLoadedId(_usid);
-        ks.mainContainer.userScriptSettingsForm.loadData(_usid);
+        ks.mainContainer.userScriptSettingsForm.setLoadedMetaId(_metaId);
+        ks.mainContainer.userScriptSettingsForm.loadData(_metaId);
         this.transitContent('userscript-settings');
     },
     disableUserScript: function (btnId) {
         
-        var _usid = this._extractUsId(btnId);
+        var _metaId = this._extractId(btnId);
         
         try {
-            db.disableUserScript(_usid, this._dbq_onDisableRequest, this);
+            db.disableUserScript(_metaId, this._dbq_onDisableRequest, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
@@ -345,10 +350,10 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     },
     enableUserScript: function (btnId) {
         
-        var _usid = this._extractUsId(btnId);
+        var _metaId = this._extractId(btnId);
         
         try {
-            db.enableUserScript(_usid, this._dbq_onEnableRequest, this);
+            db.enableUserScript(_metaId, this._dbq_onEnableRequest, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
@@ -362,13 +367,13 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     },
     deleteUserScript: function (btnId) {
         
-        var _usid = this._extractUsId(btnId);
+        var _metaId = this._extractId(btnId);
         
         this.__proto__._db = db;
-        this.__proto__._usid = _usid;
+        this.__proto__._metaId = _metaId;
         
         try {
-            db.deleteUserScriptFile(_usid, this._dbq_onDeleteUserScript, this);
+            db.deleteUserScriptFile(_metaId, this._dbq_onDeleteUserScript, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
@@ -377,7 +382,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         var _this = transact.objInstance;
         
-        _this._db.deleteUserScriptMetadata(_this._usid, _this._dbq_onDeleteUserScriptMeta, _this);
+        _this._db.deleteUserScriptMetadata(_this._metaId, _this._dbq_onDeleteUserScriptMeta, _this);
         delete _this._db;
     },
     _dbq_onDeleteUserScriptMeta: function (transact, resultSet) {
@@ -387,7 +392,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         _this.drawTable();
         _this.showSuccessAlert('User script has been deleted.');
     },
-    _extractUsId: function (btnId) {
+    _extractId: function (btnId) {
         
         return btnId.substr(btnId.lastIndexOf('-')+1,btnId.length);
     },
@@ -698,24 +703,31 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         this._$previousTabId = null;
         this._$currentTabId = _defaultTabId;
     },
-    getLoadedId: function () {
+    getLoadedMetaId: function () {
         
-        return this.$("#ks-uss-us-id").val();
+        return this.$("#ks-uss-us-metaid").val();
     },
-    setLoadedId: function (usId) {
+    setLoadedMetaId: function (metaId) {
         
-        this.$("#ks-uss-us-id").val(usId);
+        this.$("#ks-uss-us-metaid").val(metaId);
     },
-    loadData: function (usId) {
+    getLoadedScriptId: function () {
+        
+        return this.$("#ks-uss-us-scriptid").val();
+    },
+    setLoadedScriptId: function (usId) {
+        
+        this.$("#ks-uss-us-scriptid").val(usId);
+    },
+    loadData: function (metaId) {
         
         this._emptyAllFields();
-        this.loadUserScriptMetadata(usId);
-        this.loadUserScriptFile(usId);
+        this.loadUserScriptMetadata(metaId);
     },
-    loadUserScriptMetadata: function (usId) {
+    loadUserScriptMetadata: function (metaId) {
         
         try {
-            db.fetchUserScriptMetadata(usId, this._dbq_onFetchUserScriptMetadata, this);
+            db.fetchUserScriptMetadata(metaId, this._dbq_onFetchUserScriptMetadata, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
@@ -732,6 +744,8 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
             _this._fillScriptSettingsIncludes(_row['includes']);
             _this._fillUserSettingsExcludes(_row['user_excludes']);
             _this._fillUserSettingsIncludes(_row['user_includes']);
+            
+            _this.loadUserScriptFile(_row['userscript_id']);
         } else
             _this.showFailureAlert("Could not fetch the user script metadata.");
     },
@@ -792,7 +806,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
     },
     
-    updateScript: function () {
+    updateUserScript: function () {
         
         
     },
@@ -923,6 +937,7 @@ var KitScript = Class.create(_Utils, {
         this.gmmd = new KSGreasemonkeyMetadata();
         
         this.mainContainer = new KSMainContainer();
+        
         this.mainContainer.contentManager = new KSContentManager();
         this.mainContainer.userScriptsManagerForm = new KSUserScriptsManagerForm();
         this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
