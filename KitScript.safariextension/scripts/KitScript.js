@@ -636,7 +636,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             var _row = resultSet.rows.item(0);
             
-            db.insertUserScriptMetadata(_this._fname, _this._fspace, _this._escQuot(_this._fdesc), _this._fincludes, _this._fexcludes, parseInt(_row[_this._liria]), 0, _this._dbq_onCreateUserScriptMeta, _this);
+            db.insertUserScriptMetadata(_this._fname, _this._fspace, _this._escQuot(_this._fdesc), _this._fincludes, _this._fexcludes, parseInt(_row[_this._liria]), 0, '', '', _this._dbq_onCreateUserScriptMeta, _this);
         } else
             _this.showErrorAlert("The user script couldn't be stored.");
     },
@@ -679,6 +679,8 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     initialize: function ($super) {
         
+        const _defaultTabId = "#ks-uss-tab-usersets";
+        
         this._formIdObj = {
             id: "userscript-settings",
             title: "User Script Settings",
@@ -688,7 +690,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         $super(this._formIdObj);
         
         this._$previousTabId = null;
-        this._$currentTabId = "#ks-uss-tab-usersets";
+        this._$currentTabId = _defaultTabId;
     },
     loadData: function (usId) {
         
@@ -704,18 +706,23 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         var _this = transact.objInstance;
         
-        
+        if (resultSet.rows.length > 0) {
+            
+            var _row = resultSet.rows.item(0);
+            
+            _this._emptyAllFields();
+            _this._fillUserSettingsExcludes(_row[]);
+            _this._fillUserSettingsIncludes(_row[]);
+            _this._fillScriptSettingsExcludes(_row[]);
+            _this._fillScriptSettingsIncludes(_row[]);
+            _this._fillScriptEditor(_row[]);
+            
+        } else {
+            
+            _this.showFailureAlert("Could not fetch the user script data.");
+        }
     },
     switchTab: function ($tabId) {
-        
-        this._$previousTabId = this._$currentTabId;
-        this._$currentTabId = $tabId;
-        
-        this.$(this._$previousTabId).hide();
-        this.$(this._$currentTabId).show();
-        
-    },
-    
     addUserExclusionUrl: function () {
         
     },
@@ -741,6 +748,30 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
     },
     updateScript: function () {
+        
+    },
+    _fillUserSettingsExcludes: function (excludesStr) {
+        
+        
+    },
+    _fillUserSettingsIncludes: function (includesStr) {
+        
+        
+    },
+    _fillScriptSettingsExcludes: function (excludesStr) {
+        
+        
+    },
+    _fillScriptSettingsIncludes: function (includesStr) {
+        
+        
+    },
+    _fillScriptEditor: function (scriptStr) {
+        
+        this.$().val(scriptStr);
+    },
+    _emptyAllFields: function () {
+        
         
     },
     showSuccessAlert: function (strMsg) {
