@@ -28,7 +28,7 @@
 
     <!-- = My CSS = -->
     <link rel="stylesheet" href="../stylesheets/MyBootstrap.css">
-    <link rel="stylesheet" href="../stylesheets/Global.css">
+    <link rel="stylesheet" href="../stylesheets/MainContainer.css">
     
     <!-- = jQuery = -->
     <script src="../scripts/lib/jquery/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
@@ -189,7 +189,7 @@
               </div>
               <div class="span9 well">
                 <a class="btn small primary" href="#ks-gs-btn-add">Add</a><!--  data-controls-modal="ks-gs-add-modal" data-backdrop="true" data-keyboard="true" -->
-                <a class="btn small success disabled" href="#ks-gs-btn-edit" id="ks-gs-btn-edit">Edit</a><!-- data-controls-modal="ks-gs-edit-modal" data-backdrop="true" data-keyboard="true" -->
+                <a class="btn small info disabled" href="#ks-gs-btn-edit" id="ks-gs-btn-edit">Edit</a><!-- data-controls-modal="ks-gs-edit-modal" data-backdrop="true" data-keyboard="true" -->
                 <a class="btn small danger disabled" href="#ks-gs-btn-remove" id="ks-gs-btn-remove">Remove</a>
               </div>
             </form>
@@ -300,15 +300,111 @@
 
 
 
+      <!-- User Scripts Settings -->
+      <section class="content" id="userscript-settings" style="display:none;">
+        <header class="page-header">
+          <h1>User Scripts Settings <small>Edit &amp; configure your user script on this panel</small></h1>
+        </header>
+        <div class="row">
+          <section class="span10">
+            <h2>Preferences</h2>
+            
+            <div id="ks-uss-am-warn" class="alert-message warning hide"></div>
+            <div id="ks-uss-am-error" class="alert-message error hide"></div>
+            <div id="ks-uss-am-success" class="alert-message success hide"></div>
+            
+            <form id="ks-uss-form">
+              
+              <input type="hidden" id="ks-uss-us-id" value="">
+              
+              <ul class="tabs">
+                <li class="active"><a href="#ks-uss-tab-usersets">User Settings</a></li>
+                <li><a href="#ks-uss-tab-scriptsets">Script Settings</a></li>
+                <li><a href="#ks-uss-tab-scriptedit">Script Editor</a></li>
+              </ul>
+              
+              <!-- User Settings -->
+              <fieldset class="span9 well" id="ks-uss-usersets">
+                <legend>User Settings</legend>
+                
+                <section>
+                  <label for="ks-uss-us-excl-list">Excluded pages:</label><br>
+                  <select id="ks-uss-us-excl-list" class="span9" size="8">
+                    <option value=""></option>
+                  </select>
+                </section>
+                <aside>
+                  <a href="#ks-uss-us-excl-btn-add" class="btn small primary">Add</a><br>
+                  <a href="#ks-uss-us-excl-btn-edit" class="btn small disabled">Edit</a><br> <!-- class info when enabled --> 
+                  <a href="#ks-uss-us-excl-btn-remove" class="btn small disabled">Remove</a><br> <!-- class danger when enabled --> 
+                </aside>
+                
+                <section>
+                  <label for="ks-uss-us-incl-list">Included pages:</label><br>
+                  <select id="ks-uss-us-incl-list" class="span9" size="8">
+                    <option value=""></option>
+                  </select>
+                </section>
+                <aside>
+                  <a href="#ks-uss-us-incl-btn-add" class="btn small primary">Add</a><br>
+                  <a href="#ks-uss-us-incl-btn-edit" class="btn small disabled">Edit</a><br> <!-- class info when enabled --> 
+                  <a href="#ks-uss-us-incl-btn-remove" class="btn small disabled">Remove</a><br> <!-- class danger when enabled --> 
+                </aside>
+                
+              </fieldset>
+              
+              <!-- Script Settings -->
+              <section id="" class="span9 well hide">
+
+              </section>
+              
+              <!-- Script Editor -->
+              <section id="" class="span9 well hide">
+                <div class="span9 well">
+                  <textarea id="ks-uss-script" class="span9" autofocus></textarea>
+                  <span class="help-block">Modify the user script code in the field above and press the "Update" button below to persist the script in KitScript's database.</span>
+                </div>
+                <div class="span9 well">
+                  <a class="btn small primary" href="#ks-uss-se-btn-update">Update</a>
+                </div>
+              </section>
+              
+            </form>
+            
+          </section>
+          <aside class="span4">
+            <h3>KitScript</h3>
+            
+            <ul class="unstyled ks-vertmenu">
+              <li><a href="#global-settings">Global Settings</a></li>
+              <li><a href="#userscript-manager">User Scripts Manager</a></li>
+              <li><a href="#new-userscript">New User Script</a></li>
+              <li><a href="#about">About KitScript</a></li>
+            </ul>
+            
+            <section>
+              <h3>Paneltip</h3>
+              
+              <p>Todo</p>
+              
+            </section>
+            
+          </aside>
+        </div>
+      </section>
+      <!-- /User Scripts Settings -->
+
+
+
+
+
       <!-- About KitScript -->
       <section class="content" id="about" style="display:none;">
         <header class="page-header">
           <h1>About KitScript <small>Stuff about the User Script Safari Extension</small></h1>
         </header>
         <div class="row">
-          
           <section id="ks-abt-html-txt" class="span10"></section>
-          
           <aside class="span4">
             <h3>KitScript</h3>
             
@@ -325,7 +421,7 @@
               <p>Todo</p>
               
             </section>
-            
+
           </aside>
         </div>
       </section>

@@ -64,6 +64,38 @@ jQuery(document).ready(function ($) {
                 ks.mainContainer.newUserScriptForm.addUserScript();
                 break;
             
+            // User Script Settings
+            // =Tabs
+            case '#ks-uss-tab-usersets':
+                break;
+            case '#ks-uss-tab-scriptsets':
+                break;
+            case '#ks-uss-tab-scriptedit':
+                break;
+            // User Settings
+            // =Excludes
+            case '#ks-uss-us-excl-btn-add':
+                break;
+            case '#ks-uss-us-excl-btn-edit':
+                break;
+            case '#ks-uss-us-excl-btn-remove':
+                break;
+            // =Includes
+            case '#ks-uss-us-incl-btn-add':
+                break;
+            case '#ks-uss-us-incl-btn-edit':
+                break;
+            case '#ks-uss-us-incl-btn-remove':
+                break;
+            // Script Settings
+            case '#ks-uss-ss-btn-touexcl':
+                break;
+            case '#ks-uss-ss-btn-touincl':
+                break;
+            // Script Editor
+            case '#ks-uss-se-btn-update':
+                break;
+            
             // Toolbar & Menu Buttons
             case '#enable-ks':
                 ks.setEnable();

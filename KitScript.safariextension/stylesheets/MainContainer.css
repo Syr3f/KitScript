@@ -42,16 +42,36 @@ textarea, select, option, input[type="text"] {
 
 /* New User Script */
 
-#ks-aus-script {
+#ks-aus-script, #ks-uss-script {
     font-family: "New Courier", Courier, serif;
     font-size: 0.8em;
     line-height: 1em;
-    height: 280px;
+    height: 275px;
 }
 
 /* User Script Settings */
 
-#ks-uss-usersets-lists {
+#ks-uss-us-excl-list, #ks-uss-us-incl-list {
     height: 120px;
-    width: 520px;
+    width: 400px;
 }
+
+#ks-uss-usersets section {
+    
+    float: left;
+    width: 400px;
+}
+
+#ks-uss-usersets aside {
+    
+    padding-top: 20px;
+    width: 100px;
+    float: right;
+    clear: right;
+    text-align: center;
+}
+
+#ks-uss-usersets * a {
+    margin: 5px;
+}
+

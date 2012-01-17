@@ -323,7 +323,9 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         var _usid = this._extractId(btnId);
         
+        this.transitContent('userscript-settings');
         
+        this.$("#ks-uss-us-id").val(_usid);
     },
     disableUserScript: function (btnId) {
         
@@ -708,7 +710,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
 
 /**
  *  KSUserScriptSettingsForm (KitScript User Script Settings Form Class)
- *
+ */
 var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     initialize: function ($super) {
@@ -733,7 +735,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
     }
-});*/
+});
 
 
 
