@@ -216,17 +216,18 @@ var KSContentManager = Class.create(_Utils, {
         
         this.$(_ab).html(_pre+strMsg);
         
-        this.$(_ab).removeClass('hide');
+        if (this.$(_ab).hasClass('hide'))
+            this.$(_ab).removeClass('hide');
+        else
+            this.$(_ab).show();
         
         this.hideAlertMsg(_ab);
     },
-    hideAlertMsg: function (_ab) {
+    hideAlertMsg: function (alertBoxId) {
         
-        var _sC = "function () {";
-        _sC += "jQuery('"+_ab+"').addClass('hide').fadeOut('slow');";
-        _sC += "}";
+        var _f = function (_abId) { jQuery(_abId).fadeOut('slow') };
         
-        setTimeout(10000,_sC);
+        setTimeout(_f,10000,alertBoxId);
     }
 });
 
@@ -417,7 +418,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
             try {
                 
                 db.insertGlobalExclude(_val,_fn,this);
-                _this.showSuccessAlert("URL has been registered.");
+                this.showSuccessAlert("URL has been registered.");
             } catch (e) {
                 
                 this.showFailureAlert(e.getMessage());
@@ -470,7 +471,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
             try {
                 
                 db.updateGlobalExclude(_id, _url,_fn,this);
-                _this.showSuccessAlert("URL has been updated.");
+                this.showSuccessAlert("URL has been updated.");
             } catch (e) {
                 
                 this.showFailureAlert(e.getMessage());
@@ -495,7 +496,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         try {
             
             db.deleteGlobalExclude(_id,_fn,this);
-            _this.showSuccessAlert("URL has been deleted.");
+            this.showSuccessAlert("URL has been deleted.");
         } catch (e) {
             
             this.showFailureAlert(e.getMessage());
@@ -827,6 +828,5 @@ function KSSEFH_ValidateHandler(event) {
 }
 
 safari.application.addEventListener("command", KSSEFH_CommandHandler, false);
-
 safari.application.addEventListener("validate", KSSEFH_ValidateHandler, false);
 
