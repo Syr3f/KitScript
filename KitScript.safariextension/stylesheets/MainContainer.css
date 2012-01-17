@@ -29,6 +29,10 @@ header {
     display: none;
 }
 
+.ks-right {
+    text-align: right;
+}
+
 textarea, select, option, input[type="text"] {
     background-color: #FFFEEF;
 }
@@ -77,34 +81,18 @@ textarea, select, option, input[type="text"] {
     margin: 5px;
 }
 
-#ks-uss-tab-scriptedit .right {
-    text-align: right;
-}
-
 #ks-uss-script {
     font-family: "New Courier", Courier, serif;
     font-size: 0.8em;
     line-height: 1em;
-    height: 260px;
+    height: 285px;
 }
 
 #ks-uss-ss-excl-list, #ks-uss-ss-incl-list {
-    height: 160px;
+    height: 120px;
 }
 
 #ks-uss-tab-scriptsets * a {
-    margin: 5px;
-}
-
-
-#ks-uss-tab-scriptsets section {
-    float: left;
-}
-
-#ks-uss-tab-scriptsets aside {
-    padding-top: 20px;
-    float: right;
-    clear: right;
-    text-align: center;
+    margin-top: 10px;
 }
 
