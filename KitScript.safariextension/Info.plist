@@ -21,7 +21,7 @@
 		<key>Database Quota</key>
 		<real>10485760</real>
 		<key>Global Page</key>
-		<string>markups/MainPanel.html</string>
+		<string>markups/Init.html</string>
 		<key>Menus</key>
 		<array>
 			<dict>
