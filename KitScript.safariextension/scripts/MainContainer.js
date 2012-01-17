@@ -119,7 +119,25 @@ jQuery(document).ready(function ($) {
     $("#ks-gs-list").change(function (evt) {
         
         $("#ks-gs-btn-edit").removeClass('disabled');
+        $("#ks-gs-btn-edit").addClass('info');
         $("#ks-gs-btn-remove").removeClass('disabled');
+        $("#ks-gs-btn-remove").addClass('danger');
+    });
+    
+    // User Script Settings ~ User Settings Lists Events
+    $('#ks-uss-us-excl-list').change(function (evt) {
+        
+        $('#ks-uss-us-excl-btn-edit').removeClass('disabled');
+        $('#ks-uss-us-excl-btn-edit').addClass('info');
+        $('#ks-uss-us-excl-btn-remove').removeClass('disabled');
+        $('#ks-uss-us-excl-btn-remove').addClass('danger');
+    });
+    $('#ks-uss-us-incl-list').change(function (evt) {
+        
+        $('#ks-uss-us-incl-btn-edit').removeClass('disabled');
+        $('#ks-uss-us-incl-btn-edit').addClass('info');
+        $('#ks-uss-us-incl-btn-remove').removeClass('disabled');
+        $('#ks-uss-us-incl-btn-remove').addClass('danger');
     });
     
     // User Script Settings ~ Script Settings Lists Events
