@@ -180,6 +180,7 @@ var KSStorage = Class.create(Storage, {
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET name = ?, namespace = ?, description = ?, includes = ?, excludes = ?, disabled = ?, user_includes = ?, user_excludes = ? WHERE id = ?;", [name, space, desc, includes, excludes, disabled, user_includes, user_excludes, id], _sC, SFH_errorHandler);
         
         this.transact(sqlArray);
+        
     },
     fetchUserScriptMetadata: function (id, statementCallback, obj) {
         
@@ -237,6 +238,55 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray);
     },
+    isUserScriptEnabled: function (id, statementCallback, obj) {
+        
+        sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "SELECT disabled FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
+        
+        this.transact(sqlArray);
+    },
+    /**
+     *  ==========================
+     *  UserScript File & Metadata
+     *  ==========================
+     */
+     fetchUserScriptFileByMetaId: function (metaId, statementCallback, obj) {
+         
+         this.__proto__.outerObj = obj;
+         this.__proto__.outerFunc = statementCallback;
+         
+         sqlArray = new SQLStatementsArray();
+         
+         sqlArray.push(this, "SELECT userscript_id FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], this._dbq_onFetchUserScriptFileId, SFH_errorHandler);
+         
+         this.transact(sqlArray);
+     },
+     _dbq_onFetchUserScriptFileId: function (transact, resultSet) {
+         
+         var _this = transact.objInstance;
+         
+         if (resultSet.rows.length > 0) {
+             
+             var _row = resultSet.rows.item(0);
+             var _usId = _row['userscript_id'];
+             
+             _this.fetchUserScriptFile(_usId, _this.outerFunc, _this.outerObj);
+             
+             delete _this.outerFunc;
+             delete _this.outerObj;
+         } else {
+             throw new StorageException("Couldn't get a user script id.");
+         }
+     },
+     fetchUserScriptFileIdByMetaId: function (metaId, statementCallback, obj) {
+         
+          sqlArray = new SQLStatementsArray();
+          
+          sqlArray.push(obj, "SELECT userscript_id FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [metaId], statementCallback, SFH_errorHandler);
+          
+          this.transact(sqlArray);
+     },
     /**
      *  ==============
      *  Global Exclude
