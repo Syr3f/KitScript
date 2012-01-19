@@ -207,7 +207,11 @@ var Storage = Class.create(_Utils, {
             }
             
             eval(_js);
-        });
+        }, this._dbq_onTransactionError);
+    },
+    _dbq_onTransactionError: function () {
+        
+        throw new StorageException("Transaction error.");
     },
     getSuccess: function () {
         
@@ -249,9 +253,9 @@ function SFH_errorHandler(transaction, error) {
     
     var _this = transaction.objInstance;
     
-    _this.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
-    
     _this.setSuccess(false);
+    
+    throw new StorageException('Oops.  Error was '+error.message+' (Code '+error.code+')');
 }
 
 function SFH_killTransaction(transaction, error) {
