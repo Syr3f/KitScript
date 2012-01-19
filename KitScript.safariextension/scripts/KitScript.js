@@ -232,6 +232,167 @@ KSContentManager.previousContentId = null;
 
 
 /**
+ *  KSGlobalSettingsForm (KitScript Global Settings Form Class)
+ */
+var KSGlobalSettingsForm = Class.create(KSContentManager, {
+    
+    initialize: function ($super) {
+        
+        this._formIdObj = {
+            
+            id: "global-settings",
+            title: "Global Settings",
+            formBaseId: "ks-gs",
+            instance: this
+        };
+        
+        $super(this._formIdObj);
+        
+        this._addModalId = this._formIdObj.formBaseId+'-add-modal';
+        this._editModalId = this._formIdObj.formBaseId+'-edit-modal';
+        
+        this._listId = this._formIdObj.formBaseId+'-list';
+        this._inNewId = this._formIdObj.formBaseId+'-input-new';
+        this._inEditId = this._formIdObj.formBaseId+'-input-edit-url';
+        this._editId = this._formIdObj.formBaseId+'-edit-id';
+    },
+
+    addGlobalExclude: function () {
+        
+        this.$('#'+this._addModalId).modal({
+            keyboard: true,
+            backdrop: true,
+            show: true
+        });
+    },
+    registerGlobalExclude: function () {
+        
+        this.$('#'+this._addModalId).modal('hide');
+        
+        var _val = this.$('#'+this._inNewId).val();
+        
+        this.$('#'+this._inNewId).val("");
+        
+        if (_val.length > 0) {
+            
+            try {
+                db.insertGlobalExclude(_val,this._dbq_onQueryGlobalExcludes,this);
+                this.showSuccessAlert("URL has been registered.");
+            } catch (e) {
+                this.showFailureAlert(e.getMessage());
+            }
+        }
+    },
+
+    editGlobalExclude: function () {
+        
+        if (this.$('#'+this._listId+' option:selected').val() !== null) {
+            
+            this.$('#'+this._editModalId).modal({
+                keyboard: true,
+                backdrop: true,
+                show: true
+            });
+            
+            var _id = this.$('#'+this._listId+' option:selected').val();
+            var _url = this.$('#'+this._listId+' option:selected').text();
+            
+            this.$('#'+this._editId).val(_id);
+            this.$('#'+this._inEditId).val(_url);
+        } else {
+            
+            this._a('Please select a URL to edit it.');
+        }
+    },
+    updateGlobalExclude: function () {
+        
+        this.$('#'+this._editModalId).modal('hide');
+        
+        this.$("#ks-gs-btn-edit").addClass('disabled');
+        this.$("#ks-gs-btn-remove").addClass('disabled');
+        
+        var _id = this.$('#'+this._editId).val();
+        var _url = this.$('#'+this._inEditId).val();
+        
+        this.$('#'+this._editId).val("");
+        this.$('#'+this._inEditId).val("");
+        
+        if (_url.length > 0) {
+            
+            try {
+                db.updateGlobalExclude(_id, _url,this._dbq_onQueryGlobalExcludes,this);
+                this.showSuccessAlert("URL has been updated.");
+            } catch (e) {
+                this.showFailureAlert(e.getMessage());
+            }
+        }
+    },
+    removeGlobalExclude: function () {
+        
+        this.$("#ks-gs-btn-edit").addClass('disabled');
+        this.$("#ks-gs-btn-remove").addClass('disabled');
+        
+        var _id = this.$('#'+this._listId+' option:selected').val();
+        
+        try {
+            db.deleteGlobalExclude(_id,this._dbq_onQueryGlobalExcludes,this);
+            this.showSuccessAlert("URL has been deleted.");
+        } catch (e) {
+            this.showFailureAlert(e.getMessage());
+        }
+    },
+    _dbq_onQueryGlobalExcludes: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        _this.emptyList();
+        _this.fillList();
+    },
+
+    emptyList: function () {
+        
+        this.$('#'+this._listId).empty();
+    },
+    fillList: function () {
+        
+        db.fetchAllGlobalExcludes(0,1000,this._dbq_onFetchGlobalExcludes,this);
+    },
+    _dbq_onFetchGlobalExcludes: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        if (resultSet.rows.length > 0) {
+            
+            for (var i=0; i<resultSet.rows.length; i++) {
+                
+                var _row = resultSet.rows.item(i);
+                
+                var _html = '<option value="'+_row['id']+'">'+_row['url']+'</option>';
+                
+                _this.$('#'+_this._listId).append(_html);
+            }
+        }
+    },
+    
+    showSuccessAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
+    },
+    showWarningAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
+    },
+    showFailureAlert: function (strMsg) {
+        
+        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
+    }
+});
+
+
+
+
+
+/**
  *  KSUserScriptsManagerForm (KitScript User Scripts Manager For Class)
  */
 var KSUserScriptsManagerForm = Class.create(KSContentManager, {
@@ -421,167 +582,6 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
 
 
 /**
- *  KSGlobalSettingsForm (KitScript Global Settings Form Class)
- */
-var KSGlobalSettingsForm = Class.create(KSContentManager, {
-    
-    initialize: function ($super) {
-        
-        this._formIdObj = {
-            
-            id: "global-settings",
-            title: "Global Settings",
-            formBaseId: "ks-gs",
-            instance: this
-        };
-        
-        $super(this._formIdObj);
-        
-        this._addModalId = this._formIdObj.formBaseId+'-add-modal';
-        this._editModalId = this._formIdObj.formBaseId+'-edit-modal';
-        
-        this._listId = this._formIdObj.formBaseId+'-list';
-        this._inNewId = this._formIdObj.formBaseId+'-input-new';
-        this._inEditId = this._formIdObj.formBaseId+'-input-edit-url';
-        this._editId = this._formIdObj.formBaseId+'-edit-id';
-    },
-
-    addGlobalExclude: function () {
-        
-        this.$('#'+this._addModalId).modal({
-            keyboard: true,
-            backdrop: true,
-            show: true
-        });
-    },
-    registerGlobalExclude: function () {
-        
-        this.$('#'+this._addModalId).modal('hide');
-        
-        var _val = this.$('#'+this._inNewId).val();
-        
-        this.$('#'+this._inNewId).val("");
-        
-        if (_val.length > 0) {
-            
-            try {
-                db.insertGlobalExclude(_val,this._dbq_onQueryGlobalExcludes,this);
-                this.showSuccessAlert("URL has been registered.");
-            } catch (e) {
-                this.showFailureAlert(e.getMessage());
-            }
-        }
-    },
-
-    editGlobalExclude: function () {
-        
-        if (this.$('#'+this._listId+' option:selected').val() !== null) {
-            
-            this.$('#'+this._editModalId).modal({
-                keyboard: true,
-                backdrop: true,
-                show: true
-            });
-            
-            var _id = this.$('#'+this._listId+' option:selected').val();
-            var _url = this.$('#'+this._listId+' option:selected').text();
-            
-            this.$('#'+this._editId).val(_id);
-            this.$('#'+this._inEditId).val(_url);
-        } else {
-            
-            this._a('Please select a URL to edit it.');
-        }
-    },
-    updateGlobalExclude: function () {
-        
-        this.$('#'+this._editModalId).modal('hide');
-        
-        this.$("#ks-gs-btn-edit").addClass('disabled');
-        this.$("#ks-gs-btn-remove").addClass('disabled');
-        
-        var _id = this.$('#'+this._editId).val();
-        var _url = this.$('#'+this._inEditId).val();
-        
-        this.$('#'+this._editId).val("");
-        this.$('#'+this._inEditId).val("");
-        
-        if (_url.length > 0) {
-            
-            try {
-                db.updateGlobalExclude(_id, _url,this._dbq_onQueryGlobalExcludes,this);
-                this.showSuccessAlert("URL has been updated.");
-            } catch (e) {
-                this.showFailureAlert(e.getMessage());
-            }
-        }
-    },
-    removeGlobalExclude: function () {
-        
-        this.$("#ks-gs-btn-edit").addClass('disabled');
-        this.$("#ks-gs-btn-remove").addClass('disabled');
-        
-        var _id = this.$('#'+this._listId+' option:selected').val();
-        
-        try {
-            db.deleteGlobalExclude(_id,this._dbq_onQueryGlobalExcludes,this);
-            this.showSuccessAlert("URL has been deleted.");
-        } catch (e) {
-            this.showFailureAlert(e.getMessage());
-        }
-    },
-    _dbq_onQueryGlobalExcludes: function (transact, resultSet) {
-        
-        var _this = transact.objInstance;
-        
-        _this.emptyList();
-        _this.fillList();
-    },
-
-    emptyList: function () {
-        
-        this.$('#'+this._listId).empty();
-    },
-    fillList: function () {
-        
-        db.fetchAllGlobalExcludes(0,1000,this._dbq_onFetchGlobalExcludes,this);
-    },
-    _dbq_onFetchGlobalExcludes: function (transact, resultSet) {
-        
-        var _this = transact.objInstance;
-        
-        if (resultSet.rows.length > 0) {
-            
-            for (var i=0; i<resultSet.rows.length; i++) {
-                
-                var _row = resultSet.rows.item(i);
-                
-                var _html = '<option value="'+_row['id']+'">'+_row['url']+'</option>';
-                
-                _this.$('#'+_this._listId).append(_html);
-            }
-        }
-    },
-    
-    showSuccessAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
-    },
-    showWarningAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.warnLevel,strMsg);
-    },
-    showFailureAlert: function (strMsg) {
-        
-        this.showAlertMsg(this._formIdObj.formBaseId,this.errorLevel,strMsg);
-    }
-});
-
-
-
-
-
-/**
  *  KSNewUserScriptForm (KitScript New User Script Form Class)
  */
 var KSNewUserScriptForm = Class.create(KSContentManager, {
@@ -628,25 +628,24 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     },
     _storeUserScript: function (name, space, desc, excludes, includes, code) {
         
-        this._liria = 'LastInsertId';
-        
-        this._fname = name;
-        this._fspace = space;
-        this._fdesc = desc;
-        this._fexcludes = excludes;
-        this._fincludes = includes;
+        this.__proto__._fieldName = 'LastInsertId';
+        this.__proto__._name = name;
+        this.__proto__._space = space;
+        this.__proto__._desc = desc;
+        this.__proto__._excludes = excludes;
+        this.__proto__._includes = includes;
         
         try {
-            db.insertUserScriptFile(KSSHF_blobize(code),this._dbq_onCreateUserScriptFile,this);
+            db.insertUserScriptFile(KSSHF_blobize(code),this._dbq_onInsertUserScriptFile,this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
     },
-    _dbq_onCreateUserScriptFile: function (transact, resultSet) {
+    _dbq_onInsertUserScriptFile: function (transact, resultSet) {
         
         var _this = transact.objInstance;
         
-        db.getLastInsertRowId(_this._liria, _this._dbq_onFetchLastInsertId, _this);
+        db.getLastInsertRowId(_this._fieldName, _this._dbq_onFetchLastInsertId, _this);
     },
     _dbq_onFetchLastInsertId: function (transact, resultSet) {
         
@@ -656,7 +655,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             var _row = resultSet.rows.item(0);
             
-            db.insertUserScriptMetadata(_this.sqlClean(_this._fname), _this.sqlClean(_this._fspace), _this.sqlClean(_this._fdesc), _this.sqlClean(_this._fincludes), _this.sqlClean(_this._fexcludes), parseInt(_row[_this._liria]), 0, null, null, _this._dbq_onCreateUserScriptMeta, _this);
+            db.insertUserScriptMetadata(_this.sqlClean(_this._name), _this.sqlClean(_this._space), _this.sqlClean(_this._desc), _this.sqlClean(_this._includes), _this.sqlClean(_this._excludes), parseInt(_row[_this._fieldName]), 0, null, null, _this._dbq_onCreateUserScriptMeta, _this);
         } else
             _this.showErrorAlert("The user script couldn't be stored.");
     },
