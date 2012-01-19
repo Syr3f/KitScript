@@ -33,6 +33,12 @@ jQuery(document).ready(function ($) {
     // Connect Db
     try {
         db.connect();
+        //try {
+        //    db.verifyDb();
+        //} catch (e) {
+        //    db.createTables();
+        //    db.insertInitData();
+        //}
     } catch (e) {
         db._a("Cannot connect to the Database.");
     }

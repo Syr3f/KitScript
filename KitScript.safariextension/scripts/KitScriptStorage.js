@@ -46,7 +46,7 @@ var KSStorage = Class.create(Storage, {
             throw new StorageException(e.getMessage());
         }
         
-        //this.verifyDb();
+        this.verifyDb();
         
         return _db;
     },
