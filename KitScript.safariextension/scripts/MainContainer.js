@@ -2,7 +2,8 @@
 /**
  *  KitScript - A User Script Manager For Safari
  *
- *  MainContainer.js - Javascript file for the main container of the extension.
+ *  MainContainer.js - Javascript file  containing event handlers with method
+ *  & function calls for the main container.
  *
  *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.
@@ -118,30 +119,32 @@ jQuery(document).ready(function ($) {
     // Global Settings List Events
     $("#ks-gs-list").change(function (evt) {
         
-        $("#ks-gs-btn-edit").removeClass('disabled');
-        $("#ks-gs-btn-edit").addClass('info');
-        $("#ks-gs-btn-remove").removeClass('disabled');
-        $("#ks-gs-btn-remove").addClass('danger');
+        if ($('#ks-gs-list option:selected').val() !== undefined)
+            ks.mainContainer.globalSettingsForm.activateBtns();
     });
     
     // User Script Settings ~ User Settings Lists Events
     $('#ks-uss-us-excl-list').change(function (evt) {
         
-        ks.mainContainer.userScriptSettingsForm.activateExclusionBtns();
+        if ($('#ks-uss-us-excl-list option:selected').val() !== undefined)
+            ks.mainContainer.userScriptSettingsForm.activateExclusionBtns();
     });
     $('#ks-uss-us-incl-list').change(function (evt) {
         
-        ks.mainContainer.userScriptSettingsForm.activateInclusionBtns();
+        if ($('#ks-uss-us-incl-list option:selected').val() !== undefined)
+            ks.mainContainer.userScriptSettingsForm.activateInclusionBtns();
     });
     
     // User Script Settings ~ Script Settings Lists Events
     $('#ks-uss-ss-excl-list').change(function (evt) {
         
-        $('#ks-uss-ss-btn-add-usincl').removeClass('disabled');
+        if ($('#ks-uss-ss-excl-list option:selected').val() !== undefined)
+            ks.mainContainer.userScriptSettingsForm.activateAddToUserIncludesBtn();
     });
     $('#ks-uss-ss-incl-list').change(function (evt) {
         
-        $('#ks-uss-ss-btn-add-usexcl').removeClass('disabled');
+        if ($('#ks-uss-ss-incl-list option:selected').val() !== undefined)
+            ks.mainContainer.userScriptSettingsForm.activateAddToUserExcludesBtn();
     });
     
     // Init Main Panel Content

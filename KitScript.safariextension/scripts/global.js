@@ -1,7 +1,8 @@
 /**
  *  KitScript - A User Script Manager For Safari
  *
- *  Global.js - Javascript file containing initial methods & function calls.
+ *  Global.js - Javascript file containing global extension initial methods &
+ *  function calls.
  *
  *  @author Seraf Dos Santos <webmaster@cyb3r.ca>
  *  @copyright 2011-2012 Seraf Dos Santos - All rights reserved.

@@ -284,6 +284,21 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         }
     },
 
+    activateBtns: function () {
+        
+        this.$("#ks-gs-btn-edit").removeClass('disabled');
+        this.$("#ks-gs-btn-edit").addClass('info');
+        this.$("#ks-gs-btn-remove").removeClass('disabled');
+        this.$("#ks-gs-btn-remove").addClass('danger');
+    },
+    disactivateBtns: function () {
+        
+        this.$("#ks-gs-btn-edit").addClass('disabled');
+        this.$("#ks-gs-btn-edit").removeClass('info');
+        this.$("#ks-gs-btn-remove").addClass('disabled');
+        this.$("#ks-gs-btn-remove").removeClass('danger');
+    },
+
     editGlobalExclude: function () {
         
         if (this.$('#'+this._listId+' option:selected').val() !== null) {
@@ -879,6 +894,12 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         }
     },
     
+    activateAddToUserIncludesBtn: function () {
+        this.$('#ks-uss-ss-btn-add-usincl').removeClass('disabled');
+    },
+    disactivateAddToUserIncludesBtn: function () {
+        this.$('#ks-uss-ss-btn-add-usincl').addClass('disabled');
+    },
     addToUserInclusion: function () {
         
         var _txt = this.$('#ks-uss-ss-excl-list option:selected').text();
@@ -886,6 +907,12 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         this.$('#ks-uss-us-incl-list').append('<option>'+_txt+'</option>');
         
         this._updateUserSettings();
+    },
+    activateAddToUserExcludesBtn: function () {
+        this.$('#ks-uss-ss-btn-add-usexcl').removeClass('disabled');
+    },
+    disactivateAddToUserExcludesBtn: function () {
+        this.$('#ks-uss-ss-btn-add-usexcl').addClass('disabled');
     },
     addToUserExclusion: function () {
         
@@ -1147,8 +1174,8 @@ var KitScript = Class.create(_Utils, {
         this.mainContainer = new KSMainContainer();
         
         this.mainContainer.contentManager = new KSContentManager();
-        this.mainContainer.userScriptsManagerForm = new KSUserScriptsManagerForm();
         this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
+        this.mainContainer.userScriptsManagerForm = new KSUserScriptsManagerForm();
         this.mainContainer.newUserScriptForm = new KSNewUserScriptForm();
         this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
