@@ -40,15 +40,12 @@ var KSStorage = Class.create(Storage, {
         
         try {
             
-            _db = $super();
+            $super();
         } catch (e) {
-            
             throw new StorageException(e.getMessage());
         }
         
         this.verifyDb();
-        
-        return _db;
     },
     isDbExistant: function () {
         
@@ -56,11 +53,11 @@ var KSStorage = Class.create(Storage, {
     },
     verifyDb: function () {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push(this, "SELECT enabled FROM "+this._dbTableKitScript+";", [], this._dbq_onQueryAnyTable, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     _dbq_onQueryAnyTable: function (transact, resultSet) {
         
@@ -68,50 +65,54 @@ var KSStorage = Class.create(Storage, {
         
         if (resultSet.rows.length > 0)
             _this._isDbExistant = true;
-        else {
-            _this.createTables();
-            _this.insertInitData();
-        }
-            
     },
     createTables: function (doDrop) {
         
+        var sqlArray = new SQLStatementsArray();
+        
         if (doDrop === true) {
-            
-            var _sC = function () { console.log("Table dropped."); };
-            
-            sqlArray = new SQLStatementsArray();
             
             sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', [], _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptsMetadata+';', [], _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableGlobalExcludes+';', [], _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableKitScript+';', [], _sC, SFH_errorHandler);
-            
-            this.transact(sqlArray);
         }
         
         _sC1 = function () { console.log("Table created."); };
         
-        sqlArray = new SQLStatementsArray();
-        
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NOT NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0, user_includes TEXT NULL, user_excludes TEXT NULL);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _sC1, SFH_errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], _sC1, SFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], this._dbq_onCreateKitScriptTable, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
         
         this._isDbExistant = true;
     },
-    insertInitData:function () {
+    _dbq_onCreateKitScriptTable:function (transact, resultSet) {
         
-        _sC2 = function () { console.log("Data inserted."); };
+        var _this = transact.objInstance;
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "INSERT INTO "+this._dbTableKitScript+" (enabled) VALUES (1);", [], _sC2, SFH_errorHandler);
+        sqlArray.push(_this, "SELECT enabled FROM "+_this._dbTableKitScript+";", [], _this._dbq_onQueryTableExists, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        _this.transact(sqlArray, null, null);
+    },
+    _dbq_onQueryTableExists: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        
+        var _sC = function () { console.log("Data inserted."); }
+        
+        if (resultSet.rows.length == 0) {
+            
+            var sqlArray = new SQLStatementsArray();
+
+            sqlArray.push(_this, "INSERT INTO "+_this._dbTableKitScript+" (enabled) VALUES (1);", [], _sC, SFH_errorHandler);
+
+            _this.transact(sqlArray, null, null);
+        }
     },
     /**
      *  ================
@@ -122,39 +123,39 @@ var KSStorage = Class.create(Storage, {
         
         var _sC = statementCallback || function () { console.log("User script inserted."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "INSERT INTO "+this._dbTableUserScriptFiles+" (userscript) VALUES (?);", [blob], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     updateUserScriptFile: function (id, blob, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script updated."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptFiles+" SET userscript = ? WHERE id = ?;", [blob, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     fetchUserScriptFile: function (id, statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableUserScriptFiles+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     deleteUserScriptFile: function (id, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script deleted."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableUserScriptFiles+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     /**
      *  ====================
@@ -165,86 +166,86 @@ var KSStorage = Class.create(Storage, {
         
         var _sC = statementCallback || function () { console.log("User script metadata inserted.") };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "INSERT INTO "+this._dbTableUserScriptsMetadata+" (name, namespace, description, includes, excludes, userscript_id, disabled, user_includes, user_excludes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", [name, space, desc, includes, excludes, usid, disabled, user_includes, user_excludes], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     updateUserScriptMetadata: function (id, name, space, desc, includes, excludes, disabled, user_includes, user_excludes, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script metadata updated."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET name = ?, namespace = ?, description = ?, includes = ?, excludes = ?, disabled = ?, user_includes = ?, user_excludes = ? WHERE id = ?;", [name, space, desc, includes, excludes, disabled, user_includes, user_excludes, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
         
     },
     fetchUserScriptMetadata: function (id, statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     fetchAllUserScriptsMetadata: function (offset, limit, statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableUserScriptsMetadata+" LIMIT ?, ?;", [offset, limit], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     deleteUserScriptMetadata: function (id, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script metadata deleted."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     updateUserScriptUserSettings: function (id, user_includes, user_excludes, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script (user settings) updated."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET user_includes = ?, user_excludes = ? WHERE id = ?;", [user_includes, user_excludes, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     disableUserScript: function (id, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script disabled."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET disabled = 1 WHERE id = ?;", [id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     enableUserScript: function (id, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script enabled."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET disabled = 0 WHERE id = ?;", [id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     isUserScriptEnabled: function (id, statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "SELECT disabled FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     /**
      *  ==========================
@@ -256,11 +257,11 @@ var KSStorage = Class.create(Storage, {
          this.__proto__.outerObj = obj;
          this.__proto__.outerFunc = statementCallback;
          
-         sqlArray = new SQLStatementsArray();
+         var sqlArray = new SQLStatementsArray();
          
          sqlArray.push(this, "SELECT userscript_id FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], this._dbq_onFetchUserScriptFileId, SFH_errorHandler);
          
-         this.transact(sqlArray);
+         this.transact(sqlArray, null, null);
      },
      _dbq_onFetchUserScriptFileId: function (transact, resultSet) {
          
@@ -281,11 +282,11 @@ var KSStorage = Class.create(Storage, {
      },
      fetchUserScriptFileIdByMetaId: function (metaId, statementCallback, obj) {
          
-          sqlArray = new SQLStatementsArray();
+          var sqlArray = new SQLStatementsArray();
           
           sqlArray.push(obj, "SELECT userscript_id FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [metaId], statementCallback, SFH_errorHandler);
           
-          this.transact(sqlArray);
+          this.transact(sqlArray, null, null);
      },
     /**
      *  ==============
@@ -296,47 +297,47 @@ var KSStorage = Class.create(Storage, {
         
         var _sC = statementCallback || function () { console.log("Global exclude inserted."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "INSERT INTO "+this._dbTableGlobalExcludes+" (url) VALUES (?);", [url], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     updateGlobalExclude: function (id, url, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("Data updated."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableGlobalExcludes+" SET url = ? WHERE id = ?;", [url, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     fetchGlobalExclude: function (id, statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableGlobalExcludes+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     fetchAllGlobalExcludes: function (offset, limit, statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableGlobalExcludes+" LIMIT ?, ?;", [offset, limit], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     deleteGlobalExclude: function (id, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("Data deleted."); };
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableGlobalExcludes+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     /**
      *  ========================
@@ -345,27 +346,27 @@ var KSStorage = Class.create(Storage, {
      */
     isKitScriptEnabled: function (statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "SELECT enabled FROM "+this._dbTableKitScript+" WHERE id = 1;", [], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     setKitScriptEnabled: function (statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableKitScript+" SET enabled = 1 WHERE id = 1;", [], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     },
     setKitScriptDisabled: function (statementCallback, obj) {
         
-        sqlArray = new SQLStatementsArray();
+        var sqlArray = new SQLStatementsArray();
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableKitScript+" SET enabled = 0 WHERE id = 1;", [], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray);
+        this.transact(sqlArray, null, null);
     }
 });
 

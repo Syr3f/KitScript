@@ -34,14 +34,9 @@ jQuery(document).ready(function ($) {
     // Connect Db
     try {
         db.connect();
-        //try {
-        //    db.verifyDb();
-        //} catch (e) {
-        //    db.createTables();
-        //    db.insertInitData();
-        //}
+        db.createTables();
     } catch (e) {
-        db._a("Cannot connect to the Database.");
+        db._a("Cannot connect to the Database: "+e.getMessage()+".");
     }
     
     // Debug Verbosity: 0=Silenced,1=Console,2=BrowserAlert

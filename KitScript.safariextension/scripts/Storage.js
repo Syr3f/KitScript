@@ -174,7 +174,7 @@ var Storage = Class.create(_Utils, {
                     throw new StorageException('Invalid database version.');
                     break;
                 default:
-                    throw new StorageException('Unknown error '+e+'.');
+                    throw new StorageException('Unknown error '+e.getMessage()+'.');
             }
         }
         
@@ -188,7 +188,10 @@ var Storage = Class.create(_Utils, {
         
         return this._isConnected;
     },
-    transact: function (sqlStmntsArray) {
+    transact: function (sqlStmntsArray, onTransactionErrorCallback, onTransactionSuccessCallback) {
+        
+        var _feH = onTransactionErrorCallback || this._dbq_onTransactionError;
+        var _fsH = onTransactionSuccessCallback || this._dbq_onTransactionSuccess;
         
         var _sqls = sqlStmntsArray.getArray();
         
@@ -207,11 +210,15 @@ var Storage = Class.create(_Utils, {
             }
             
             eval(_js);
-        }, this._dbq_onTransactionError);
+        }, this._dbq_onTransactionError, this._dbq_onTransactionSuccess);
     },
     _dbq_onTransactionError: function () {
         
         throw new StorageException("Transaction error.");
+    },
+    _dbq_onTransactionSuccess: function () {
+        
+        console.log("Transaction successful.");
     },
     getSuccess: function () {
         
