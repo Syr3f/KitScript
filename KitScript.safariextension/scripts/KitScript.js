@@ -683,7 +683,9 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             var _row = resultSet.rows.item(0);
             
-            db.insertUserScriptMetadata(_this.sqlClean(_this._name), _this.sqlClean(_this._space), _this.sqlClean(_this._desc), _this.sqlClean(_this._includes), _this.sqlClean(_this._excludes), parseInt(_row[_this._fieldName]), 0, null, null, _this._dbq_onCreateUserScriptMeta, _this);
+            var _hash = _this.MD5(_this.sqlClean(_this._name)+_this.sqlClean(_this._space));
+            
+            db.insertUserScriptMetadata(_hash, _this.sqlClean(_this._name), _this.sqlClean(_this._space), _this.sqlClean(_this._desc), _this.sqlClean(_this._includes), _this.sqlClean(_this._excludes), parseInt(_row[_this._fieldName]), 0, null, null, _this._dbq_onCreateUserScriptMeta, _this);
         } else
             _this.showErrorAlert("The user script couldn't be stored.");
     },
@@ -1142,8 +1144,10 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         var _uexcls = this._getUserExclusions();
         var _uincls = this._getUserInclusions();
         
+        var _hash = this.MD5(this.sqlClean(name)+this.sqlClean(space));
+        
         try {
-            db.updateUserScriptMetadata(_metaId, this.sqlClean(name), this.sqlClean(space), this.sqlClean(desc), this.sqlClean(includes), this.sqlClean(excludes), disabled, _uincls, _uexcls, this._dbq_onUpdateMetadata, this);
+            db.updateUserScriptMetadata(_metaId, _hash, this.sqlClean(name), this.sqlClean(space), this.sqlClean(desc), this.sqlClean(includes), this.sqlClean(excludes), disabled, _uincls, _uexcls, this._dbq_onUpdateMetadata, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }

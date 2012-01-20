@@ -63,6 +63,9 @@ var _Utils = Class.create({
     sqlClean: function (str) {
         
         return this.escQuote(str.trim());
+    },
+    MD5: function (str) {
+        return hex_md5(str);
     }
 });
 
