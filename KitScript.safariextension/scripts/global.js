@@ -18,10 +18,9 @@
 
 // Global KitScript Root Variables
 ks = null, db = null;
-
 version = 0.1;
 
-// Run On Document Ready
+// Basic Initial Calls For The Extension
 jQuery(document).ready(function ($) {
     
     // Let $ Be To Prototype And ks.$ To jQuery 
