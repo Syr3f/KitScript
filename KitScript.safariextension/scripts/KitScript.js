@@ -319,7 +319,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
             this.$('#'+this._inEditId).val(_url);
         } else {
             
-            this._a('Please select a URL to edit it.');
+            this.showWarningAlert('Please select a URL pattern to edit it.');
         }
     },
     updateGlobalExclude: function () {
@@ -1052,7 +1052,8 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.$('#ks-uss-us-excl-list option').each(function (idx, el) {
             
-            _strs.push(jQuery(el).text());
+            if (jQuery(el).text().length > 0)
+                _strs.push(jQuery(el).text());
         });
         
         return _strs.join(',');
@@ -1063,7 +1064,8 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.$('#ks-uss-us-incl-list option').each(function (idx, el) {
             
-            _strs.push(jQuery(el).text());
+            if (jQuery(el).text().length > 0)
+                _strs.push(jQuery(el).text());
         });
         
         return _strs.join(',');
@@ -1131,8 +1133,6 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         var _this = transact.objInstance;
         
-        _this._a('_dbq_onUpdateMetadata');
-        
         try {
             
             var _usId = _this.getLoadedScriptId();
@@ -1146,8 +1146,6 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     _dbq_onUpdateUserScriptFile: function (transact, resultSet) {
         
         var _this = transact.objInstance;
-        
-        _this._a('_dbq_onUpdateUserScriptFile');
         
         // Reload data
         _this.loadData(_this.getLoadedMetaId());
