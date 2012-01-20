@@ -1447,6 +1447,11 @@ function KSSEFH_ValidateHandler(event) {
     }
 }
 
+function KSSEFH_NavigateHandler(event) {
+    
+    alert(event.target.url);
+}
+
 safari.application.addEventListener("command", KSSEFH_CommandHandler, false);
 safari.application.addEventListener("validate", KSSEFH_ValidateHandler, false);
-
+safari.application.addEventListener("navigate", KSSEFH_NavigateHandler, false);
