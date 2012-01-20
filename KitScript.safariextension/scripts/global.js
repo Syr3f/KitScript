@@ -19,6 +19,8 @@
 // Global KitScript Root Variables
 ks = null, db = null;
 
+version = 0.1;
+
 // Run On Document Ready
 jQuery(document).ready(function ($) {
     
