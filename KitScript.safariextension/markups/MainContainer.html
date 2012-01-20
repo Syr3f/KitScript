@@ -83,11 +83,11 @@
   </head>
   <body>
     
-    <div class="topbar" id="ks-topmenu" data-dropdown="dropdown" data-scrollspy="scrollspy">
+    <div class="topbar" id="ks-topmenu" data-dropdown="dropdown"><!-- data-scrollspy="scrollspy" -->
       <div class="fill">
         <nav class="container">
           <a class="brand" href="#userscript-manager">KitScript</a>          
-          <ul class="nav">
+          <ul class="nav" id="ks-topmenu-nav">
             <li class="dropdown">
               <a href="#null" class="dropdown-toggle" id="toggle-enable-dropdown">KitScript is Enabled!</a>
               <ul class="dropdown-menu">
@@ -95,10 +95,10 @@
                 <li><a href="#disable-ks">Disable</a></li>
               </ul>
             </li>
-            <li><a href="#global-settings">Global Settings</a></li>
-            <li><a href="#userscript-manager">User Scripts Manager</a></li>
-            <li><a href="#new-userscript">New User Script</a></li>
-            <li><a href="#about">About KitScript</a></li>
+            <li id="ks-topmenu-nav-global-settings"><a href="#global-settings">Global Settings</a></li>
+            <li class="active" id="ks-topmenu-nav-userscript-manager"><a href="#userscript-manager">User Scripts Manager</a></li>
+            <li id="ks-topmenu-nav-new-userscript"><a href="#new-userscript">New User Script</a></li>
+            <li id="ks-topmenu-nav-about"><a href="#about">About KitScript</a></li>
           </ul>
         </nav>
       </div>
@@ -124,6 +124,86 @@
         </footer>
       </section>
       <!-- /KitScript Alert Modal -->
+
+
+
+
+
+      <!-- Global Settings -->
+      <section class="content ks-hide" id="global-settings">
+        <header class="page-header">
+          <h1>Global Settings <small>Set the global excludes of your user scripts on this panel</small></h1>
+        </header>
+        <div class="row">
+          <section class="span10">
+            <h2>Global Exclusion URL Patterns</h2>
+            
+            <div id="ks-gs-am-warn" class="alert-message warning hide"></div>
+            <div id="ks-gs-am-error" class="alert-message error hide"></div>
+            <div id="ks-gs-am-success" class="alert-message success hide"></div>
+            
+            <form id="ks-gs-form">
+              <div class="span9 well">
+                <select id="ks-gs-list" class="span9" size="18" autofocus>
+                </select>
+                <span class="help-block">Enter the global exclusion URL patterns by clicking the "Add" button below. To edit or remove a URL pattern, select it in the list above and then click the related action button below.</span>
+              </div>
+              <div class="span9 well">
+                <a class="btn small primary" href="#ks-gs-btn-add">Add</a><!--  data-controls-modal="ks-gs-add-modal" data-backdrop="true" data-keyboard="true" -->
+                <a class="btn small disabled" href="#ks-gs-btn-edit" id="ks-gs-btn-edit">Edit</a><!-- data-controls-modal="ks-gs-edit-modal" data-backdrop="true" data-keyboard="true" -->
+                <a class="btn small disabled" href="#ks-gs-btn-remove" id="ks-gs-btn-remove">Remove</a>
+              </div>
+            </form>
+            
+            <section id="ks-gs-add-modal" class="modal hide fade">
+              <header class="modal-header">
+                <a href="#" class="close">&times;</a>
+                <h3>Add A Global Exclusion URL Pattern</h3>
+              </header>
+              <form class="modal-body">
+                <input type="text" class="span9" id="ks-gs-input-new" value="" autofocus>
+              </form>
+              <footer class="modal-footer">
+                <a href="#ks-gs-action-register" class="btn primary">Add</a>
+              </footer>
+            </section>
+            
+            <section id="ks-gs-edit-modal" class="modal hide fade">
+              <header class="modal-header">
+                <a href="#" class="close">&times;</a>
+                <h3>Edit A Global Exclusion URL Pattern</h3>
+              </header>
+              <form class="modal-body">
+                <input type="hidden" class="span9" id="ks-gs-edit-id" value="">
+                <input type="text" class="span9" id="ks-gs-input-edit-url" value="" autofocus>
+              </form>
+              <footer class="modal-footer">
+                <a href="#ks-gs-action-update" class="btn primary">Update</a>
+              </footer>
+            </section>
+            
+          </section>
+          <aside class="span4">
+            <h3>KitScript</h3>
+            
+            <ul class="unstyled ks-vertmenu">
+              <li><a href="#global-settings">Global Settings</a></li>
+              <li><a href="#userscript-manager">User Scripts Manager</a></li>
+              <li><a href="#new-userscript">New User Script</a></li>
+              <li><a href="#about">About KitScript</a></li>
+            </ul>
+            
+            <section>
+              <h3>Paneltip</h3>
+              
+              <p>Todo</p>
+              
+            </section>
+            
+          </aside>
+        </div>
+      </section>
+      <!-- /Global Settings -->
 
 
 
@@ -168,86 +248,6 @@
         </div>
       </section>
       <!-- /User Scripts Manager -->
-
-
-
-
-
-      <!-- Global Settings -->
-      <section class="content ks-hide" id="global-settings">
-        <header class="page-header">
-          <h1>Global Settings <small>Set the global excludes of your user scripts on this panel</small></h1>
-        </header>
-        <div class="row">
-          <section class="span10">
-            <h2>Global Exclusion URLs</h2>
-            
-            <div id="ks-gs-am-warn" class="alert-message warning hide"></div>
-            <div id="ks-gs-am-error" class="alert-message error hide"></div>
-            <div id="ks-gs-am-success" class="alert-message success hide"></div>
-            
-            <form id="ks-gs-form">
-              <div class="span9 well">
-                <select id="ks-gs-list" class="span9" size="18" autofocus>
-                </select>
-                <span class="help-block">Enter the global exclusion URLs by clicking the "Add" button below. To edit or remove a URL, select it in the list above and then click the button below.</span>
-              </div>
-              <div class="span9 well">
-                <a class="btn small primary" href="#ks-gs-btn-add">Add</a><!--  data-controls-modal="ks-gs-add-modal" data-backdrop="true" data-keyboard="true" -->
-                <a class="btn small disabled" href="#ks-gs-btn-edit" id="ks-gs-btn-edit">Edit</a><!-- data-controls-modal="ks-gs-edit-modal" data-backdrop="true" data-keyboard="true" -->
-                <a class="btn small disabled" href="#ks-gs-btn-remove" id="ks-gs-btn-remove">Remove</a>
-              </div>
-            </form>
-            
-            <section id="ks-gs-add-modal" class="modal hide fade">
-              <header class="modal-header">
-                <a href="#" class="close">&times;</a>
-                <h3>Add a Global Exclusion URL</h3>
-              </header>
-              <form class="modal-body">
-                <input type="text" class="span9" id="ks-gs-input-new" value="" autofocus>
-              </form>
-              <footer class="modal-footer">
-                <a href="#ks-gs-action-register" class="btn primary">Add</a>
-              </footer>
-            </section>
-            
-            <section id="ks-gs-edit-modal" class="modal hide fade">
-              <header class="modal-header">
-                <a href="#" class="close">&times;</a>
-                <h3>Edit a Global Exclusion URL</h3>
-              </header>
-              <form class="modal-body">
-                <input type="hidden" class="span9" id="ks-gs-edit-id" value="">
-                <input type="text" class="span9" id="ks-gs-input-edit-url" value="" autofocus>
-              </form>
-              <footer class="modal-footer">
-                <a href="#ks-gs-action-update" class="btn primary">Update</a>
-              </footer>
-            </section>
-            
-          </section>
-          <aside class="span4">
-            <h3>KitScript</h3>
-            
-            <ul class="unstyled ks-vertmenu">
-              <li><a href="#global-settings">Global Settings</a></li>
-              <li><a href="#userscript-manager">User Scripts Manager</a></li>
-              <li><a href="#new-userscript">New User Script</a></li>
-              <li><a href="#about">About KitScript</a></li>
-            </ul>
-            
-            <section>
-              <h3>Paneltip</h3>
-              
-              <p>Todo</p>
-              
-            </section>
-            
-          </aside>
-        </div>
-      </section>
-      <!-- /Global Settings -->
 
 
 
@@ -317,15 +317,69 @@
             <div id="ks-uss-am-error" class="alert-message error hide"></div>
             <div id="ks-uss-am-success" class="alert-message success hide"></div>
             
+            <section id="ks-uss-us-add-excl-modal" class="modal hide fade">
+              <header class="modal-header">
+                <a href="#" class="close">&times;</a>
+                <h3>Add A User Exclusion URL Pattern</h3>
+              </header>
+              <form class="modal-body">
+                <input type="text" class="span9" id="ks-uss-us-excl-new" value="" autofocus>
+              </form>
+              <footer class="modal-footer">
+                <a href="#ks-uss-us-add-excl-modal-btn" id="ks-uss-us-add-excl-modal-btn" class="btn primary">Add</a>
+              </footer>
+            </section>
+            
+            <section id="ks-uss-us-edit-excl-modal" class="modal hide fade">
+              <header class="modal-header">
+                <a href="#" class="close">&times;</a>
+                <h3>Edit A User Exclusion URL Pattern</h3>
+              </header>
+              <form class="modal-body">
+                <input type="hidden" id="ks-uss-us-excl-edit-id" value="">
+                <input type="text" class="span9" id="ks-uss-us-excl-edit" value="" autofocus>
+              </form>
+              <footer class="modal-footer">
+                <a href="#ks-uss-us-edit-excl-modal-btn" id="ks-uss-us-edit-excl-modal-btn" class="btn primary">Update</a>
+              </footer>
+            </section>
+            
+            <section id="ks-uss-us-add-incl-modal" class="modal hide fade">
+              <header class="modal-header">
+                <a href="#" class="close">&times;</a>
+                <h3>Add A User Inclusion URL Pattern</h3>
+              </header>
+              <form class="modal-body">
+                <input type="text" class="span9" id="ks-uss-us-incl-new" value="" autofocus>
+              </form>
+              <footer class="modal-footer">
+                <a href="#ks-uss-us-add-incl-modal-btn" id="ks-uss-us-add-incl-modal-btn" class="btn primary">Add</a>
+              </footer>
+            </section>
+            
+            <section id="ks-uss-us-edit-incl-modal" class="modal hide fade">
+              <header class="modal-header">
+                <a href="#" class="close">&times;</a>
+                <h3>Edit A User Inclusion URL Pattern</h3>
+              </header>
+              <form class="modal-body">
+                <input type="hidden" id="ks-uss-us-incl-edit-id" value="">
+                <input type="text" class="span9" id="ks-uss-us-incl-edit" value="" autofocus>
+              </form>
+              <footer class="modal-footer">
+                <a href="#ks-uss-us-edit-incl-modal-btn" id="ks-uss-us-edit-incl-modal-btn" class="btn primary">Update</a>
+              </footer>
+            </section>
+            
             <form id="ks-uss-form">
               
               <input type="hidden" id="ks-uss-us-metaid" value="">
               <input type="hidden" id="ks-uss-us-scriptid" value="">
               
-              <ul class="tabs" data-tabs="tabs">
-                <li class="active"><a href="#ks-uss-tab-usersets">User Settings</a></li>
-                <li><a href="#ks-uss-tab-scriptsets">Script Settings</a></li>
-                <li><a href="#ks-uss-tab-scriptedit">Script Editor</a></li>
+              <ul class="tabs" data-tabs="tabs" id="ks-uss-tabs">
+                <li class="active" id="ks-uss-tab-usersets-tab"><a href="#ks-uss-tab-usersets">User Settings</a></li>
+                <li id="ks-uss-tab-scriptsets-tab"><a href="#ks-uss-tab-scriptsets">Script Settings</a></li>
+                <li id="ks-uss-tab-scriptedit-tab"><a href="#ks-uss-tab-scriptedit">Script Editor</a></li>
               </ul>
               
               <!-- User Settings -->
@@ -339,8 +393,8 @@
                 </section>
                 <aside>
                   <a href="#ks-uss-us-excl-btn-add" id="ks-uss-us-excl-btn-add" class="btn small primary span2">Add</a><br>
-                  <a href="#ks-uss-us-excl-btn-edit" id="ks-uss-us-excl-btn-edit" class="btn small span2 disabled">Edit</a><br> <!-- class info when enabled --> 
-                  <a href="#ks-uss-us-excl-btn-remove" id="ks-uss-us-excl-btn-remove" class="btn small span2 disabled">Remove</a><br> <!-- class danger when enabled --> 
+                  <a href="#ks-uss-us-excl-btn-edit" id="ks-uss-us-excl-btn-edit" class="btn small span2 disabled">Edit</a><br>
+                  <a href="#ks-uss-us-excl-btn-remove" id="ks-uss-us-excl-btn-remove" class="btn small span2 disabled">Remove</a><br>
                 </aside>
                 
                 <section>
@@ -350,8 +404,8 @@
                 </section>
                 <aside>
                   <a href="#ks-uss-us-incl-btn-add" id="ks-uss-us-incl-btn-add" class="btn small primary span2">Add</a><br>
-                  <a href="#ks-uss-us-incl-btn-edit" id="ks-uss-us-incl-btn-edit" class="btn small span2 disabled">Edit</a><br> <!-- class info when enabled --> 
-                  <a href="#ks-uss-us-incl-btn-remove" id="ks-uss-us-incl-btn-remove" class="btn small span2 disabled">Remove</a><br> <!-- class danger when enabled --> 
+                  <a href="#ks-uss-us-incl-btn-edit" id="ks-uss-us-incl-btn-edit" class="btn small span2 disabled">Edit</a><br>
+                  <a href="#ks-uss-us-incl-btn-remove" id="ks-uss-us-incl-btn-remove" class="btn small span2 disabled">Remove</a><br>
                 </aside>
                 
               </fieldset>

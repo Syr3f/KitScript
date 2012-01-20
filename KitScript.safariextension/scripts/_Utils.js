@@ -67,3 +67,9 @@ var _Utils = Class.create({
 });
 
 _Utils.vl = 0;
+
+if(!String.prototype.trim) {  
+  String.prototype.trim = function () {  
+    return this.replace(/^\s+|\s+$/g,'');  
+  };  
+}  

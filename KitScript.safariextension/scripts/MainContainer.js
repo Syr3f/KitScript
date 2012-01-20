@@ -27,15 +27,19 @@ jQuery(document).ready(function ($) {
                             '#ks-gs-edit-modal * a',
                             '#ks-aus-form * a',
                             '#ks-uss-form * a',
+                            '#ks-uss-us-add-excl-modal * a',
+                            '#ks-uss-us-edit-excl-modal * a',
+                            '#ks-uss-us-add-incl-modal * a',
+                            '#ks-uss-us-edit-incl-modal * a',
                             '#ks-alert-modal * a'
                         ];
     
-    // All Button Events of KitScript
+    // All Anchor (Button) Events of KitScript
     $(_btnsSelectors.join(',')).click(function (evt) {
         
-        var _req = $(this).attr("href");
+        var _href = $(this).attr("href");
         
-        switch (_req) {
+        switch (_href) {
             case '#null':
                 break;
             
@@ -70,28 +74,43 @@ jQuery(document).ready(function ($) {
             case '#ks-uss-tab-usersets':
             case '#ks-uss-tab-scriptsets':
             case '#ks-uss-tab-scriptedit':
-                ks.mainContainer.userScriptSettingsForm.switchTab(_req);
+                ks.mainContainer.userScriptSettingsForm.switchTab(_href);
                 break;
+                
             // User Settings Excludes
             case '#ks-uss-us-excl-btn-add':
-                alert('add user exclude');
+                ks.mainContainer.userScriptSettingsForm.addUserExclusion();
+                break;
+            case '#ks-uss-us-add-excl-modal-btn':
+                ks.mainContainer.userScriptSettingsForm.registerUserExclusion(_href);
                 break;
             case '#ks-uss-us-excl-btn-edit':
-                alert('edit user exclude');
+                ks.mainContainer.userScriptSettingsForm.editUserExclusion();
+                break;
+            case '#ks-uss-us-edit-excl-modal-btn':
+                ks.mainContainer.userScriptSettingsForm.registerUserExclusion(_href);
                 break;
             case '#ks-uss-us-excl-btn-remove':
                 ks.mainContainer.userScriptSettingsForm.removeUserExclusion();
                 break;
+                
             // User Settings Includes
             case '#ks-uss-us-incl-btn-add':
-                alert('add user include');
+                ks.mainContainer.userScriptSettingsForm.addUserInclusion();
+                break;
+            case '#ks-uss-us-add-incl-modal-btn':
+                ks.mainContainer.userScriptSettingsForm.registerUserInclusion(_href);
                 break;
             case '#ks-uss-us-incl-btn-edit':
-                alert('edit user include');
+                ks.mainContainer.userScriptSettingsForm.editUserInclusion();
+                break;
+            case '#ks-uss-us-edit-incl-modal-btn':
+                ks.mainContainer.userScriptSettingsForm.registerUserInclusion(_href);
                 break;
             case '#ks-uss-us-incl-btn-remove':
                 ks.mainContainer.userScriptSettingsForm.removeUserInclusion();
                 break;
+                
             // Script Settings
             case '#ks-uss-ss-btn-add-usincl':
                 ks.mainContainer.userScriptSettingsForm.addToUserInclusion();
@@ -112,7 +131,8 @@ jQuery(document).ready(function ($) {
                 ks.setDisable();
                 break;
             default:
-                ks.mainContainer.contentManager.transitContent(_req);
+                if (_href !== '#')
+                    ks.mainContainer.contentManager.transitContent(_href);
         }
     });
     
@@ -149,5 +169,11 @@ jQuery(document).ready(function ($) {
     
     // Init Main Panel Content
     ks.mainContainer.contentManager.showMainContainer();
+    
+    // Circumventing a bug with modals
+    $('#ks-gs-add-modal,#ks-gs-edit-modal,#ks-uss-us-add-excl-modal,#ks-uss-us-edit-excl-modal,#ks-uss-us-add-incl-modal,#ks-uss-us-edit-incl-modal').bind('hidden', function () {
+        
+        //ks.mainContainer.contentManager.transitContent(KSContentManager.currentContentId);
+    });
 });
 
