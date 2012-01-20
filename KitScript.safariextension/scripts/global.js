@@ -45,5 +45,9 @@ jQuery(document).ready(function ($) {
         
     // Declare On UI If Enabled Or Disabled
     ks.declareEnabled();
+    
+    // Initialize Loader
+    ks.loader.init();
+    
 });
 

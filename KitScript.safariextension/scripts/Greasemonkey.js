@@ -55,6 +55,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         this._md_includes = [];
         this._md_excludes = [];
         this._md_version = '';
+        this._md_runat = KSGreasemonkeyMetadata.RUNAT_END;
     },
     loadScript: function (scriptStr) {
         
@@ -80,27 +81,30 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         for (var i=0; i<_lines.length; i++) {
             var _line = _lines[i].trim();
             
-            if (/[\/]{2} \@name (.*)/g.test(_line) === true) {
+            if (/[\/]{2} \@name (.*)/gi.test(_line) === true) {
                 
-                this._md_name = /[\/]{2} \@name (.*)/g.exec(_line)[1].trim();
-            } else if (/[\/]{2} \@namespace (.*)/g.test(_line) === true) {
+                this._md_name = /[\/]{2} \@name (.*)/gi.exec(_line)[1].trim();
+            } else if (/[\/]{2} \@namespace (.*)/gi.test(_line) === true) {
                 
-                this._md_namespace = /[\/]{2} \@namespace (.*)/g.exec(_line)[1].trim();
-            } else if (/[\/]{2} \@description (.*)/g.test(_line) === true) {
+                this._md_namespace = /[\/]{2} \@namespace (.*)/gi.exec(_line)[1].trim();
+            } else if (/[\/]{2} \@description (.*)/gi.test(_line) === true) {
                 
-                this._md_description = /[\/]{2} \@description (.*)/g.exec(_line)[1].trim();
-            } else if (/[\/]{2} \@match (.*)/g.test(_line) === true) {
+                this._md_description = /[\/]{2} \@description (.*)/gi.exec(_line)[1].trim();
+            } else if (/[\/]{2} \@require (.*)/gi.test(_line) === true) {
                 
-                this._md_requires.push(/[\/]{2} \@require (.*)/g.exec(_line)[1].trim());
-            } else if (/[\/]{2} \@include (.*)/g.test(_line) === true) {
+                this._md_requires.push(/[\/]{2} \@require (.*)/gi.exec(_line)[1].trim());
+            } else if (/[\/]{2} \@include (.*)/gi.test(_line) === true) {
                 
-                this._md_includes.push(/[\/]{2} \@include (.*)/g.exec(_line)[1].trim());
-            } else if (/[\/]{2} \@exclude (.*)/g.test(_line) === true) {
+                this._md_includes.push(/[\/]{2} \@include (.*)/gi.exec(_line)[1].trim());
+            } else if (/[\/]{2} \@exclude (.*)/gi.test(_line) === true) {
                 
-                this._md_excludes.push(/[\/]{2} \@exclude (.*)/g.exec(_line)[1].trim());
-            } else if (/[\/]{2} \@version (.*)/g.test(_line) === true) {
+                this._md_excludes.push(/[\/]{2} \@exclude (.*)/gi.exec(_line)[1].trim());
+            } else if (/[\/]{2} \@version (.*)/gi.test(_line) === true) {
                 
-                this._md_version = /[\/]{2} \@version (.*)/g.exec(_line)[1].trim();
+                this._md_version = /[\/]{2} \@version (.*)/gi.exec(_line)[1].trim();
+            } else if (/[\/]{2} \@run\-at (.*)/gi.test(_line) === true) {
+                
+                this._md_runat = /[\/]{2} \@run\-at (.*)/gi.exec(_line)[1].trim();
             }
         }
     },
@@ -192,6 +196,18 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         
         return this._md_version;
     },
+    /**
+     *  @run-at "document-end" | "document-start"
+     *
+     *  - Supports two values: document-end and document-start.
+     *  - "document-end" is the standard behavior that Greasemonkey has always had.
+     *
+     *  @returns String
+     */
+    getRunAt: function () {
+        
+        return this._md_runat;
+    },
     
     
     
@@ -210,7 +226,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getIcon: function () {
         
-        var matches = /[\/]{2} \@icon (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@icon (.*)/gi.exec(this._script);
         
         return matches[1];
     },
@@ -223,7 +239,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         
         var _matches = [];
         
-        var matches = /[\/]{2} \@match (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@match (.*)/gi.exec(this._script);
         
         for (var i = 1; i < matches.length; i++) {
             
@@ -241,7 +257,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         
         var _resources = [];
         
-        var matches = /[\/]{2} \@resource (.*) (.*)/g.exec(this._script);
+        var matches = /[\/]{2} \@resource (.*) (.*)/gi.exec(this._script);
         
         for (var i = 1; i < matches.length; i++) {
             
@@ -249,21 +265,6 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         }
         
         return _resources;
-    },
-    /**
-     *  @run-at "document-end" | "document-start"
-     *
-     *  - Supports two values: document-end and document-start. 
-     *
-     *  @returns String
-     */
-    getRunAt: function () {
-        
-        var matches = /[\/]{2} \@run-at (.*)/g.exec(this._script);
-        
-        // throw Exception if no match one or the other
-        
-        return matches[1];
     },
     /**
      *  @unwrap void
@@ -274,11 +275,16 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     hasUnwrap: function () {
         
-        var _hasUnwrap = /[\/]{2} \@unwrap (.*)/g.test(this._script);
+        var _hasUnwrap = /[\/]{2} \@unwrap (.*)/gi.test(this._script);
         
         return _hasUnwrap;
     }
 });
+
+
+
+KSGreasemonkeyMetadata.RUNAT_END = 'document-end';
+KSGreasemonkeyMetadata.RUNAT_START = 'document-start';
 
 
 

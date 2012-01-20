@@ -82,7 +82,7 @@ var KSStorage = Class.create(Storage, {
         _sC1 = function () { console.log("Table created."); };
         
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', [], _sC1, SFH_errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NOT NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0, user_includes TEXT NULL, user_excludes TEXT NULL);', [], _sC1, SFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NULL, requires TEST NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0, user_includes TEXT NULL, user_excludes TEXT NULL, run_at TEXT NOT NULL);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], this._dbq_onCreateKitScriptTable, SFH_errorHandler);
         
@@ -165,23 +165,23 @@ var KSStorage = Class.create(Storage, {
      *  User Script Metadata
      *  ====================
      */
-    insertUserScriptMetadata: function (hash, name, space, desc, includes, excludes, usid, disabled, user_includes, user_excludes, statementCallback, obj) {
+    insertUserScriptMetadata: function (hash, name, space, desc, includes, excludes, requires, usid, disabled, user_includes, user_excludes, run_at, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script metadata inserted.") };
         
         var sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj||this), "INSERT INTO "+this._dbTableUserScriptsMetadata+" (hash, name, namespace, description, includes, excludes, userscript_id, disabled, user_includes, user_excludes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", [hash, name, space, desc, includes, excludes, usid, disabled, user_includes, user_excludes], _sC, SFH_errorHandler);
+        sqlArray.push((obj||this), "INSERT INTO "+this._dbTableUserScriptsMetadata+" (hash, name, namespace, description, includes, excludes, requires, userscript_id, disabled, user_includes, user_excludes, run_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", [hash, name, space, desc, includes, excludes, requires, usid, disabled, user_includes, user_excludes, run_at], _sC, SFH_errorHandler);
         
         this.transact(sqlArray, null, null);
     },
-    updateUserScriptMetadata: function (id, hash, name, space, desc, includes, excludes, disabled, user_includes, user_excludes, statementCallback, obj) {
+    updateUserScriptMetadata: function (id, hash, name, space, desc, includes, excludes, requires, disabled, user_includes, user_excludes, run_at, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("User script metadata updated."); };
         
         var sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET hash = ?, name = ?, namespace = ?, description = ?, includes = ?, excludes = ?, disabled = ?, user_includes = ?, user_excludes = ? WHERE id = ?;", [hash, name, space, desc, includes, excludes, disabled, user_includes, user_excludes, id], _sC, SFH_errorHandler);
+        sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET hash = ?, name = ?, namespace = ?, description = ?, includes = ?, excludes = ?, requires = ?, disabled = ?, user_includes = ?, user_excludes = ?, run_at = ? WHERE id = ?;", [hash, name, space, desc, includes, excludes, requires, disabled, user_includes, user_excludes, run_at, id], _sC, SFH_errorHandler);
         
         this.transact(sqlArray, null, null);
         
@@ -270,7 +270,7 @@ var KSStorage = Class.create(Storage, {
          
          var sqlArray = new SQLStatementsArray();
          
-         sqlArray.push(this, "SELECT userscript_id FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], this._dbq_onFetchUserScriptFileId, SFH_errorHandler);
+         sqlArray.push(this, "SELECT userscript_id FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [metaId], this._dbq_onFetchUserScriptFileId, SFH_errorHandler);
          
          this.transact(sqlArray, null, null);
      },

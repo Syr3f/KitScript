@@ -640,8 +640,25 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         
         $super(this._formIdObj);
         
+        // CodeMirror2 ~ v0.2
+        //Object.getPrototypeOf(this).CMEditor = null;
+        
         this._textareaId = this._formIdObj.formBaseId+'-script';
     },
+    /* CodeMirror2 ~ v0.2
+    loadCMEditor: function () {
+        
+        this.CMEditor = CodeMirror(function (el) {
+            var _el = document.getElementById('ks-aus-script');
+            _el.parentNode.replaceChild(el, _el);
+            jQuery(el).addClass('span13');
+            jQuery(el).css('height', '270px');
+        },{
+            mode: "javascript"
+        });
+        
+        this.$()
+    },*/
 
     addUserScript: function () {
         
@@ -653,7 +670,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             var _rec = this._getUserScriptHeaderValues();
             
-            this._storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_script);
+            this._storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_rec[6],_script);
         } catch (e) {
             
             this.showErrorAlert(e.getMessage());
@@ -666,17 +683,21 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         var _desc = ks.gmmd.getDescription();
         var _incs = ks.gmmd.getIncludes();
         var _excs = ks.gmmd.getExcludes();
+        var _reqs = ks.gmmd.getRequires();
+        var _rnat = ks.gmmd.getRunAt();
         
-        return [_name,_space,_desc,_incs.join(','),_excs.join(',')];
+        return [_name,_space,_desc,_incs.join(','),_excs.join(','),_reqs.join(','),_rnat];
     },
-    _storeUserScript: function (name, space, desc, excludes, includes, code) {
+    _storeUserScript: function (name, space, desc, includes, excludes, requires, runAt, code) {
         
         Object.getPrototypeOf(this)._fieldName = 'LastInsertId';
         Object.getPrototypeOf(this)._name = name;
         Object.getPrototypeOf(this)._space = space;
         Object.getPrototypeOf(this)._desc = desc;
-        Object.getPrototypeOf(this)._excludes = excludes;
         Object.getPrototypeOf(this)._includes = includes;
+        Object.getPrototypeOf(this)._excludes = excludes;
+        Object.getPrototypeOf(this)._requires = requires;
+        Object.getPrototypeOf(this)._runAt = runAt;
         
         try {
             db.insertUserScriptFile(KSSHF_blobize(code),this._dbq_onInsertUserScriptFile,this);
@@ -702,7 +723,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             var _hash = _this.MD5(_this.sqlClean(_this._name)+_this.sqlClean(_this._space));
             
-            db.insertUserScriptMetadata(_hash, _this.sqlClean(_this._name), _this.sqlClean(_this._space), _this.sqlClean(_this._desc), _this.sqlClean(_this._includes), _this.sqlClean(_this._excludes), parseInt(_row[_this._fieldName]), 0, null, null, _this._dbq_onCreateUserScriptMeta, _this);
+            db.insertUserScriptMetadata(_hash, _this.sqlClean(_this._name), _this.sqlClean(_this._space), _this.sqlClean(_this._desc), _this.sqlClean(_this._includes), _this.sqlClean(_this._excludes), _this.sqlClean(_this._requires), parseInt(_row[_this._fieldName]), 0, null, null, _this.sqlClean(_this._runAt), _this._dbq_onCreateUserScriptMeta, _this);
         } else
             _this.showErrorAlert("The user script couldn't be stored.");
     },
@@ -842,6 +863,18 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.$(this._$previousTabId).hide();
         this.$(this._$currentTabId).show();
+        
+        /* For Bigger Editor (CodeMirror2) ~ v0.2
+        if (this._$currentTabId === '#ks-uss-tab-scriptedit') {
+            this.$('#ks-uss-aside').hide();
+            this.$('#ks-uss-tabs').toggleClass('span14', true);
+            //this.$('#ks-uss-tabs').toggleClass('span9', false);
+        } else {
+            this.$('#ks-uss-aside').show();
+            this.$('#ks-uss-tabs').toggleClass('span14', false);
+            //this.$('#ks-uss-tabs').toggleClass('span9', true);
+        }
+        */
         
         this.$(this._$previousTabId+'-paneltip').hide();
         this.$(this._$currentTabId+'-paneltip').show();
@@ -1142,7 +1175,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
             
             var _rec = _this._getUserScriptHeaderValues();
             
-            _this.updateUserScriptMetadata(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4], _isEnabled);
+            _this.updateUserScriptMetadata(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_isEnabled,_rec[6]);
         } else {
             _this.showFailureAlert("Couldn't update the user script.");
         }
@@ -1154,10 +1187,12 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         var _desc = ks.gmmd.getDescription();
         var _incs = ks.gmmd.getIncludes();
         var _excs = ks.gmmd.getExcludes();
+        var _reqs = ks.gmmd.getRequires();
+        var _rnat = ks.gmmd.getRunAt();
         
-        return [_name,_space,_desc,_incs.join(','),_excs.join(',')];
+        return [_name,_space,_desc,_incs.join(','),_excs.join(','),_reqs.join(','),_rnat];
     },
-    updateUserScriptMetadata: function (name, space, desc, includes, excludes, disabled) {
+    updateUserScriptMetadata: function (name, space, desc, includes, excludes, requires, disabled, runAt) {
         
         var _metaId = this.getLoadedMetaId();
         
@@ -1167,7 +1202,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         var _hash = this.MD5(this.sqlClean(name)+this.sqlClean(space));
         
         try {
-            db.updateUserScriptMetadata(_metaId, _hash, this.sqlClean(name), this.sqlClean(space), this.sqlClean(desc), this.sqlClean(includes), this.sqlClean(excludes), disabled, _uincls, _uexcls, this._dbq_onUpdateMetadata, this);
+            db.updateUserScriptMetadata(_metaId, _hash, this.sqlClean(name), this.sqlClean(space), this.sqlClean(desc), this.sqlClean(includes), this.sqlClean(excludes), this.sqlClean(requires), disabled, _uincls, _uexcls, runAt, this._dbq_onUpdateMetadata, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
@@ -1313,16 +1348,16 @@ var KSAboutProjectForm = Class.create(KSContentManager, {
 
 
 
-var KSLoaderTreeNode = [{
-    id: 0,
+var KSLoaderTreeNode = {
+    metaId: 0,
     fileId: 0,
-    integration: {
-        u_excludes: [],
-        u_includes: [],
-        us_excludes: [],
-        us_includes: []
-    }
-}];
+    u_excludes: [],
+    u_includes: [],
+    us_excludes: [],
+    us_includes: [],
+    us_requires: [],
+    us_run_at: ""
+};
 
 
 
@@ -1335,8 +1370,12 @@ var KSLoader = Class.create(_Utils, {
     
     initialize: function () {
         
-        this._usTree = [];
-        this._globExcls = [];
+        this._usTree = new Array();
+        this._globExcls = new Array();
+    },
+    init: function () {
+        this.loadUserScriptsMetadata();
+        this.loadGlobalExcludes();
     },
     loadUserScriptsMetadata: function () {
         
@@ -1348,21 +1387,23 @@ var KSLoader = Class.create(_Utils, {
     },
     _dbq_onFetchUserScriptsMetadata: function (transact, resultSet) {
         
-        var _this = resultSet.objInstance;
+        var _this = transact.objInstance;
+        delete transact.objInstance;
         
         for (var i=0; i<resultSet.rows.length; i++) {
             
             var _row = resultSet.rows.item(i);
             
-            var _node = new Object();
-            _node.extends(KSLoaderTreeNode);
+            var _node = Object.create(KSLoaderTreeNode);
             
-            _node.id = _row['id'];
+            _node.metaId = _row['id'];
             _node.fileId = _row['userscript_id'];
             _node.u_excludes = _row['user_excludes'].split(',');
             _node.u_includes = _row['user_includes'].split(',');
             _node.us_excludes = _row['excludes'].split(',');
             _node.us_includes = _row['includes'].split(',');
+            _node.us_requires = _row['requires'].split(',');
+            _node.us_run_at = _row['run_at'];
             
             _this._usTree.push(_node);
         }
@@ -1377,7 +1418,8 @@ var KSLoader = Class.create(_Utils, {
     },
     _dbq_onFetchGlobalExcludes: function (transact,resultSet) {
         
-        var _this = resultSet.objInstance;
+        var _this = transact.objInstance;
+        delete transact.objInstance;
         
         for (var i=0; i<resultSet.rows.length; i++) {
             
@@ -1386,6 +1428,33 @@ var KSLoader = Class.create(_Utils, {
             _this._globExcls.push(_row['url']);
         }
     },
+    
+    isValidScheme: function (url) {
+        
+        if (url.trim().length > 0) {
+            
+            var _scheme = url.substr(0, url.indexOf(':'));
+
+            switch (_scheme) {
+                case 'data':
+                case 'ftp':
+                case 'http':
+                case 'https':
+                    return true;
+                    break;
+                default:
+                    return false;
+            }
+        }
+    },
+    /* For Loading User Scripts Locations ~ v0.2
+    isUserScript: function (url) {
+        
+        if (/^.*user.js$/gi.test(url) === true) {
+            
+            
+        }
+    },*/
     
     _translateGlobbingOperator: function (pattern) {
         
@@ -1398,11 +1467,63 @@ var KSLoader = Class.create(_Utils, {
         // check if url is blocked by global layer
         for (var g=0; g<this._globExcls.length; g++) {
             
-            //if 
+            var _re = new RegExp(this._globExcls[g]);
+            
+            if (_re.test(url) === true) {
+                
+                return false;
+            }
         }
         
-        // Parse usList
-        //for (var i=0; i<this._us)
+        // Parse usTree: ~= Must Be Recursive =~
+        /*
+        for (var ut=0; ut<this._usTree.length; ut++) {
+            
+            var _ut = this._usTree[ut];
+            
+            for (var ue=0; ue<_ut.u_excludes.length; ue++) {
+                
+                var _ue = _ut.u_excludes[ue];
+                
+                var _reUE = new RegExp(_ue);
+                
+                if (_reUE.test(url) === true) {
+                    
+                    return false;
+                }
+            }
+            
+        }
+        */
+        
+        Object.getPrototypeOf(this)._fileId = this._usTree[0].fileId;
+        Object.getPrototypeOf(this)._incls = this._usTree[0].us_includes;
+        Object.getPrototypeOf(this)._excls = this._usTree[0].us_excludes;
+        
+        if (KSGreasemonkeyMetadata.RUNAT_START == this._usTree[0].us_run_at)
+            Object.getPrototypeOf(this)._runAtEnd = false;
+        else
+            Object.getPrototypeOf(this)._runAtEnd = true;
+        
+        // Inject Requires
+        //safari.extension.addContentScriptFromURL(this._usTree[0].us_requires[0],[".*"] , this._excls, this._runAtEnd);
+        
+        db.fetchUserScriptFileByMetaId(this._usTree[0].metaId, this._dbq_onFetchUserScriptFile, this);
+    },
+    _dbq_onFetchUserScriptFile: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        delete transact.objInstance;
+        
+        var _row = resultSet.rows.item(0);
+        
+        var _loader = "$b({'id-1': '"+_this._usTree[0].us_requires[0]+"'});\n\n";
+        
+        //var _html = "<html><head><title></title></head><body><script type='text/javascript'>"+_loader+KSSHF_unblobize(_row['userscript'])+"</script></body></html>";
+        //var _html = "<script type='text/javascript'>"+_loader+KSSHF_unblobize(_row['userscript'])+"</script>";
+        //var _html = "<script type='text/javascript' src='"+_this._usTree[0].us_requires[0]+"'></script><script type='text/javascript'>"+KSSHF_unblobize(_row['userscript'])+"</script>";
+        
+        safari.extension.addContentScript(KSSHF_unblobize(_row['userscript']), [".*"] , [], true);
     }
 });
 
@@ -1432,7 +1553,7 @@ var KitScript = Class.create(_Utils, {
         this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
         
-        //this.loader = new KSLoader();
+        Object.getPrototypeOf(this).loader = new KSLoader();
     },
     
     isEnabled: function () {
@@ -1552,11 +1673,15 @@ function KSSEFH_ValidateHandler(event) {
 
 function KSSEFH_NavigateHandler(event) {
     
-    if (ks.loader.isUserScript(event.target.url)) {
-        // Ask to add to manager ~ v0.2
-    } else {
-        // Process if URL is in includes
-        //ks.loader.integrate(event.target.url);
+    if (ks.loader.isValidScheme(event.target.url) === true) {
+        
+        // To Load User Scripts From Location ~ v0.2
+        //if (ks.loader.isUserScript(event.target.url)) {
+            // Ask to add to manager ~ v0.2
+        //} else {
+            // Process if URL is in includes
+            ks.loader.integrate(event.target.url);
+        //}
     }
 }
 
