@@ -25,6 +25,7 @@ jQuery(document).ready(function ($) {
                             '#ks-gs-form * a',
                             '#ks-gs-add-modal * a',
                             '#ks-gs-edit-modal * a',
+                            '#ks-usm-am-delwarn * a',
                             '#ks-aus-form * a',
                             '#ks-uss-form * a',
                             '#ks-uss-us-add-excl-modal * a',
@@ -65,6 +66,14 @@ jQuery(document).ready(function ($) {
                 ks.mainContainer.globalSettingsForm.removeGlobalExclude();
                 break;
             
+            // User Script Manager
+            case '#ks-usm-am-delwarn-close-btn':
+                ks.mainContainer.userScriptsManagerForm.hideWarningDeleteAlert();
+                break;
+            case '#ks-usm-am-delwarn-delete-btn':
+                ks.mainContainer.userScriptsManagerForm.confirmDeleteScript();
+                break;
+            
             // New User Script
             case '#ks-aus-btn-add':
                 ks.mainContainer.newUserScriptForm.addUserScript();
@@ -76,7 +85,6 @@ jQuery(document).ready(function ($) {
             case '#ks-uss-tab-scriptedit':
                 ks.mainContainer.userScriptSettingsForm.switchTab(_href);
                 break;
-                
             // User Settings Excludes
             case '#ks-uss-us-excl-btn-add':
                 ks.mainContainer.userScriptSettingsForm.addUserExclusion();
@@ -93,7 +101,6 @@ jQuery(document).ready(function ($) {
             case '#ks-uss-us-excl-btn-remove':
                 ks.mainContainer.userScriptSettingsForm.removeUserExclusion();
                 break;
-                
             // User Settings Includes
             case '#ks-uss-us-incl-btn-add':
                 ks.mainContainer.userScriptSettingsForm.addUserInclusion();
@@ -110,7 +117,6 @@ jQuery(document).ready(function ($) {
             case '#ks-uss-us-incl-btn-remove':
                 ks.mainContainer.userScriptSettingsForm.removeUserInclusion();
                 break;
-                
             // Script Settings
             case '#ks-uss-ss-btn-add-usincl':
                 ks.mainContainer.userScriptSettingsForm.addToUserInclusion();
@@ -169,11 +175,5 @@ jQuery(document).ready(function ($) {
     
     // Init Main Panel Content
     ks.mainContainer.contentManager.showMainContainer();
-    
-    // Circumventing a bug with modals
-    $('#ks-gs-add-modal,#ks-gs-edit-modal,#ks-uss-us-add-excl-modal,#ks-uss-us-edit-excl-modal,#ks-uss-us-add-incl-modal,#ks-uss-us-edit-incl-modal').bind('hidden', function () {
-        
-        //ks.mainContainer.contentManager.transitContent(KSContentManager.currentContentId);
-    });
 });
 

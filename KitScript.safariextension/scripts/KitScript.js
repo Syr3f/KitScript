@@ -540,8 +540,15 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     },
     
     deleteUserScript: function (btnId) {
+        this.showWarningDeleteAlert(btnId);
+    },
+    confirmDeleteScript: function () {
         
-        var _metaId = this._extractId(btnId);
+        this.hideWarningDeleteAlert();
+        
+        var _id = this.$('#ks-usm-am-delete-id').val();
+        
+        var _metaId = this._extractId(_id);
         
         this.__proto__._db = db;
         this.__proto__._metaId = _metaId;
@@ -587,6 +594,16 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     _extractId: function (btnId) {
         
         return btnId.substr(btnId.lastIndexOf('-')+1,btnId.length);
+    },
+    
+    showWarningDeleteAlert: function (id) {
+        
+        this.$('#ks-usm-am-delete-id').val(id);
+        this.$('#ks-usm-am-delwarn').removeClass('hide');
+    },
+    hideWarningDeleteAlert: function () {
+        
+        this.$('#ks-usm-am-delwarn').addClass('hide');
     },
     
     showSuccessAlert: function (strMsg) {

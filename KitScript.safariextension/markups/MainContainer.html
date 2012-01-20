@@ -52,7 +52,7 @@
     <!-- script src="scripts/lib/backbone/backbone-localstorage.js" type="text/javascript" charset="utf-8"></script -->
     
     <!-- = Bootstrap = -->
-    <!-- script src="../scripts/lib/bootstrap-1.4.0/bootstrap-alerts.js" type="text/javascript" charset="utf-8"></script -->
+    <script src="../scripts/lib/bootstrap-1.4.0/bootstrap-alerts.js" type="text/javascript" charset="utf-8"></script>
     <!-- script src="../scripts/lib/bootstrap-1.4.0/bootstrap-buttons.js" type="text/javascript" charset="utf-8"></script -->
     <script src="../scripts/lib/bootstrap-1.4.0/bootstrap-dropdown.js" type="text/javascript" charset="utf-8"></script>
     <script src="../scripts/lib/bootstrap-1.4.0/bootstrap-modal.js" type="text/javascript" charset="utf-8"></script>
@@ -218,6 +218,17 @@
         <div class="row">
           <section class="span14">
             <h2>User Scripts</h2>
+            
+            <div id="ks-usm-am-delwarn" class="alert-message block-message warning hide">
+              <input type="hidden" id="ks-usm-am-delete-id" value="">
+              <p>
+                <strong>Achtung!</strong>
+                You are about to delete a user script. You can't recuperate a deleted user script. <u>Are you shure you want to delete it?</u>
+              </p>
+              <div class="alert-actions">
+                <a class="btn small" href="#ks-usm-am-delwarn-delete-btn">Yes, delete it!</a> <a class="btn small" href="#ks-usm-am-delwarn-close-btn">No, I'll keep it.</a>
+              </div>
+            </div>
             
             <div id="ks-usm-am-warn" class="alert-message warning hide"></div>
             <div id="ks-usm-am-error" class="alert-message error hide"></div>

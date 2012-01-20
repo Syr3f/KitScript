@@ -43,6 +43,14 @@ textarea, select, option, input[type="text"] {
     text-align: center;
 }
 
+#ks-usm-am-delwarn a.ks-close-btn {
+    clear: both;
+    float: right;
+    font-size: 2em;
+    color: #CCC;
+    text-decoration: none;
+}
+
 /* Global Excludes */
 
 #ks-gs-list {
