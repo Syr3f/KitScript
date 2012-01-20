@@ -47,6 +47,14 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         
         this._isHeaderValid = false;
         this._script = "";
+        
+        this._md_name = '';
+        this._md_namespace = '';
+        this._md_description = '';
+        this._md_requires = [];
+        this._md_includes = [];
+        this._md_excludes = [];
+        this._md_version = '';
     },
     loadScript: function (scriptStr) {
         
@@ -54,12 +62,47 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         
         if (!this.isHeaderValid())
             throw new KSGMException("User script metadata block is invalid.");
+        else
+            this.parseMetadataBlock();
     },
     isHeaderValid: function () {
         
         this._isValid = /[\/]{2} ==UserScript==[^=]*==[\/]{1}UserScript==/m.test(this._script);
         
         return this._isValid;
+    },
+    parseMetadataBlock: function () {
+        
+        var _matches = /[\/]{2} ==UserScript==([^=]*)==[\/]{1}UserScript==/m.exec(this._script);
+        
+        var _lines = _matches[1].split("\n");
+        
+        for (var i=0; i<_lines.length; i++) {
+            var _line = _lines[i].trim();
+            
+            if (/[\/]{2} \@name (.*)/g.test(_line) === true) {
+                
+                this._md_name = /[\/]{2} \@name (.*)/g.exec(_line)[1].trim();
+            } else if (/[\/]{2} \@namespace (.*)/g.test(_line) === true) {
+                
+                this._md_namespace = /[\/]{2} \@namespace (.*)/g.exec(_line)[1].trim();
+            } else if (/[\/]{2} \@description (.*)/g.test(_line) === true) {
+                
+                this._md_description = /[\/]{2} \@description (.*)/g.exec(_line)[1].trim();
+            } else if (/[\/]{2} \@match (.*)/g.test(_line) === true) {
+                
+                this._md_requires.push(/[\/]{2} \@require (.*)/g.exec(_line)[1].trim());
+            } else if (/[\/]{2} \@include (.*)/g.test(_line) === true) {
+                
+                this._md_includes.push(/[\/]{2} \@include (.*)/g.exec(_line)[1].trim());
+            } else if (/[\/]{2} \@exclude (.*)/g.test(_line) === true) {
+                
+                this._md_excludes.push(/[\/]{2} \@exclude (.*)/g.exec(_line)[1].trim());
+            } else if (/[\/]{2} \@version (.*)/g.test(_line) === true) {
+                
+                this._md_version = /[\/]{2} \@version (.*)/g.exec(_line)[1].trim();
+            }
+        }
     },
     
     
@@ -80,15 +123,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getName: function () {
         
-        if (/[\/]{2} \@name (.*)/g.test(this._script) === true) {
-            
-            var matches = /[\/]{2} \@name (.*)/g.exec(this._script);
-            
-            return matches[1];
-        } else {
-            
-            throw new KSGMException("No mandatory @name in metadata block.");
-        }
+        return this._md_name;
     },
     /**
      *  @namespace string – KS Mandatory
@@ -99,15 +134,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getNamespace: function () {
         
-        if (/[\/]{2} \@namespace (.*)/g.test(this._script) === true) {
-            
-            var matches = /[\/]{2} \@namespace (.*)/g.exec(this._script);
-            
-            return matches[1];
-        } else {
-            
-            throw new KSGMException("No mandatory @namesapce in metadata block.");
-        }
+        return this._md_namespace;
     },
     /**
      *  @description string – KS Mandatory
@@ -116,15 +143,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getDescription: function () {
         
-        if (/[\/]{2} \@description (.*)/g.test(this._script) === true) {
-            
-            var matches = /[\/]{2} \@description (.*)/g.exec(this._script);
-            
-            return matches[1];
-        } else {
-            
-            throw new KSGMException("No mandatory @description in metadata block.");
-        }
+        return this._md_description;
     },
     /**
      *  @requires url – Optional
@@ -133,19 +152,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getRequires: function () {
         
-        var _requires = [];
-        
-        if (/[\/]{2} \@match (.*)/g.test(this._script) === true) {
-            
-            var matches = /[\/]{2} \@require (.*)/g.exec(this._script);
-            
-            for (var i = 1; i < matches.length; i++) {
-                
-                _requires.push(matches[i]);
-            }
-        }
-        
-        return _requires;
+        return this._md_requires;
     },
     /**
      *  @includes pattern – Optional
@@ -157,25 +164,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getIncludes: function () {
         
-        var _includes = [];
-        
-        if (/[\/]{2} \@include (.*)/g.test(this._script) === true) {
-            
-            var matches = /[\/]{2} \@include (.*)/g.exec(this._script);
-            
-            if (matches.length > 0) {
-                
-                for (var i = 1; i < matches.length; i++) {
-                    
-                    _includes.push(matches[i]);
-                }
-            } else {
-                
-                _includes.push('*');
-            }
-        }
-        
-        return _includes;
+        return this._md_includes;
     },
     /**
      *  @excludes pattern – Optional
@@ -186,22 +175,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getExcludes: function () {
         
-        var _excludes = [];
-        
-        if (/[\/]{2} \@exclude (.*)/g.test(this._script) === true) {
-            
-            var matches = /[\/]{2} \@exclude (.*)/g.exec(this._script);
-            
-            if (matches.length > 0) {
-                
-                for (var i = 1; i < matches.length; i++) {
-                    
-                    _excludes.push(matches[i]);
-                }
-            }
-        }
-        
-        return _excludes;
+        return this._md_excludes;
     },
     /**
      *  @version float – Optional
@@ -216,15 +190,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getVersion: function () {
         
-        if (/[\/]{2} \@version (.*)/g.test(this._script) === true) {
-            
-            var matches = /[\/]{2} \@version (.*)/g.exec(this._script);
-            
-            return matches[1];
-        } else {
-            
-            return "";
-        }
+        return this._md_version;
     },
     
     
