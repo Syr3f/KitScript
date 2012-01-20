@@ -89,12 +89,12 @@ var KSMainContainer = Class.create(KSBase, {
         
         this._pageName = "MainContainer.html";
         
-        this.contentManager = null;
-        this.userScriptsManagerForm = null;
-        this.globalSettingsForm = null;
-        this.newUserScriptForm = null;
-        this.userScriptSettingsForm = null;
-        this.aboutProjectForm = null;
+        Object.getPrototypeOf(this).contentManager = null;
+        Object.getPrototypeOf(this).userScriptsManagerForm = null;
+        Object.getPrototypeOf(this).globalSettingsForm = null;
+        Object.getPrototypeOf(this).newUserScriptForm = null;
+        Object.getPrototypeOf(this).userScriptSettingsForm = null;
+        Object.getPrototypeOf(this).aboutProjectForm = null;
         
         $super();
     },
@@ -550,8 +550,8 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         var _metaId = this._extractId(_id);
         
-        this.__proto__._db = db;
-        this.__proto__._metaId = _metaId;
+        Object.getPrototypeOf(this)._db = db;
+        Object.getPrototypeOf(this)._metaId = _metaId;
         
         db.fetchUserScriptFileIdByMetaId(_metaId, this._dbq_onFetchUserScriptFileId, this);
     },
@@ -671,12 +671,12 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     },
     _storeUserScript: function (name, space, desc, excludes, includes, code) {
         
-        this.__proto__._fieldName = 'LastInsertId';
-        this.__proto__._name = name;
-        this.__proto__._space = space;
-        this.__proto__._desc = desc;
-        this.__proto__._excludes = excludes;
-        this.__proto__._includes = includes;
+        Object.getPrototypeOf(this)._fieldName = 'LastInsertId';
+        Object.getPrototypeOf(this)._name = name;
+        Object.getPrototypeOf(this)._space = space;
+        Object.getPrototypeOf(this)._desc = desc;
+        Object.getPrototypeOf(this)._excludes = excludes;
+        Object.getPrototypeOf(this)._includes = includes;
         
         try {
             db.insertUserScriptFile(KSSHF_blobize(code),this._dbq_onInsertUserScriptFile,this);
@@ -1313,6 +1313,103 @@ var KSAboutProjectForm = Class.create(KSContentManager, {
 
 
 
+var KSLoaderTreeNode = [{
+    id: 0,
+    fileId: 0,
+    integration: {
+        u_excludes: [],
+        u_includes: [],
+        us_excludes: [],
+        us_includes: []
+    }
+}];
+
+
+
+
+
+/**
+ *  KSLoader (KitScript User Script Loader & Injector Class)
+ */
+var KSLoader = Class.create(_Utils, {
+    
+    initialize: function () {
+        
+        this._usTree = [];
+        this._globExcls = [];
+    },
+    loadUserScriptsMetadata: function () {
+        
+        try {
+            db.fetchAllUserScriptsMetadata(0, 1000, this._dbq_onFetchUserScriptsMetadata, this);
+        } catch (e) {
+            this._a("KitScript Loader Error: Couldn't load user scripts metadata ("+e.getMessage()+").");
+        }
+    },
+    _dbq_onFetchUserScriptsMetadata: function (transact, resultSet) {
+        
+        var _this = resultSet.objInstance;
+        
+        for (var i=0; i<resultSet.rows.length; i++) {
+            
+            var _row = resultSet.rows.item(i);
+            
+            var _node = new Object();
+            _node.extends(KSLoaderTreeNode);
+            
+            _node.id = _row['id'];
+            _node.fileId = _row['userscript_id'];
+            _node.u_excludes = _row['user_excludes'].split(',');
+            _node.u_includes = _row['user_includes'].split(',');
+            _node.us_excludes = _row['excludes'].split(',');
+            _node.us_includes = _row['includes'].split(',');
+            
+            _this._usTree.push(_node);
+        }
+    },
+    loadGlobalExcludes: function () {
+        
+        try {
+            db.fetchAllGlobalExcludes(0,1000,this._dbq_onFetchGlobalExcludes,this);
+        } catch (e) {
+            alert("KitScript Loader Error: Couldn't load global excludes ("+e.getMessage()+").");
+        }
+    },
+    _dbq_onFetchGlobalExcludes: function (transact,resultSet) {
+        
+        var _this = resultSet.objInstance;
+        
+        for (var i=0; i<resultSet.rows.length; i++) {
+            
+            var _row = resultSet.rows.item(i);
+            
+            _this._globExcls.push(_row['url']);
+        }
+    },
+    
+    _translateGlobbingOperator: function (pattern) {
+        
+        //var _re = /[\]\.]\*/
+        
+    },
+    
+    integrate: function (url) {
+        
+        // check if url is blocked by global layer
+        for (var g=0; g<this._globExcls.length; g++) {
+            
+            //if 
+        }
+        
+        // Parse usList
+        //for (var i=0; i<this._us)
+    }
+});
+
+
+
+
+
 /**
  *  KitScript Class
  */
@@ -1324,9 +1421,9 @@ var KitScript = Class.create(_Utils, {
         
         this._isEnabled = true;
         
-        this.gmmd = new KSGreasemonkeyMetadata();
+        Object.getPrototypeOf(this).gmmd = new KSGreasemonkeyMetadata();
         
-        this.mainContainer = new KSMainContainer();
+        Object.getPrototypeOf(this).mainContainer = new KSMainContainer();
         
         this.mainContainer.contentManager = new KSContentManager();
         this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
@@ -1334,7 +1431,10 @@ var KitScript = Class.create(_Utils, {
         this.mainContainer.newUserScriptForm = new KSNewUserScriptForm();
         this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
+        
+        //this.loader = new KSLoader();
     },
+    
     isEnabled: function () {
         
         return this._isEnabled;
@@ -1452,7 +1552,12 @@ function KSSEFH_ValidateHandler(event) {
 
 function KSSEFH_NavigateHandler(event) {
     
-    //alert(event.target.url);
+    if (ks.loader.isUserScript(event.target.url)) {
+        // Ask to add to manager ~ v0.2
+    } else {
+        // Process if URL is in includes
+        //ks.loader.integrate(event.target.url);
+    }
 }
 
 safari.application.addEventListener("command", KSSEFH_CommandHandler, false);

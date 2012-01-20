@@ -200,7 +200,7 @@ var Storage = Class.create(_Utils, {
         this._DB.transaction(function (transaction) {
             //"use strict";
             
-            eval("transaction.__proto__.objInstance = _sqls[0][0];");
+            eval("Object.getPrototypeOf(transaction).objInstance = _sqls[0][0];");
             
             var _js = "";
             

@@ -265,8 +265,8 @@ var KSStorage = Class.create(Storage, {
      */
      fetchUserScriptFileByMetaId: function (metaId, statementCallback, obj) {
          
-         this.__proto__.outerObj = obj;
-         this.__proto__.outerFunc = statementCallback;
+         Object.getPrototypeOf(this).outerObj = obj;
+         Object.getPrototypeOf(this).outerFunc = statementCallback;
          
          var sqlArray = new SQLStatementsArray();
          
