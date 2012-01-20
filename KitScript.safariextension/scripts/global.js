@@ -47,7 +47,7 @@ jQuery(document).ready(function ($) {
     ks.declareEnabled();
     
     // Initialize Loader
-    ks.loader.init();
+    ks.loader.loadData();
     
 });
 

@@ -31,6 +31,7 @@ var KSStorage = Class.create(Storage, {
         
         this._isDbExistant = false;
         
+        this._dbTableRequireFiles = "RequireFiles";
         this._dbTableUserScriptFiles = "UserScriptFiles";
         this._dbTableUserScriptsMetadata = "UserScriptsMetadata";
         this._dbTableGlobalExcludes = "GlobalExcludes";
@@ -73,6 +74,7 @@ var KSStorage = Class.create(Storage, {
         
         if (doDrop === true) {
             
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableRequireFiles+';', [], _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', [], _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptsMetadata+';', [], _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableGlobalExcludes+';', [], _sC, SFH_errorHandler);
@@ -81,6 +83,7 @@ var KSStorage = Class.create(Storage, {
         
         _sC1 = function () { console.log("Table created."); };
         
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableRequireFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript_id INTEGER NOT NULL, file BLOB NOT NULL);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NULL, requires TEST NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0, user_includes TEXT NULL, user_excludes TEXT NULL, run_at TEXT NOT NULL);', [], _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _sC1, SFH_errorHandler);
@@ -116,6 +119,60 @@ var KSStorage = Class.create(Storage, {
 
             _this.transact(sqlArray, null, null);
         }
+    },
+    /**
+     *  ============
+     *  Require File
+     *  ============
+     */
+    insertRequireFile: function (usId, blob, statementCallback, obj) {
+        
+        var _sC = statementCallback || function () { console.log("Require file inserted."); };
+        
+        var sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "INSERT INTO "+this._dbTableRequireFiles+" (userscript_id, file) VALUES (?, ?);", [usId, blob], _sC, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+        
+    },
+    updateRequireFile: function (id, usId, blob, statementCallback, obj) {
+        
+        var _sC = statementCallback || function () { console.log("Require file updated."); };
+        
+        var sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "UPDATE "+this._dbTableRequireFiles+" SET userscript_id = ?, file = ? WHERE id = ?;", [usId, blob, id], _sC, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+    },
+    fetchRequireFile: function (id, statementCallback, obj) {
+        
+        var sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableRequireFiles+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+    },
+    deleteRequireFile: function (id, statementCallback, obj) {
+        
+        var _sC = statementCallback || function () { console.log("Require file deleted."); };
+        
+        var sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "DELETE FROM "+this._dbTableRequireFiles+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
+        
+        this.transact(sqlArray, null, null);
+    },
+    deleteRequireFilesByUserScriptId: function (usId, statementCallback, obj) {
+        
+        var _sC = statementCallback || function () { console.log("Require file deleted."); };
+        
+        var sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "DELETE FROM "+this._dbTableRequireFiles+" WHERE userscript_id = ?;", [usId], _sC, SFH_killTransaction);
+        
+        this.transact(sqlArray, null, null);
     },
     /**
      *  ================
