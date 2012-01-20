@@ -169,5 +169,8 @@ jQuery(document).ready(function ($) {
     
     // Init Main Panel Content
     ks.mainContainer.contentManager.showMainContainer();
+    
+    // CodeMirror ~ v0.2
+    //ks.mainContainer.newUserScriptForm.loadCMEditor();
 });
 

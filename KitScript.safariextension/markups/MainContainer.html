@@ -67,6 +67,10 @@
     <!-- = History.js = -->
     <!-- script src="../scripts/lib/history.js/jquery.history.js" type="text/javascript" charset="utf-8"></script -->
     
+    <!-- = CodeMirror2 = -->
+    <!-- script src="../scripts/lib/CodeMirror2/lib/codemirror.js" type="text/javascript" charset="utf-8"></script -->
+    <!-- script src="../scripts/lib/CodeMirror2/mode/javascript/javascript.js" type="text/javascript" charset="utf-8"></script -->
+    
     <!-- = Misc. = -->
     <script src="../scripts/lib/Base64.js" type="text/javascript" charset="utf-8"></script>
     <script src="../scripts/lib/Markdown.js" type="text/javascript" charset="utf-8"></script>
@@ -245,7 +249,7 @@
             <div id="ks-aus-am-success" class="alert-message success hide"></div>
             
             <form id="ks-aus-form">
-              <div class="span9 well">
+              <div id="ks-aus-script-well" class="span9 well">
                 <textarea id="ks-aus-script" class="span9" autofocus></textarea>
                 <span class="help-block">Enter or paste the user script code in the field above and press the "Add" button below to add the script in KitScript's database.</span>
               </div>
@@ -431,7 +435,7 @@
             </form>
             
           </section>
-          <aside class="span4">
+          <aside class="span4" id="ks-uss-aside">
             <h3>KitScript</h3>
             
             <ul class="unstyled ks-vertmenu">
