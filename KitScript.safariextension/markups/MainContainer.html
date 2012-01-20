@@ -111,25 +111,6 @@
 
 
 
-      <!-- KitScript Alert Modal -->
-      <section id="ks-alert-modal" class="modal hide fade">
-        <header class="modal-header">
-          <a href="#" class="close">&times;</a>
-          <h3>KitScript Alert</h3>
-        </header>
-        <section class="modal-body">
-          <h2></h2>
-        </section>
-        <footer class="modal-footer">
-          <a href="#ks-alert-close" class="btn primary">Close</a>
-        </footer>
-      </section>
-      <!-- /KitScript Alert Modal -->
-
-
-
-
-
       <!-- Global Settings -->
       <section class="content ks-hide" id="global-settings">
         <header class="page-header">
@@ -150,8 +131,8 @@
                 <span class="help-block">Enter the global exclusion URL patterns by clicking the "Add" button below. To edit or remove a URL pattern, select it in the list above and then click the related action button below.</span>
               </div>
               <div class="span9 well">
-                <a class="btn small primary" href="#ks-gs-btn-add">Add</a><!--  data-controls-modal="ks-gs-add-modal" data-backdrop="true" data-keyboard="true" -->
-                <a class="btn small disabled" href="#ks-gs-btn-edit" id="ks-gs-btn-edit">Edit</a><!-- data-controls-modal="ks-gs-edit-modal" data-backdrop="true" data-keyboard="true" -->
+                <a class="btn small primary" href="#ks-gs-btn-add">Add</a>
+                <a class="btn small disabled" href="#ks-gs-btn-edit" id="ks-gs-btn-edit">Edit</a>
                 <a class="btn small disabled" href="#ks-gs-btn-remove" id="ks-gs-btn-remove">Remove</a>
               </div>
             </form>
@@ -197,7 +178,9 @@
             <section>
               <h3>Paneltip</h3>
               
-              <p>Todo</p>
+              <p>The <em><b>Global Settings</b></em> panel lets you enter global exclusion patterns for the interaction of your user scripts with Web pages.</p>
+              <p>Global exclusion URL patterns have the highest precedence over all the other integration layers.</p>
+              <p>There's three integration layers: <em><u>The Global Layer</u></em> (this panel), <em><u>The User Layer</u></em> (setted on a <em><b>User Script Settings</b></em> panel) &amp; <em><u>The Script Layer</u></em> (entered in the user script header).</p>
               
             </section>
             
@@ -239,24 +222,6 @@
             </table>
 
           </section>
-          <!-- aside class="span4">
-            <h3>KitScript</h3>
-
-            <ul class="unstyled ks-vertmenu">
-              <li><a href="#global-settings">Global Settings</a></li>
-              <li><a href="#userscript-manager">User Scripts Manager</a></li>
-              <li><a href="#new-userscript">New User Script</a></li>
-              <li><a href="#about">About KitScript</a></li>
-            </ul>
-            
-            <section>
-              <h3>Paneltip</h3>
-              
-              <p>Todo</p>
-              
-            </section>
-            
-          </aside -->
         </div>
       </section>
       <!-- /User Scripts Manager -->
@@ -304,7 +269,9 @@
             <section>
               <h3>Paneltip</h3>
               
-              <p>Todo</p>
+              <p>You can code your user script directly in the text area or write it in an external editor and paste it in.</p>
+              
+              <p>Later on, you'll be able to make changes and update it in the <em><b>User Script Settings</b></em> panel.</p>
               
             </section>
             
@@ -477,7 +444,22 @@
             <section>
               <h3>Paneltip</h3>
               
-              <p>Todo</p>
+              <article id="ks-uss-tab-usersets-paneltip" class="">
+                <h4>User Settings</h4>
+                <p>After the <em>Global Layer</em>, the second layer of user script integration is the <em>User Layer</em>. Set the exclusions and inclusions in their respective lists in this tab.</p>
+                <p>Remember that inclusions patterns always have a lower precedence than exclusion patterns.</p>
+              </article>
+              
+              <article id="ks-uss-tab-scriptsets-paneltip" class="hide">
+                <h4>Script Settings</h4>
+                <p>The <em>Inclusion</em> and <em>Exclusion</em> patterns of the <em>Script Layer</em> are listed in their respective listboxes on your left and they can be inversely upgraded to the second layer, <em>The User Layer</em>  (script include to user exclude and script exclude to user include).</p>
+              </article>
+              
+              <article id="ks-uss-tab-scriptedit-paneltip" class="hide">
+                <h4>Script Editor</h4>
+                <p>You can edit or paste and update a User script in the text area on your left. The user script settings are updated on each "Update" button click.</p>
+                <p>Remember that a user script is identified by its metadata @name + @namespace. If two user scripts end up having the same name and namespace, a data conflict will arise.</p>
+              </article>
               
             </section>
             
@@ -510,7 +492,10 @@
             <section>
               <h4>Links &amp; References</h4>
               
-              <p>Todo</p>
+              <a href="http://www.kitscript.com/">KitScript Website</a><br>
+              <a href="https://github.com/Syr3f/KitScript">GitHub Source</a><br>
+              <a href="http://www.greasespot.net/"> Official Greasemonkey weblog</a><br>
+              <a href="http://wiki.greasespot.net/Main_Page">Greasemonkey Wiki</a><br>
               
             </section>
 
@@ -531,9 +516,9 @@
 
 The project was started in the fall of 2011 and was/is mainly inspired by the defunct (or no more maintained) User Script Safari Extensions/Add-Ons: *GreaseKit* &amp; *NinjaKit*.
 
-The open source **[KitScript](https://syr3fgithub.com/KitScript)** project has a main objective to be developed and thouroughly maintained by the community and is always looking for participants for its development and maintenance.
+The open source **[KitScript](https://syr3fgithub.com/KitScript)** project is to be developed and thouroughly maintained by the open source community and will always looking for developers for its evolutive and maintenance process.
 
-For any bugs, [open an issue on GitHub](https://github.com/Syr3f/KitScript/issues). We're always welcoming pull requests also, keep them coming.
+For any bugs, [open an issue on GitHub](https://github.com/Syr3f/KitScript/issues). We're always welcoming pull requests, keep them coming.
 
 Enjoy!
 

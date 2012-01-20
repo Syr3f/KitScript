@@ -842,6 +842,9 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.$(this._$previousTabId).hide();
         this.$(this._$currentTabId).show();
+        
+        this.$(this._$previousTabId+'-paneltip').hide();
+        this.$(this._$currentTabId+'-paneltip').show();
     },
     
     addUserExclusion: function () {
@@ -1449,7 +1452,7 @@ function KSSEFH_ValidateHandler(event) {
 
 function KSSEFH_NavigateHandler(event) {
     
-    alert(event.target.url);
+    //alert(event.target.url);
 }
 
 safari.application.addEventListener("command", KSSEFH_CommandHandler, false);

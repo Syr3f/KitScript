@@ -21,7 +21,6 @@ jQuery(document).ready(function ($) {
     
     var _btnsSelectors = ['#ks-topmenu * a',
                             'ul.ks-vertmenu * a',
-                            //'#ks-usm-list * a',
                             '#ks-gs-form * a',
                             '#ks-gs-add-modal * a',
                             '#ks-gs-edit-modal * a',
@@ -42,11 +41,6 @@ jQuery(document).ready(function ($) {
         
         switch (_href) {
             case '#null':
-                break;
-            
-            // Alert Modal
-            case '#ks-alert-close':
-                //ks.mainContainer.hideAlert();
                 break;
             
             // Global Settings Buttons
