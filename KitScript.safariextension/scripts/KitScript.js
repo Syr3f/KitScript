@@ -168,6 +168,9 @@ var KSContentManager = Class.create(_Utils, {
         var _ttl = this._getTitleByContentId(_contentId);
         
         this._setDocumentTitle(_ttl);
+        
+        this.$('#ks-topmenu-nav-'+KSContentManager.previousContentId).removeClass('active');
+        this.$('#ks-topmenu-nav-'+KSContentManager.currentContentId).addClass('active');
     },
 
     showMainContainer: function () {
@@ -257,6 +260,21 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
         this._editId = this._formIdObj.formBaseId+'-edit-id';
     },
 
+    activateBtns: function () {
+        
+        this.$("#ks-gs-btn-edit").removeClass('disabled');
+        this.$("#ks-gs-btn-edit").addClass('info');
+        this.$("#ks-gs-btn-remove").removeClass('disabled');
+        this.$("#ks-gs-btn-remove").addClass('danger');
+    },
+    disactivateBtns: function () {
+        
+        this.$("#ks-gs-btn-edit").addClass('disabled');
+        this.$("#ks-gs-btn-edit").removeClass('info');
+        this.$("#ks-gs-btn-remove").addClass('disabled');
+        this.$("#ks-gs-btn-remove").removeClass('danger');
+    },
+
     addGlobalExclude: function () {
         
         this.$('#'+this._addModalId).modal({
@@ -282,21 +300,6 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
                 this.showFailureAlert(e.getMessage());
             }
         }
-    },
-
-    activateBtns: function () {
-        
-        this.$("#ks-gs-btn-edit").removeClass('disabled');
-        this.$("#ks-gs-btn-edit").addClass('info');
-        this.$("#ks-gs-btn-remove").removeClass('disabled');
-        this.$("#ks-gs-btn-remove").addClass('danger');
-    },
-    disactivateBtns: function () {
-        
-        this.$("#ks-gs-btn-edit").addClass('disabled');
-        this.$("#ks-gs-btn-edit").removeClass('info');
-        this.$("#ks-gs-btn-remove").addClass('disabled');
-        this.$("#ks-gs-btn-remove").removeClass('danger');
     },
 
     editGlobalExclude: function () {
@@ -512,7 +515,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         _this.drawTable();
         _this.showSuccessAlert('User script has been disabled.');
     },
-    
+
     enableUserScript: function (btnId) {
         
         var _metaId = this._extractId(btnId);
@@ -811,10 +814,60 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     addUserExclusion: function () {
         
-        
+        this.$('#ks-uss-us-add-excl-modal').modal({
+            keyboard: true,
+            backdrop: true,
+            show: true
+        });
     },
     editUserExclusion: function () {
         
+        this.$('#ks-uss-us-edit-excl-modal').modal({
+            keyboard: true,
+            backdrop: true,
+            show: true
+        });
+        
+        var _id = this.$('#ks-uss-us-excl-list option:selected').val();
+        var _url = this.$('#ks-uss-us-excl-list option:selected').text();
+        
+        this.$('#ks-uss-us-excl-edit-id').val(_id);
+        this.$('#ks-uss-us-excl-edit').val(_url);
+    },
+    registerUserExclusion: function (btnId) {
+        
+        switch (btnId) {
+            case '#ks-uss-us-add-excl-modal-btn':
+                
+                this.$('#ks-uss-us-add-excl-modal').modal('hide');
+                
+                var _val = this.$('#ks-uss-us-excl-new').val();
+                
+                this.$('#ks-uss-us-excl-new').val("");
+                
+                _val = _val.trim();
+                
+                if (_val !== "")
+                    this.$('#ks-uss-us-excl-list').append('<option>'+_val+'</option>');
+                break;
+            case '#ks-uss-us-edit-excl-modal-btn':
+                
+                this.$('#ks-uss-us-edit-excl-modal').modal('hide');
+                
+                var _id = this.$('#ks-uss-us-excl-edit-id').val();
+                var _url = this.$('#ks-uss-us-excl-edit').val();
+                
+                this.disactivateExclusionBtns();
+                
+                this.$('#ks-uss-us-excl-edit-id').val("");
+                this.$('#ks-uss-us-excl-edit').val("");
+                
+                if (_val !== "")
+                    this.$('#ks-uss-us-excl-list option:selected').text(_url);
+                break;
+        }
+        
+        this._updateUserSettings();
     },
     removeUserExclusion: function () {
         
@@ -843,10 +896,59 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     
     addUserInclusion: function () {
         
-        
+        this.$('#ks-uss-us-add-incl-modal').modal({
+            keyboard: true,
+            backdrop: true,
+            show: true
+        });
     },
     editUserInclusion: function () {
         
+        this.$('#ks-uss-us-edit-incl-modal').modal({
+            keyboard: true,
+            backdrop: true,
+            show: true
+        });
+        
+        var _id = this.$('#ks-uss-us-incl-list option:selected').val();
+        var _url = this.$('#ks-uss-us-incl-list option:selected').text();
+        
+        this.$('#ks-uss-us-incl-edit-id').val(_id);
+        this.$('#ks-uss-us-incl-edit').val(_url);
+    },
+    registerUserInclusion: function (btnId) {
+        
+        switch (btnId) {
+            case '#ks-uss-us-add-incl-modal-btn':
+                
+                this.$('#ks-uss-us-add-incl-modal').modal('hide');
+                
+                var _val = this.$('#ks-uss-us-incl-new').val();
+                
+                this.$('#ks-uss-us-incl-new').val("");
+                
+                _val = _val.trim();
+                
+                if (_val !== "")
+                    this.$('#ks-uss-us-incl-list').append('<option>'+_val+'</option>');
+                break;
+            case '#ks-uss-us-edit-incl-modal-btn':
+                this.$('#ks-uss-us-edit-incl-modal').modal('hide');
+                
+                var _id = this.$('#ks-uss-us-incl-edit-id').val();
+                var _url = this.$('#ks-uss-us-incl-edit').val();
+
+                this.disactivateInclusionBtns();
+
+                this.$('#ks-uss-us-incl-edit-id').val("");
+                this.$('#ks-uss-us-incl-edit').val("");
+                
+                if (_val !== "")
+                    this.$('#ks-uss-us-incl-list option:selected').text(_url);
+                break;
+        }
+        
+        this._updateUserSettings();
     },
     removeUserInclusion: function () {
         
@@ -906,6 +1008,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.$('#ks-uss-us-incl-list').append('<option>'+_txt+'</option>');
         
+        this.activateUserSettingsTab();
         this._updateUserSettings();
     },
     activateAddToUserExcludesBtn: function () {
@@ -920,7 +1023,14 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         this.$('#ks-uss-us-excl-list').append('<option>'+_txt+'</option>');
         
+        this.activateUserSettingsTab();
         this._updateUserSettings();
+    },
+    activateUserSettingsTab: function () {
+        
+        this.switchTab('#ks-uss-tab-usersets');
+        this.$('#ks-uss-tabs li.active').removeClass('active');
+        this.$('#ks-uss-tab-usersets-tab').addClass('active');
     },
     
     _updateUserSettings: function () {
