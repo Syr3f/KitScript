@@ -62,6 +62,7 @@ var KSStorage = Class.create(Storage, {
     _dbq_onQueryAnyTable: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0)
             _this._isDbExistant = true;
@@ -92,6 +93,7 @@ var KSStorage = Class.create(Storage, {
     _dbq_onCreateKitScriptTable:function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         var sqlArray = new SQLStatementsArray();
         
@@ -102,6 +104,7 @@ var KSStorage = Class.create(Storage, {
     _dbq_onQueryTableExists: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         var _sC = function () { console.log("Data inserted."); }
         
@@ -191,6 +194,14 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray, null, null);
     },
+    fetchUserScripUserSettings: function (id, statementCallback, obj) {
+        
+        var sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "SELECT user_includes, user_excludes FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+    },
     fetchAllUserScriptsMetadata: function (offset, limit, statementCallback, obj) {
         
         var sqlArray = new SQLStatementsArray();
@@ -266,6 +277,7 @@ var KSStorage = Class.create(Storage, {
      _dbq_onFetchUserScriptFileId: function (transact, resultSet) {
          
          var _this = transact.objInstance;
+         delete transact.objInstance;
          
          if (resultSet.rows.length > 0) {
              

@@ -362,6 +362,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
     _dbq_onQueryGlobalExcludes: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         _this.emptyList();
         _this.fillList();
@@ -378,6 +379,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
     _dbq_onFetchGlobalExcludes: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
             
@@ -438,6 +440,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     _dbq_onFetchUserScripts: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         var _html = "";
         var _sttOn = 'Enabled', _sttOff = 'Disabled';
         
@@ -511,6 +514,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     _dbq_onDisableRequest: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         _this.drawTable();
         _this.showSuccessAlert('User script has been disabled.');
@@ -529,6 +533,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     _dbq_onEnableRequest: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         _this.drawTable();
         _this.showSuccessAlert('User script has been enabled.');
@@ -546,6 +551,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     _dbq_onFetchUserScriptFileId: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
             
@@ -565,12 +571,14 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
     _dbq_onDeleteUserScriptFile: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         db.deleteUserScriptMetadata(_this._metaId, _this._dbq_onDeleteUserScriptMeta, _this);
     },
     _dbq_onDeleteUserScriptMeta: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         _this.drawTable();
         _this.showSuccessAlert('User script has been deleted.');
@@ -662,12 +670,14 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     _dbq_onInsertUserScriptFile: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         db.getLastInsertRowId(_this._fieldName, _this._dbq_onFetchLastInsertId, _this);
     },
     _dbq_onFetchLastInsertId: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
             
@@ -680,6 +690,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     _dbq_onCreateUserScriptMeta: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         _this.transitContent('#userscript-manager');
         
@@ -766,6 +777,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     _dbq_onFetchUserScriptMetadata: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
             
@@ -793,6 +805,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     _dbq_onFetchUserScriptFile: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
             
@@ -984,6 +997,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     _dbq_onFetchMetadata: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
             
@@ -1073,6 +1087,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     _dbq_onUpdateUserSettings: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         _this.showSuccessAlert("The user settings have been updated.");
     },
@@ -1090,6 +1105,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     _dbq_onQueryUserScriptEnabled: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
 
@@ -1123,8 +1139,11 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         var _metaId = this.getLoadedMetaId();
         
+        var _uexcls = this._getUserExclusions();
+        var _uincls = this._getUserInclusions();
+        
         try {
-            db.updateUserScriptMetadata(_metaId, this.sqlClean(name), this.sqlClean(space), this.sqlClean(desc), this.sqlClean(excludes), this.sqlClean(includes), disabled, null, null, this._dbq_onUpdateMetadata, this);
+            db.updateUserScriptMetadata(_metaId, this.sqlClean(name), this.sqlClean(space), this.sqlClean(desc), this.sqlClean(includes), this.sqlClean(excludes), disabled, _uincls, _uexcls, this._dbq_onUpdateMetadata, this);
         } catch (e) {
             this.showFailureAlert(e.getMessage());
         }
@@ -1132,6 +1151,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     _dbq_onUpdateMetadata: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         try {
             
@@ -1146,6 +1166,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     _dbq_onUpdateUserScriptFile: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         // Reload data
         _this.loadData(_this.getLoadedMetaId());
@@ -1189,10 +1210,12 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         for (var i=0; i<_tokens.length; i++) {
             
-            _html += '<option value="'+i+'">'+_tokens[i]+'</option>';
+            if (_tokens[i].length > 0)
+                _html += '<option value="'+i+'">'+_tokens[i]+'</option>';
         }
         
-        this.$(selId).html(_html);
+        if (_html.length > 0)
+            this.$(selId).html(_html);
     },
     _fillScriptEditor: function (scriptStr) {
         
@@ -1305,6 +1328,7 @@ var KitScript = Class.create(_Utils, {
     _dbq_onSetEnable: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         _this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
         _this._isEnabled = true;
@@ -1324,6 +1348,7 @@ var KitScript = Class.create(_Utils, {
     _dbq_onSetDisable: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         _this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
         _this._isEnabled = false;
@@ -1349,6 +1374,7 @@ var KitScript = Class.create(_Utils, {
     _dbq_onQueryEnabledState: function (transact, resultSet) {
         
         var _this = transact.objInstance;
+        delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
             
