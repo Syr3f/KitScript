@@ -89,12 +89,12 @@ var KSMainContainer = Class.create(KSBase, {
         
         this._pageName = "MainContainer.html";
         
-        Object.getPrototypeOf(this).contentManager = null;
-        Object.getPrototypeOf(this).userScriptsManagerForm = null;
-        Object.getPrototypeOf(this).globalSettingsForm = null;
-        Object.getPrototypeOf(this).newUserScriptForm = null;
-        Object.getPrototypeOf(this).userScriptSettingsForm = null;
-        Object.getPrototypeOf(this).aboutProjectForm = null;
+        this.contentManager = null;
+        this.userScriptsManagerForm = null;
+        this.globalSettingsForm = null;
+        this.newUserScriptForm = null;
+        this.userScriptSettingsForm = null;
+        this.aboutProjectForm = null;
         
         $super();
     },
@@ -226,7 +226,7 @@ var KSContentManager = Class.create(_Utils, {
     }
 });
 
-KSContentManager.regisForms = [];
+KSContentManager.regisForms = new Array();
 KSContentManager.currentContentId = 'userscript-manager';
 KSContentManager.previousContentId = null;
 
@@ -550,8 +550,8 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         
         var _metaId = this._extractId(_id);
         
-        Object.getPrototypeOf(this)._db = db;
-        Object.getPrototypeOf(this)._metaId = _metaId;
+        this._db = db;
+        this._metaId = _metaId;
         
         db.fetchUserScriptFileIdByMetaId(_metaId, this._dbq_onFetchUserScriptFileId, this);
     },
@@ -568,6 +568,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
             
             try {
                 db.deleteUserScriptFile(_usId, _this._dbq_onDeleteUserScriptFile, _this);
+                db.deleteRequireFilesByUserScriptId(_usId);
             } catch (e) {
                 _this.showFailureAlert(e.getMessage());
             }
@@ -641,7 +642,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         $super(this._formIdObj);
         
         // CodeMirror2 ~ v0.2
-        //Object.getPrototypeOf(this).CMEditor = null;
+        //this.CMEditor = null;
         
         this._textareaId = this._formIdObj.formBaseId+'-script';
     },
@@ -686,18 +687,23 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         var _reqs = ks.gmmd.getRequires();
         var _rnat = ks.gmmd.getRunAt();
         
+        if (_name.length == 0 && _space.length == 0) {
+            
+            throw new KSGMException("KitScript needs a @name and @namespace in the metadata block.");
+        }
+        
         return [_name,_space,_desc,_incs.join(','),_excs.join(','),_reqs.join(','),_rnat];
     },
     _storeUserScript: function (name, space, desc, includes, excludes, requires, runAt, code) {
         
-        Object.getPrototypeOf(this)._fieldName = 'LastInsertId';
-        Object.getPrototypeOf(this)._name = name;
-        Object.getPrototypeOf(this)._space = space;
-        Object.getPrototypeOf(this)._desc = desc;
-        Object.getPrototypeOf(this)._includes = includes;
-        Object.getPrototypeOf(this)._excludes = excludes;
-        Object.getPrototypeOf(this)._requires = requires;
-        Object.getPrototypeOf(this)._runAt = runAt;
+        this._fieldName = 'LastInsertId';
+        this._name = name;
+        this._space = space;
+        this._desc = desc;
+        this._includes = includes;
+        this._excludes = excludes;
+        this._requires = requires;
+        this._runAt = runAt;
         
         
         
@@ -773,6 +779,8 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         delete _this._excludes;
         delete _this._requires;
         delete _this._runAt;
+        
+        ks.loader.reload();
     },
     
     showSuccessAlert: function (strMsg) {
@@ -1154,7 +1162,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     },
     _getUserExclusions: function () {
         
-        var _strs = [];
+        var _strs = new Array();
         
         this.$('#ks-uss-us-excl-list option').each(function (idx, el) {
             
@@ -1166,7 +1174,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     },
     _getUserInclusions: function () {
         
-        var _strs = [];
+        var _strs = new Array();
         
         this.$('#ks-uss-us-incl-list option').each(function (idx, el) {
             
@@ -1208,9 +1216,13 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
             var _usId = _this.getLoadedScriptId();
             var _usStr = _this.getUserScript();
             
-            ks.gmmd.loadScript(_usStr);
-            
-            var _rec = _this._getUserScriptHeaderValues();
+            try {
+                ks.gmmd.loadScript(_usStr);
+                
+                var _rec = _this._getUserScriptHeaderValues();
+            } catch (e) {
+                _this.showFailureAlert(e.getMessage());
+            }
             
             _this.updateUserScriptMetadata(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_isEnabled,_rec[6]);
         } else {
@@ -1226,6 +1238,11 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         var _excs = ks.gmmd.getExcludes();
         var _reqs = ks.gmmd.getRequires();
         var _rnat = ks.gmmd.getRunAt();
+        
+        if (_name.length == 0 && _space.length == 0) {
+            
+            throw new KSGMException("KitScript needs a @name and @namespace in the metadata block.");
+        }
         
         return [_name,_space,_desc,_incs.join(','),_excs.join(','),_reqs.join(','),_rnat];
     },
@@ -1273,7 +1290,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
     },
     reacquireRequireFiles: function (requires) {
         
-        Object.getPrototypeOf(this)._requires = requires;
+        this._requires = requires;
         
         var _usId = this.getLoadedScriptId();
         
@@ -1310,6 +1327,8 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         delete transact.objInstance;
         
         _this._l("Require file inserted.");
+        
+        ks.loader.reload();
     },
     
     
@@ -1431,12 +1450,16 @@ var KSAboutProjectForm = Class.create(KSContentManager, {
 var KSLoaderTreeNode = {
     metaId: 0,
     fileId: 0,
-    u_excludes: [],
-    u_includes: [],
-    us_excludes: [],
-    us_includes: [],
-    us_requires: [],
-    us_run_at: ""
+    userscript: "",
+    u_excludes: new Array(),
+    u_includes: new Array(),
+    us_excludes: new Array(),
+    us_includes: new Array(),
+    us_requires: new Array(),
+    us_run_at: true,
+    us_injection_urls: new Array(),
+    req_injection_urls: new Array(),
+    disabled: false
 };
 
 
@@ -1453,23 +1476,51 @@ var KSLoader = Class.create(_Utils, {
         this._usTree = new Array();
         this._globExcls = new Array();
     },
-    loadData: function () {
+    isValidScheme: function (url) {
+        
+        if (url.trim().length > 0) {
+            
+            var _scheme = url.substr(0, url.indexOf(':'));
+            
+            switch (_scheme) {
+                //case 'data':  // not valid in for safari.extension.addContentScript
+                //case 'ftp':   // not valid in for safari.extension.addContentScript
+                case 'http':
+                case 'https':
+                    return true;
+                    break;
+                default:
+                    return false;
+            }
+        }
+    },
+    isUserScript: function (url) {
+        
+        if (/^.*\.user\.js$/gi.test(url) === true) {
+            
+            //this._a(url+": isUserScript() == true");
+            
+            return true;
+        }
+    },
+    load: function () {
         
         if (ks.isEnabled() === true) {
             
             this._usTree = new Array();
             this._globExcls = new Array();
             
-            this.loadUserScriptsMetadata();
-            this.loadGlobalExcludes();
+            this._loadDataAndInject();
+            
+            KSLoader.triggeredIntegrateWatch();
         }
     },
     dumpData: function () {
         
-        delete this._usTree;
-        delete this._globExcls;
+        this._usTree = new Array();
+        this._globExcls = new Array();
     },
-    loadUserScriptsMetadata: function () {
+    _loadDataAndInject: function () {
         
         try {
             db.fetchAllUserScriptsMetadata(0, 1000, this._dbq_onFetchUserScriptsMetadata, this);
@@ -1492,18 +1543,71 @@ var KSLoader = Class.create(_Utils, {
             _node.fileId = _row['userscript_id'];
             _node.u_excludes = _row['user_excludes'].split(',');
             _node.u_includes = _row['user_includes'].split(',');
+            _node.us_requires = new Array();
             _node.us_excludes = _row['excludes'].split(',');
             _node.us_includes = _row['includes'].split(',');
-            _node.us_requires = _row['requires'].split(',');
-            _node.us_run_at = _row['run_at'];
+            _node.disabled = (parseInt(_row['disabled'])==0?false:true)
+            
+            if (_row['run_at'] == KSGreasemonkeyMetadata.RUNAT_START)
+                _node.us_run_at = false;
+            else
+                _node.us_run_at = true;
             
             _this._usTree.push(_node);
+            
+            db.fetchUserScriptFileByMetaId(_row['id'], _this._dbq_onFetchUserScriptFile, _this);
         }
     },
-    loadGlobalExcludes: function () {
+    _dbq_onFetchUserScriptFile: function (transact,resultSet) {
+        
+        var _this = transact.objInstance;
+        delete transact.objInstance;
+        
+        var _row = resultSet.rows.item(0);
+        
+        for (var i=0; i<_this._usTree.length; i++) {
+            
+            var _ut = _this._usTree[i];
+            
+            if (_ut.fileId == _row['id']) {
+                
+                _this._usTree[i].userscript = _row['userscript'];
+                break;
+            }
+        }
+        
+        db.fetchRequireFilesByUserScriptId(_row['id'], _this._dbq_onFetchRequireFiles, _this);
+    },
+    _dbq_onFetchRequireFiles: function (transact,resultSet) {
+        
+        var _this = transact.objInstance;
+        delete transact.objInstance;
+        
+        if (resultSet.rows.length > 0) {
+            
+            var i=0;
+            
+            var _row = resultSet.rows.item(i);
+            
+            for (var u=0; u<_this._usTree.length; u++) {
+                
+                var _ut = _this._usTree[u];
+                
+                if (parseInt(_row['userscript_id']) == parseInt(_ut.fileId)) {
+                    
+                    do {
+                        _row = resultSet.rows.item(i);
+                        _this._usTree[u].us_requires.push(_row['file']);
+                        i++;
+                    } while (i<resultSet.rows.length);
+                    
+                    break;
+                }
+            }
+        }
         
         try {
-            db.fetchAllGlobalExcludes(0,1000,this._dbq_onFetchGlobalExcludes,this);
+            db.fetchAllGlobalExcludes(0,1000,_this._dbq_onFetchGlobalExcludes,_this);
         } catch (e) {
             alert("KitScript Loader Error: Couldn't load global excludes ("+e.getMessage()+").");
         }
@@ -1519,98 +1623,89 @@ var KSLoader = Class.create(_Utils, {
             
             _this._globExcls.push(_row['url']);
         }
-    },
-    
-    isValidScheme: function (url) {
         
-        if (url.trim().length > 0) {
-            
-            var _scheme = url.substr(0, url.indexOf(':'));
-
-            switch (_scheme) {
-                case 'data':
-                case 'ftp':
-                case 'http':
-                case 'https':
-                    return true;
-                    break;
-                default:
-                    return false;
-            }
-        }
-    },
-    /* For Loading User Scripts Locations ~ v0.2
-    isUserScript: function (url) {
-        
-        if (/^.*user.js$/gi.test(url) === true) {
-            
-            
-        }
-    },*/
-    
-    _translateGlobbingOperator: function (pattern) {
-        
-        //var _re = /[\]\.]\*/
-        
+        KSLoader._lastFetchRun = Date.now();
     },
     
     integrate: function (url) {
         
+        alert("_integrate");
+        
         if (ks.isEnabled() === true) {
             
-            // check if url is blocked by global layer
-            for (var g=0; g<this._globExcls.length; g++) {
-
-                var _re = new RegExp(this._globExcls[g]);
-
-                if (_re.test(url) === true) {
-
-                    return false;
-                }
-            }
-
-            // Parse usTree: ~= Must Be Recursive =~
-            /*
+            // Parse usTree To Inject Scripts By Metadata Entry
             for (var ut=0; ut<this._usTree.length; ut++) {
-
+                
                 var _ut = this._usTree[ut];
-
-                for (var ue=0; ue<_ut.u_excludes.length; ue++) {
-
-                    var _ue = _ut.u_excludes[ue];
-
-                    var _reUE = new RegExp(_ue);
-
-                    if (_reUE.test(url) === true) {
-
-                        return false;
+                
+                if (_ut.disabled === false) {
+                    
+                    // Blacklist
+                    var _bl = this._globExcls;
+                    _bl.push(_ut.u_excludes);
+                    _bl.push(_ut.us_excludes);
+                    
+                    // Whitelist
+                    var _wl = _ut.u_includes;
+                    _wl.push(_ut.us_includes);
+                    
+                    // Run at
+                    var _ra = _ut.us_run_at;
+                    
+                    // Inject Require Files
+                    for (var rf=0; rf<_ut.us_requires.length; rf++) {
+                        
+                        var _rf = _ut.us_requires[rf];
+                        
+                        var _injurl = safari.extension.addContentScript(KSSHF_unblobize(_rf), _wl, _bl, false);
+                        
+                        if (_injurl !== null)
+                            this._usTree[ut].req_injection_urls.push(_injurl);
                     }
+                    
+                    var _injurl = safari.extension.addContentScript(KSSHF_unblobize(_ut.userscript), _wl, _bl, _ut.us_run_at);
+                    
+                    if (_injurl !== null)
+                        this._usTree[ut].us_injection_urls.push(_injurl);
                 }
-
             }
-            */
-
-            Object.getPrototypeOf(this)._fileId = this._usTree[0].fileId;
-            Object.getPrototypeOf(this)._incls = this._usTree[0].us_includes;
-            Object.getPrototypeOf(this)._excls = this._usTree[0].us_excludes;
-
-            if (KSGreasemonkeyMetadata.RUNAT_START == this._usTree[0].us_run_at)
-                Object.getPrototypeOf(this)._runAtEnd = false;
-            else
-                Object.getPrototypeOf(this)._runAtEnd = true;
         }
     },
-    _dbq_onFetchUserScriptFile: function (transact, resultSet) {
+    _disintegrate: function () {
         
-        var _this = transact.objInstance;
-        delete transact.objInstance;
+        //safari.extension.removeContentScripts();
+        //this.safext.removeContentScripts();
         
-        var _row = resultSet.rows.item(0);
+        // v0.4
+        //safari.extension.removeContentStyleSheets();
+    },
+    unload: function () {
         
-        db.fetchUserScriptFileByMetaId(this._usTree[0].metaId, this._dbq_onFetchUserScriptFile, this);
-        safari.extension.addContentScript(KSSHF_unblobize(_row['userscript']), [".*"] , [], true);
+        this.dumpData();
+        safari.extension.removeContentScripts();
+    },
+    reload: function () {
+        
+        this.unload();
+        this.load();
     }
 });
+
+
+KSLoader._lastFetchRun = -1;
+KSLoader._lastWatchRun = -1;
+
+KSLoader.triggeredIntegrateWatch = function () {
+    
+    if (KSLoader._lastWatchRun - KSLoader._lastFetchRun >= 500) {
+        
+        ks.loader.integrate();
+    } else {
+        
+        KSLoader._lastWatchRun = Date.now();
+        window.setTimeout(KSLoader.triggeredIntegrateWatch, 250);
+    }
+}
 
 
 
@@ -1627,9 +1722,9 @@ var KitScript = Class.create(_Utils, {
         
         this._isEnabled = true;
         
-        Object.getPrototypeOf(this).gmmd = new KSGreasemonkeyMetadata();
+        this.gmmd = new KSGreasemonkeyMetadata();
         
-        Object.getPrototypeOf(this).mainContainer = new KSMainContainer();
+        this.mainContainer = new KSMainContainer();
         
         this.mainContainer.contentManager = new KSContentManager();
         this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
@@ -1638,7 +1733,7 @@ var KitScript = Class.create(_Utils, {
         this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
         
-        Object.getPrototypeOf(this).loader = new KSLoader();
+        this.loader = new KSLoader();
     },
     
     isEnabled: function () {
@@ -1664,7 +1759,7 @@ var KitScript = Class.create(_Utils, {
         _this._isEnabled = true;
         _this.showAlertOnCurrentForm("KitScript is now enabled.");
         
-        ks.loader.loadData();
+        ks.loader.load();
     },
     setDisable: function () {
         
@@ -1686,6 +1781,7 @@ var KitScript = Class.create(_Utils, {
         _this.showAlertOnCurrentForm("KitScript is now disabled.");
         
         ks.loader.dumpData();
+        safari.extension.removeContentScripts();
     },
     showAlertOnCurrentForm: function (strMsg) {
         
@@ -1718,13 +1814,12 @@ var KitScript = Class.create(_Utils, {
                 _this._isEnabled = true;
                 
                 _this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
-                ks.loader.loadData();
+                ks.loader.load();
             } else {
                 
                 _this._isEnabled = false;
                 
                 _this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
-                ks.loader.dumpData();
             }
         }
     }
@@ -1766,14 +1861,11 @@ function KSSEFH_NavigateHandler(event) {
     if (ks.loader.isValidScheme(event.target.url) === true) {
         
         // To Load User Scripts From Location ~ v0.2
-        //if (ks.loader.isUserScript(event.target.url)) {
+        if (ks.loader.isUserScript(event.target.url)) {
             
             // Ask to add to manager ~ v0.2
-        //} else {
-            
-            // Process if URL is in includes
-            ks.loader.integrate(event.target.url);
-        //}
+            //ks.dialog.newUserScriptDialog.open();
+        }
     }
 }
 
