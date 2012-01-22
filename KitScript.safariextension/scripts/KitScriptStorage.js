@@ -154,6 +154,14 @@ var KSStorage = Class.create(Storage, {
         
         this.transact(sqlArray, null, null);
     },
+    fetchRequireFilesByUserScriptId: function (usId, statementCallback, obj) {
+        
+        var sqlArray = new SQLStatementsArray();
+        
+        sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableRequireFiles+" WHERE userscript_id = ?;", [usId], statementCallback, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+    },
     deleteRequireFile: function (id, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("Require file deleted."); };
