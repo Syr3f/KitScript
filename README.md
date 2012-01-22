@@ -25,7 +25,9 @@ Enjoy!
 
 In development process; join in for faster release!
 
-See [Changelog & Todo List](https://github.com/Syr3f/KitScript/wiki/Changelog-%26-Todo-List) in wiki for more info.
+Visit [KitScript.com](http://www.kitscript.com/) for more information.
+
+There's a [Wiki](http://www.kitscript.com/wiki/) in development also.
 
 - - -
 
