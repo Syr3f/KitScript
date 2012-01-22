@@ -56,7 +56,7 @@ var KSStorage = Class.create(Storage, {
         
         var sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(this, "SELECT enabled FROM "+this._dbTableKitScript+";", [], this._dbq_onQueryAnyTable, SFH_errorHandler);
+        sqlArray.push(this, "SELECT enabled FROM "+this._dbTableKitScript+";", new Array(), this._dbq_onQueryAnyTable, SFH_errorHandler);
         
         this.transact(sqlArray, null, null);
     },
@@ -74,20 +74,20 @@ var KSStorage = Class.create(Storage, {
         
         if (doDrop === true) {
             
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableRequireFiles+';', [], _sC, SFH_errorHandler);
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', [], _sC, SFH_errorHandler);
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptsMetadata+';', [], _sC, SFH_errorHandler);
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableGlobalExcludes+';', [], _sC, SFH_errorHandler);
-            sqlArray.push(this, 'DROP TABLE '+this._dbTableKitScript+';', [], _sC, SFH_errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableRequireFiles+';', new Array(), _sC, SFH_errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', new Array(), _sC, SFH_errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptsMetadata+';', new Array(), _sC, SFH_errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableGlobalExcludes+';', new Array(), _sC, SFH_errorHandler);
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableKitScript+';', new Array(), _sC, SFH_errorHandler);
         }
         
         _sC1 = function () { console.log("Table created."); };
         
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableRequireFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript_id INTEGER NOT NULL, file BLOB NOT NULL);', [], _sC1, SFH_errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', [], _sC1, SFH_errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NULL, requires TEST NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0, user_includes TEXT NULL, user_excludes TEXT NULL, run_at TEXT NOT NULL);', [], _sC1, SFH_errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', [], _sC1, SFH_errorHandler);
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', [], this._dbq_onCreateKitScriptTable, SFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableRequireFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript_id INTEGER NOT NULL, file BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NULL, requires TEST NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0, user_includes TEXT NULL, user_excludes TEXT NULL, run_at TEXT NOT NULL);', new Array(), _sC1, SFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', new Array(), _sC1, SFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', new Array(), this._dbq_onCreateKitScriptTable, SFH_errorHandler);
         
         this.transact(sqlArray, null, null);
         
@@ -100,7 +100,7 @@ var KSStorage = Class.create(Storage, {
         
         var sqlArray = new SQLStatementsArray();
         
-        sqlArray.push(_this, "SELECT enabled FROM "+_this._dbTableKitScript+";", [], _this._dbq_onQueryTableExists, SFH_errorHandler);
+        sqlArray.push(_this, "SELECT enabled FROM "+_this._dbTableKitScript+";", new Array(), _this._dbq_onQueryTableExists, SFH_errorHandler);
         
         _this.transact(sqlArray, null, null);
     },
@@ -115,7 +115,7 @@ var KSStorage = Class.create(Storage, {
             
             var sqlArray = new SQLStatementsArray();
 
-            sqlArray.push(_this, "INSERT INTO "+_this._dbTableKitScript+" (enabled) VALUES (1);", [], _sC, SFH_errorHandler);
+            sqlArray.push(_this, "INSERT INTO "+_this._dbTableKitScript+" (enabled) VALUES (1);", new Array(), _sC, SFH_errorHandler);
 
             _this.transact(sqlArray, null, null);
         }
@@ -425,7 +425,7 @@ var KSStorage = Class.create(Storage, {
         
         var sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj||this), "SELECT enabled FROM "+this._dbTableKitScript+" WHERE id = 1;", [], statementCallback, SFH_errorHandler);
+        sqlArray.push((obj||this), "SELECT enabled FROM "+this._dbTableKitScript+" WHERE id = 1;", new Array(), statementCallback, SFH_errorHandler);
         
         this.transact(sqlArray, null, null);
     },
@@ -433,7 +433,7 @@ var KSStorage = Class.create(Storage, {
         
         var sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj||this), "UPDATE "+this._dbTableKitScript+" SET enabled = 1 WHERE id = 1;", [], statementCallback, SFH_errorHandler);
+        sqlArray.push((obj||this), "UPDATE "+this._dbTableKitScript+" SET enabled = 1 WHERE id = 1;", new Array(), statementCallback, SFH_errorHandler);
         
         this.transact(sqlArray, null, null);
     },
@@ -441,7 +441,7 @@ var KSStorage = Class.create(Storage, {
         
         var sqlArray = new SQLStatementsArray();
         
-        sqlArray.push((obj||this), "UPDATE "+this._dbTableKitScript+" SET enabled = 0 WHERE id = 1;", [], statementCallback, SFH_errorHandler);
+        sqlArray.push((obj||this), "UPDATE "+this._dbTableKitScript+" SET enabled = 0 WHERE id = 1;", new Array(), statementCallback, SFH_errorHandler);
         
         this.transact(sqlArray, null, null);
     }
