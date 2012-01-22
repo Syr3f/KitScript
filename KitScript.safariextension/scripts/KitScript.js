@@ -1457,7 +1457,7 @@ var KSLoaderTreeNode = {
     us_includes: new Array(),
     us_requires: new Array(),
     us_run_at: true,
-    us_injection_urls: new Array(),
+    us_injection_url: "",
     req_injection_urls: new Array(),
     disabled: false
 };
@@ -1511,6 +1511,9 @@ var KSLoader = Class.create(_Utils, {
             this._globExcls = new Array();
             
             this._loadDataAndInject();
+            
+            KSLoader._lastFetchRun = -1;
+            KSLoader._lastWatchRun = -1;
             
             KSLoader.triggeredIntegrateWatch();
         }
@@ -1629,8 +1632,6 @@ var KSLoader = Class.create(_Utils, {
     
     integrate: function (url) {
         
-        alert("_integrate");
-        
         if (ks.isEnabled() === true) {
             
             // Parse usTree To Inject Scripts By Metadata Entry
@@ -1666,12 +1667,23 @@ var KSLoader = Class.create(_Utils, {
                     var _injurl = safari.extension.addContentScript(KSSHF_unblobize(_ut.userscript), _wl, _bl, _ut.us_run_at);
                     
                     if (_injurl !== null)
-                        this._usTree[ut].us_injection_urls.push(_injurl);
+                        this._usTree[ut].us_injection_url = _injurl;
                 }
             }
         }
     },
-    _disintegrate: function () {
+    disintegrate: function () {
+        
+        for (var ut=0; ut<this._usTree.length; ut++) {
+            
+            var _ut = this._usTree[ut];
+            
+            for (var rf=0; rf<_ut.req_injection_urls.length; rf++) {
+                
+                safari.extension.removeContentScript(_ut.req_injection_urls[rf]);
+            }
+            safari.extension.removeContentScript(_ut.us_injection_url);
+        }
         
         //safari.extension.removeContentScripts();
         //this.safext.removeContentScripts();
@@ -1755,11 +1767,11 @@ var KitScript = Class.create(_Utils, {
         var _this = transact.objInstance;
         delete transact.objInstance;
         
+        ks.loader.load();
+        
         _this.$('#toggle-enable-dropdown').text("KitScript is Enabled!");
         _this._isEnabled = true;
         _this.showAlertOnCurrentForm("KitScript is now enabled.");
-        
-        ks.loader.load();
     },
     setDisable: function () {
         
@@ -1776,12 +1788,13 @@ var KitScript = Class.create(_Utils, {
         var _this = transact.objInstance;
         delete transact.objInstance;
         
+        ks.loader.dumpData();
+        //safari.extension.removeContentScripts();
+        ks.loader.disintegrate();
+        
         _this.$('#toggle-enable-dropdown').text("KitScript is Disabled!");
         _this._isEnabled = false;
         _this.showAlertOnCurrentForm("KitScript is now disabled.");
-        
-        ks.loader.dumpData();
-        safari.extension.removeContentScripts();
     },
     showAlertOnCurrentForm: function (strMsg) {
         
