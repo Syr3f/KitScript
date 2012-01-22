@@ -23,26 +23,9 @@ Enjoy!
 
 - - -
 
-### Todo
+In development process; join in for faster release!
 
-#### 0.2
-
-* Can run some Greasemonkey API
-* Loads more @keys from the metadata block
-
-#### 0.1
-
-* Similar functions to Firefox's Greasemonkey w/ Bootstrap toolkit for UI
-* Runs Javascript coded in the user script
-* Loads some @keys of the user script metadata block
-    * name
-    * description
-    * namespace
-    * include
-    * exclude
-    * require
-    * version
-* Doesn't Run Greasemonkey API
+See [Changelog & Todo List](https://github.com/Syr3f/KitScript/wiki/Changelog-%26-Todo-List) in wiki for more info.
 
 - - -
 
