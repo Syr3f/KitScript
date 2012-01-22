@@ -1,12 +1,9 @@
 // ==UserScript==
 // @name            KitScript Test 1 - Minimal
-// @namespace       ks/test/1/minimal
-// @description     Changes anchors to green bold
-// @include         *
-// @require         http://code.jquery.com/jquery-1.6.4.min.js
+// @namespace       kitscript/test/1/minimal
+// @description     Minimal test for KitScript
 // ==/UserScript==
 
-jQuery(function ($) {
-    
-    $("a").css('font-weight', "bold").css('color', "green");
-});
+alert('KitScript Test 1 - Minimal!');
+
+alert('document.location.href: '+document.location.href);
