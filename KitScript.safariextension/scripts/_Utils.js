@@ -24,9 +24,9 @@ var _Utils = Class.create({
 
     initialize: function () {
         
-        Object.getPrototypeOf(this).$ = jQuery;
-        Object.getPrototypeOf(this).md = window.markdown;
-        Object.getPrototypeOf(this).console = console;
+        this.$ = jQuery;
+        this.md = window.markdown;
+        this.console = console;
     },
     /**
      *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
