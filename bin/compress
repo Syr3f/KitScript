@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Compresses all javascript files
+
+KITSCRIPT=$HOME/_WorkShop/__git/github/Syr3f/KitScript
+SCRIPTS=$KITSCRIPT/KitScript.safariextension/scripts
+
+cyc -o -p -s $SCRIPTS/_Utils.js
+cyc -o -p -s $SCRIPTS/Greasemonkey.js
+cyc -o -p -s $SCRIPTS/Storage.js
+cyc -o -p -s $SCRIPTS/KitScriptStorage.js
+cyc -o -p -s $SCRIPTS/KitScript.js
+cyc -o -p -s $SCRIPTS/Global.js
+cyc -o -p -s $SCRIPTS/MainContainer.js
