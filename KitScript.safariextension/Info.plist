@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1</string>
+	<string>0.2</string>
 	<key>CFBundleVersion</key>
-	<string>0.1</string>
+	<string>1</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
@@ -64,7 +64,7 @@
 				<key>Identifier</key>
 				<string>KS_TI1</string>
 				<key>Image</key>
-				<string>images/cog.png</string>
+				<string>images/Small_Icon_16x16.png</string>
 				<key>Label</key>
 				<string>KitScript</string>
 				<key>Menu</key>
@@ -74,7 +74,7 @@
 				<key>Popover</key>
 				<string>KS_PMP1</string>
 				<key>Tool Tip</key>
-				<string>KitScript Functions Access</string>
+				<string>Opens KitScript</string>
 			</dict>
 		</array>
 	</dict>
