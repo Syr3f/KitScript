@@ -218,9 +218,8 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
     
     
     /**
-     *  ========================================================================
-     *  ===================== SUPPORTED IN FUTUR VERSIONS ======================
-     *  ========================================================================
+     *  =========================== SUPPORTED IN v0.2 ==========================
+     *  === v === v === v === v === v === v === v === v === v === v === v === v 
      */
     
     
@@ -255,7 +254,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         return _matches;
     },
     /**
-     *  @resource url
+     *  @resource name url
      *
      *  @returns Array
      */
