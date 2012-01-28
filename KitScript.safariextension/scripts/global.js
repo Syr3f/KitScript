@@ -18,7 +18,6 @@
 
 // Global KitScript Root Variables
 ks = null, db = null;
-version = 0.1;
 
 // Basic Initial Calls For The Extension
 jQuery(document).ready(function ($) {
@@ -45,5 +44,8 @@ jQuery(document).ready(function ($) {
         
     // Declare On UI If Enabled Or Disabled
     ks.declareEnabled();
+    
+    // Display Version
+    ks.mainContainer.displayVersion();
 });
 

@@ -87,7 +87,7 @@ var KSMainContainer = Class.create(KSBase, {
     
     initialize: function ($super) {
         
-        this._pageName = "MainContainer.html";
+        this._initPageName = "MainContainer.html";
         
         this.contentManager = null;
         this.userScriptsManagerForm = null;
@@ -100,7 +100,11 @@ var KSMainContainer = Class.create(KSBase, {
     },
     openPage: function ($super) {
         
-        $super(this._pageName);
+        $super(this._initPageName);
+    },
+    displayVersion: function () {
+        
+        this.$('#ks-version').append("<b>KitScript v"+ks.getVersion()+"</b>");
     }
 });
 
@@ -1732,6 +1736,8 @@ var KitScript = Class.create(_Utils, {
         
         $super();
         
+        this._version = "0.2";
+        
         this._isEnabled = true;
         
         this.gmmd = new KSGreasemonkeyMetadata();
@@ -1746,6 +1752,10 @@ var KitScript = Class.create(_Utils, {
         this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
         
         this.loader = new KSLoader();
+    },
+    getVersion: function () {
+        
+        return this._version;
     },
     
     isEnabled: function () {
