@@ -46,12 +46,42 @@
 						<true/>
 					</dict>
 					<dict>
+						<key>Command</key>
+						<string>open_nus</string>
 						<key>Disabled</key>
 						<true/>
 						<key>Identifier</key>
 						<string>KS_MI3</string>
 						<key>Title</key>
-						<string>No Scripts for this URL</string>
+						<string>Add New User Script...</string>
+					</dict>
+					<dict>
+						<key>Command</key>
+						<string>open_mus</string>
+						<key>Identifier</key>
+						<string>KS_MI4</string>
+						<key>Title</key>
+						<string>Manage User Scripts...</string>
+					</dict>
+					<dict>
+						<key>Command</key>
+						<string>open_gs</string>
+						<key>Identifier</key>
+						<string>KS_MI5</string>
+						<key>Title</key>
+						<string>Global Settings...</string>
+					</dict>
+					<dict>
+						<key>Identifier</key>
+						<string>KS_MI6</string>
+						<key>Separator</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>Identifier</key>
+						<string>KS_MI7</string>
+						<key>Title</key>
+						<string>No User Scripts For This Page</string>
 					</dict>
 				</array>
 			</dict>
