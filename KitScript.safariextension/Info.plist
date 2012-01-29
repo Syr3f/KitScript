@@ -49,7 +49,7 @@
 						<key>Command</key>
 						<string>open_nus</string>
 						<key>Disabled</key>
-						<true/>
+						<false/>
 						<key>Identifier</key>
 						<string>KS_MI3</string>
 						<key>Title</key>
@@ -78,6 +78,8 @@
 						<true/>
 					</dict>
 					<dict>
+						<key>Disabled</key>
+						<true/>
 						<key>Identifier</key>
 						<string>KS_MI7</string>
 						<key>Title</key>
@@ -102,7 +104,7 @@
 				<key>Palette Label</key>
 				<string>KitScript</string>
 				<key>Popover</key>
-				<string>KS_PMP1</string>
+				<string></string>
 				<key>Tool Tip</key>
 				<string>Opens KitScript</string>
 			</dict>
