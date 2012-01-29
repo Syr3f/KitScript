@@ -80,6 +80,21 @@
     <script src="../scripts/Global.js" type="text/javascript" charset="utf-8"></script>
     <script src="../scripts/MainContainer.js" type="text/javascript" charset="utf-8"></script>
     
+    <!-- = Local Script = -->
+    <script type="text/javascript">
+    
+    // Circumventing A Bug With Command Event Function Handler
+    jQuery(document).ready(function () {
+      
+      //
+      //  Parsing location.href For Page Requests (Circumventing A Bug Or 
+      //  Misknowledge Of Safari Extension API)
+      //
+      ks.request.dispatch();
+    });
+    
+    </script>
+    
   </head>
   <body>
     
