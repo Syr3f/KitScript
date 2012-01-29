@@ -53,9 +53,10 @@ var KSBase = Class.create(_Utils, {
         
         this._cyclePages(page);
         
+        // Forces Page Load 
+        this._tab.url = "about:blank";
+        
         this._tab.url = safari.extension.baseURI+"markups/"+page;
-        //this._tab.url = 
-        //location.href.assign(safari.extension.baseURI+"markups/"+page);
     },
     openTab: function () {
         
@@ -811,6 +812,32 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         ks.loader.reload();
     },
     
+    loadURL: function (scriptUrl) {
+        
+        this.$.ajax({
+            url: scriptUrl,
+            context: this,
+            success: function (responseText, textStatus, XMLHttpRequest) {
+                
+                //debugger;
+                
+                //var _u = new _Utils();
+                //document.getElementById('ks-aus-script').innerHTML = _u.escQuote(responseText);
+                
+                this.setScriptCode(responseText);
+            }
+        });
+    },
+    
+    getScriptCode: function () {
+        
+        this.$('#'+this._textareaId).val();
+    },
+    setScriptCode: function (scriptCode) {
+        
+        this.$('#'+this._textareaId).val(scriptCode);
+    },
+    
     showSuccessAlert: function (strMsg) {
         
         this.showAlertMsg(this._formIdObj.formBaseId,this.successLevel,strMsg);
@@ -1335,7 +1362,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         var _requires = _this._requires.split(',');
         var _usId = _this.getLoadedScriptId();
-        _this._a("1");
+        
         for (var i=0; i<_requires.length; i++) {
             
             // Absolute URLs Only
@@ -1360,7 +1387,6 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         
         ks.loader.reload();
     },
-    
     
     _fillUserSettingsExcludes: function (excludesStr) {
         
@@ -1476,7 +1502,14 @@ var KSAboutProjectForm = Class.create(KSContentManager, {
 });
 
 
-var KSLoaderTreeNode = {
+
+
+
+
+/**
+ *  KSUserScriptNode (KitScript User Script Node Definition)
+ */
+var KSUserScriptNode = {
     metaId: 0,
     fileId: 0,
     userscript: "",
@@ -1576,7 +1609,7 @@ var KSLoader = Class.create(_Utils, {
             
             var _row = resultSet.rows.item(i);
             
-            var _node = Object.create(KSLoaderTreeNode);
+            var _node = Object.create(KSUserScriptNode);
             
             _node.metaId = _row['id'];
             _node.fileId = _row['userscript_id'];
@@ -1743,7 +1776,7 @@ var KSLoader = Class.create(_Utils, {
 KSLoader._lastFetchRun = -1;
 KSLoader._lastWatchRun = -1;
 
-KSLoader.triggeredIntegrateWatch = function () {
+Object.getPrototypeOf(KSLoader).triggeredIntegrateWatch = function () {
     
     if (KSLoader._lastWatchRun - KSLoader._lastFetchRun >= 500) {
         
@@ -1755,6 +1788,305 @@ KSLoader.triggeredIntegrateWatch = function () {
     }
 }
 
+
+
+
+
+/**
+ *  KSRoute (KitScript Route Node Definition)
+ */
+var KSRouteNode = {
+    key: '',
+    type: undefined,
+    route: undefined,
+    callback: undefined//,
+    //symbols: [],
+    //getSymbol: function () {
+    //    
+    //}
+};
+
+
+
+
+
+var KSRoutes = Class.create(_Utils, {
+    
+    initialize: function ($super) {
+        
+        $super();
+        
+        this.TYPE_STATIC = 'static';
+        this.TYPE_REGEXP = 'regexp';
+        this.TYPE_DYNAMIC = 'dynamic';
+        
+        this._routes = [];
+    },
+    add: function (name,route,callback) {
+        
+        // Default Callback
+        var _fn = callback || function (request) {};
+        
+        var _type = undefined;
+        
+        if (typeof route === 'string') {
+            
+            if (/([#?=&\/]{1}:)+/.test(route)===true) {
+                _type = this.TYPE_DYNAMIC;
+                // Not To Be Implemented Yet
+                //var _matches = /([^&=?#/]?:\w)*(([&=?#/]{1}:[\-_a-zA-Z]*)*(?:[^&=?#/]*:))*/g.exec(route);
+            } else
+                _type = this.TYPE_STATIC
+        } else
+            _type = this.TYPE_REGEXP;
+        
+        var _rte = Object.create(KSRouteNode);
+        
+        _rte.key = name,
+        _rte.type = _type,
+        _rte.route = route,
+        _rte.callback = _fn;//,
+        //_rte.symbols= this._getSymbols();
+        
+        this._routes.push(_rte);
+    },
+    count: function () {
+        return this._routes.length;
+    },
+    getRouteByIndex: function (idx) {
+        
+        return this._routes[idx];
+    },
+    getRouteByMatch: function (uri) {
+        
+        var _u = this._stripBaseURI(uri);
+        var _rte = undefined;
+        
+        for (var _i=0; _i<ks.routes.count(); _i++) {
+            
+            this._currentRteObj = ks.routes.getRouteByIndex(_i);
+            
+            switch (this._currentRteObj.type) {
+                case this.TYPE_STATIC:
+                    _rte = this._getRouteMatchStatic(_u,this._currentRteObj);
+                    break;
+                case this.TYPE_REGEXP:
+                    _rte = this._getRouteMatchRegExp(_u,this._currentRteObj);
+                    break;
+                case this.TYPE_DYNAMIC:
+                    throw new Error('Route type TYPE_DYNAMIC is not implemented.');
+                    //_rte = this._getRouteMatchDynamic(_u,this._currentRteObj);
+                    break;
+                default:
+                    throw new Error('Route type is not valid: '+this._currentRteObj.type+'.');
+            }
+            
+            if (_rte!==undefined) return _rte;
+        }
+    },
+    _getRouteMatchStatic: function (uri,rte) {
+        
+        if (uri === rte.route)
+            return rte;
+        else
+            return undefined;
+    },
+    _getRouteMatchRegExp: function (uri,rte) {
+        
+        var _ptrn = rte.route;
+        
+        if (/_ptrn/.test(uri) === true)
+            return rte;
+        else
+            return undefined;
+    },
+    _stripBaseURI: function (uri) {
+        
+        return uri.replace(safari.extension.baseURI+'markups/','');
+    }
+});
+
+
+
+
+
+/**
+ *  KSParamNode (KitScript Request Parameter Node Definition)
+ */
+var KSParamNode = {
+    key: '',
+    val: null
+};
+
+
+
+
+
+/**
+ *  KSRequest (KitScript Request Class)
+ */
+var KSRequest = Class.create(_Utils, {
+    
+    initialize: function ($super) {
+        
+        $super();
+        
+        this._u = undefined;
+        this._isURIParsed = false;
+        
+        this._ln = 0;
+        this._ph = 0;
+        this._pq = 0;
+        
+        this._page = '';
+        this._hash = '';
+        this._qs = '';
+        this._params = [];
+        
+        this._h='#';
+        this._q='?';
+        this._a='&';
+        this._e='=';
+    },
+    tokenizeURI: function () {
+        
+        this._houseVars();
+    },
+    _loadURI: function () {
+        this._u = document.location.href;
+    },
+    _houseVars: function () {
+        
+        this._loadURI();
+        
+        this._ln = this._u.length;
+        this._ph = this._u.indexOf(this._h);
+        this._pq = this._u.indexOf(this._q);
+        
+        this._page = this._u.substr(0,(this._ph>=0?this._ph-1:(this._pq>=0?this._pq-1:this._u.length-1)));
+        
+        if (this.hasHash())
+            this._hash = this._u.substr(this._ph+1,(this._pq>=0?this._pq-this._ph-1:this._ln-this._ph-1));
+        
+        if (this.hasQueryString()) {
+            this._qs = this._u.substr(this._getPos(this._q));;
+            this._houseParams();
+        }
+        
+        this._isURIParsed = true;
+    },
+    _houseParams: function () {
+        // _s : uri string, _ba : begin at, _ne : next equal sign, _na : next ampersand sign
+        var _s=this._u, _ba=this._pq+1, _ne=_s.indexOf(this._e,_ba), _na=_s.indexOf(this._a,_ne);
+        
+        for (var i=0;i<_s.length; i++) {
+            
+            var _k=_s.substr(_ba,_ne-_ba-1);
+            var _v=_s.substr(_ne+1,_na-_ne-1);
+            
+            var _param = Object.create(KSParamNode);
+            
+            _param.key = _k;
+            _param.val = _v;
+            
+            this._params.push(_param);
+            
+            _ba=_na+1, _ne=_s.indexOf(this._e,_ba), _na=_s.indexOf(this._a,_ne);
+            
+            // _u : location href, k : request key, _l : key string length, _p : position of request key, _n : next ampersand, _v : request value
+            //var _l=k.length, _p=this._getPos(k), _n=this._getPos(this._a,_p);
+            //var _v=_u.substr(_p+_l+1,(_n>=0?_n-_l-1:this._ln-_p-1));
+            //return _v;
+        }
+    },
+    isReady: function () {
+        return this._isURIParsed;
+    },
+    expirate: function () {
+        this._isURIParsed = false;
+    },
+    dispatch: function () {
+        
+        if (this.isReady()) {
+            
+            if (ks.routes.count()>0) {
+                
+                var _rte = ks.routes.getRouteByMatch(this._u);
+                
+                if (typeof _rte.callback === 'function')
+                    _rte.callback(this);
+            } else
+                throw new Error('There\'s no registered routes.');
+        }
+    },
+    
+    _hasLoc: function (search,startPos) {
+        
+        var _sp=startPos||0;
+        return (this._getPos(search,_sp)>=0);
+    },
+    _getPos: function (str,startAt) {
+        var _sa=startAt||0;
+        return this._u.indexOf(str,_sa);
+    },
+    getPage: function () {
+        return this._page;
+    },
+    getHash: function () {
+        return this._hash;
+    },
+    hasParam: function (param) {
+        return (/param/g.test(this._u));
+    },
+    getParamVal: function (key) {
+        for (var _i=0; _i<this._params.length; _i++) {
+            if (this.params[_i].key===key)
+                return this.params[_i].val;
+        }
+    },
+    getParamByIndex: function (idx) {
+        return this._params[idx];
+    },
+    getParams: function () {
+        return this._params;
+    },
+    getParamsCount: function () {
+        return this._params.length;
+    },
+    getParamsKeys: function () {
+        var _keys = [];
+        for (var i=0;i<this._params.length; i++) {
+            _keys.push(this._params[i].key);
+        }
+        return _keys;
+    },
+    getURI: function () {
+        return this._u;
+    },
+    getQueryString: function () {
+        return this._qs;
+    },
+    getURILength: function () {
+        return this._ln;
+    },
+    hasHash: function () {
+        return (this._ph>=0);
+    },
+    hasQueryString: function () {
+        return (this._pq>=0);
+    }
+});
+
+
+
+
+
+var KSController = Class.create({
+    
+    initialize: function () {
+        
+    }
+});
 
 
 
@@ -1772,9 +2104,12 @@ var KitScript = Class.create(_Utils, {
         
         this._isEnabled = true;
         
+        Object.getPrototypeOf(this).routes = new KSRoutes();
+        
         Object.getPrototypeOf(this).gmmd = new KSGreasemonkeyMetadata();
         
         Object.getPrototypeOf(this).mainContainer = new KSMainContainer();
+        Object.getPrototypeOf(this).loader = new KSLoader();
         
         this.mainContainer.contentManager = new KSContentManager();
         this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
@@ -1783,7 +2118,7 @@ var KitScript = Class.create(_Utils, {
         this.mainContainer.userScriptSettingsForm = new KSUserScriptSettingsForm();
         this.mainContainer.aboutProjectForm = new KSAboutProjectForm();
         
-        this.loader = new KSLoader();
+        Object.getPrototypeOf(this).request = new KSRequest();
     },
     getVersion: function () {
         
@@ -1897,7 +2232,7 @@ var KitScript = Class.create(_Utils, {
  *  =======================================================
  */
 
- function KSSEFH_CloseTabHandler(event) {
+function KSSEFH_CloseTabHandler(event) {
 
      ks.mainContainer.setTabClosed();
  }
@@ -1911,7 +2246,6 @@ function KSSEFH_ValidateHandler(event) {
         break;
     }
 }
-
 
 function KSSEFH_MenuHandler(event) {
     
@@ -1936,57 +2270,37 @@ function KSSEFH_CommandHandler(event) {
             break;
         case "open_nus":
         case 'KS_MI3':
-            if (ks.mainContainer.isTabOpen() === false) {
-                
+            if (ks.mainContainer.isTabOpen() === false)
                 ks.mainContainer.openTab();
-                ks.mainContainer.setTabPage(ks.mainContainer.defaultPage);
-            }
             
-            //alert(ks.mainContainer.defaultPage+'#'+KSNewUserScriptForm.id);
-            //ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSNewUserScriptForm.id);
-            
-            //ks.mainContainer.contentManager.transitContent(KSNewUserScriptForm.id);
-            //jQuery("#ks-topmenu-nav-new-userscript a[href='#new-userscript']").click();
+            ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSNewUserScriptForm.id);
             break;
         case "open_mus":
         case 'KS_MI4':
-            if (ks.mainContainer.isTabOpen() === false) {
-                
+            if (ks.mainContainer.isTabOpen() === false)
                 ks.mainContainer.openTab();
-                ks.mainContainer.setTabPage(ks.mainContainer.defaultPage);
-            }
             
-            //alert(ks.mainContainer.defaultPage+'#'+KSUserScriptsManagerForm.id);
-            //ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSUserScriptsManagerForm.id);
-            
-            ks.mainContainer.contentManager.transitContent(KSUserScriptsManagerForm.id);
+            ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSUserScriptsManagerForm.id);
             break;
         case "open_gs":
         case 'KS_MI5':
-            if (ks.mainContainer.isTabOpen() === false) {
-                
+            if (ks.mainContainer.isTabOpen() === false)
                 ks.mainContainer.openTab();
-                ks.mainContainer.setTabPage(ks.mainContainer.defaultPage);
-            }
             
-            //alert(ks.mainContainer.defaultPage+'#'+KSGlobalSettingsForm.id);
-            //ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSGlobalSettingsForm.id);
-            
-            ks.mainContainer.contentManager.transitContent(KSGlobalSettingsForm.id);
+            ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSGlobalSettingsForm.id);
             break;
     }
 }
 
 function KSSEFH_BeforeNavigateHandler(event) {
     
-    if (ks.loader.isValidScheme(event.target.url) === true) {
+    var _url = event.target.url;
+    
+    // To Prevent Loading of User Scripts
+    if (ks.loader.isUserScript(_url)) {
         
-        // To Load User Scripts From Location ~ v0.2
-        if (ks.loader.isUserScript(event.target.url)) {
-            
-            // Ask to add to manager ~ v0.2
-            //ks.dialog.newUserScriptDialog.open();
-        }
+        // Don't Load User Script Anywhere
+        //event.preventDefault();
     }
 }
 
@@ -1996,27 +2310,32 @@ function KSSEFH_NavigateHandler(event) {
     
     if (ks.loader.isValidScheme(_url) === true) {
         
-        // To Load User Scripts From Location ~ v0.2
+        // To Load User Scripts From URL
         if (ks.loader.isUserScript(_url)) {
             
-            // Ask to add to manager ~ v0.2
-            //ks.dialog.newUserScriptDialog.open();
-        }
-    } else if (ks.loader.isKitScriptExtz(_url)) {
-        
-        if (_url.indexOf('#') >= 0) {
+            // Don't Load User Script Anywhere
+            //event.preventDefault();
             
-            ks.mainContainer.contentManager.transitContent(_url.substr(_url.indexOf('#')));
+            // Open Tab Or Transit To New User Script Form
+            if (ks.mainContainer.isTabOpen() === false)
+                ks.mainContainer.openTab();
+            
+            ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSNewUserScriptForm.id+'?_loaduserscriptfromurl='+_url);
+            
+            // Show User Script Installer Dialog (It Loads The User Script)
+            //ks.mainContainer.newUserScriptForm.loadURL(_url);
         }
     }
 }
+
+//ks.mainContainer.getTab().addEventListener("close", KSSEFH_CloseHandler, true);
 
 safari.application.addEventListener("validate", KSSEFH_ValidateHandler, true);
 safari.application.addEventListener("menu", KSSEFH_MenuHandler, true);
 safari.application.addEventListener("command", KSSEFH_CommandHandler, true);
 
-safari.application.addEventListener("beforeNavigate", KSSEFH_BeforeNavigateHandler, true);
-safari.application.addEventListener("navigate", KSSEFH_NavigateHandler, true);
+safari.application.addEventListener("beforeNavigate", KSSEFH_BeforeNavigateHandler, false);
+safari.application.addEventListener("navigate", KSSEFH_NavigateHandler, false);
 
 function KSSEFH_ProxyMessage(event) {
     
