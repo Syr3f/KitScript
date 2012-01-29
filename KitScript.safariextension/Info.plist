@@ -19,7 +19,7 @@
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
-		<real>10485760</real>
+		<real>104857600</real>
 		<key>Global Page</key>
 		<string>markups/MainContainer.html</string>
 		<key>Menus</key>
