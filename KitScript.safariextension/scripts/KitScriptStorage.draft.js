@@ -25,7 +25,7 @@ var KSStorage = Class.create(AsyncStorage, {
         this._dbName = 'KitScript';
         this._dbVersion = '1.0';
         this._dbDisplayName = 'KitScript Database';
-        this._dbSize = 10 * 1024 * 1024; // 10 MB in bytes
+        this._dbSize = 100 * 1024 * 1024; // 100 MB or 104857600 bytes
         
         $super(this._dbName, this._dbVersion, this._dbDisplayName, this._dbSize, this._dbq_onConnect);
         
