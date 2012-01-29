@@ -43,7 +43,7 @@ var KSStorage = Class.create(Storage, {
             
             $super();
         } catch (e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException(e.message);
         }
         
         this.verifyDb();

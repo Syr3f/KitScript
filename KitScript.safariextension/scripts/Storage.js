@@ -55,13 +55,9 @@ var StorageException = Class.create({
     
     initialize: function (message) {
         
-        this._message = message;
+        this.message = message;
         
         this.NOT_SUPPORTED = 'NOT_SUPPORTED';
-    },
-    getMessage: function () {
-        
-        return this._message;
     }
 });
 
@@ -174,7 +170,7 @@ var Storage = Class.create(_Utils, {
                     throw new StorageException('Invalid database version.');
                     break;
                 default:
-                    throw new StorageException('Unknown error '+e.getMessage()+'.');
+                    throw new StorageException('Unknown error '+e.message+'.');
             }
         }
         

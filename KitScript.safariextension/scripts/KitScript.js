@@ -51,28 +51,48 @@ var KSBase = Class.create(_Utils, {
     },
     setTabPage: function (page) {
         
-        this._previousPage = this._currentPage;
-        this._currentPage = page;
+        this._cyclePages(page);
         
-        this._tab.url = location.href.replace(this._previousPage, this._currentPage);
+        this._tab.url = safari.extension.baseURI+"markups/"+page;
+        //this._tab.url = 
+        //location.href.assign(safari.extension.baseURI+"markups/"+page);
     },
     openTab: function () {
         
         this._tab = safari.application.activeBrowserWindow.openTab('foreground',-1);
         this._isTabOpen = true;
+        this._tab.addEventListener('close',KSSEFH_CloseTabHandler,true);
     },
     closeTab: function () {
         
         if (this._tab !== null) {
             
             this._tab.close();
+            delete this._tab;
             this._tab = null;
             this._isTabOpen = false;
         }
     },
+    _cyclePages: function (newPage) {
+        
+        this._previousPage = this._currentPage;
+        this._currentPage = newPage;
+    },
     isTabOpen: function () {
         
         return this._isTabOpen;
+    },
+    setTabClosed: function () {
+        
+        this._isTabOpen = false;
+    },
+    getTabURL: function () {
+        
+        return this._tab.url;
+    },
+    getTab: function () {
+        
+        return this._tab;
     }
 });
 
@@ -87,20 +107,20 @@ var KSMainContainer = Class.create(KSBase, {
     
     initialize: function ($super) {
         
-        this._initPageName = "MainContainer.html";
-        
-        this.contentManager = null;
-        this.userScriptsManagerForm = null;
-        this.globalSettingsForm = null;
-        this.newUserScriptForm = null;
-        this.userScriptSettingsForm = null;
-        this.aboutProjectForm = null;
+        Object.getPrototypeOf(this).contentManager = null;
+        Object.getPrototypeOf(this).userScriptsManagerForm = null;
+        Object.getPrototypeOf(this).globalSettingsForm = null;
+        Object.getPrototypeOf(this).newUserScriptForm = null;
+        Object.getPrototypeOf(this).userScriptSettingsForm = null;
+        Object.getPrototypeOf(this).aboutProjectForm = null;
         
         $super();
     },
-    openPage: function ($super) {
+    openPage: function ($super,pageId) {
         
-        $super(this._initPageName);
+        var _pageId = pageId || this.defaultPage;
+        
+        $super(_pageId);
     },
     displayVersion: function () {
         
@@ -117,7 +137,6 @@ var KSMainContainer = Class.create(KSBase, {
  */
 var KSContentManager = Class.create(_Utils, {
     
-    //regisForms: [], A TESTER
     initialize: function ($super,formIdObj) {
         
         this._maxAlert = 7000;
@@ -150,8 +169,6 @@ var KSContentManager = Class.create(_Utils, {
             return contentId;
     },
     _getTitleByContentId: function (contentId) {
-        
-        _contentId = this._cleanContentIdStr(contentId);
         
         for (var i=1; i<KSContentManager.regisForms.length; i++) {
             
@@ -231,7 +248,8 @@ var KSContentManager = Class.create(_Utils, {
 });
 
 KSContentManager.regisForms = new Array();
-KSContentManager.currentContentId = 'userscript-manager';
+KSContentManager.defaultContentId = 'userscript-manager';
+KSContentManager.currentContentId = KSContentManager.defaultContentId;
 KSContentManager.previousContentId = null;
 
 
@@ -252,6 +270,8 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
             formBaseId: "ks-gs",
             instance: this
         };
+        
+        KSGlobalSettingsForm.id = this._formIdObj.id;
         
         $super(this._formIdObj);
         
@@ -301,7 +321,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
                 db.insertGlobalExclude(_val,this._dbq_onQueryGlobalExcludes,this);
                 this.showSuccessAlert("URL has been registered.");
             } catch (e) {
-                this.showFailureAlert(e.getMessage());
+                this.showFailureAlert(e.message);
             }
         }
     },
@@ -345,7 +365,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
                 db.updateGlobalExclude(_id, _url,this._dbq_onQueryGlobalExcludes,this);
                 this.showSuccessAlert("URL has been updated.");
             } catch (e) {
-                this.showFailureAlert(e.getMessage());
+                this.showFailureAlert(e.message);
             }
         }
     },
@@ -360,7 +380,7 @@ var KSGlobalSettingsForm = Class.create(KSContentManager, {
             db.deleteGlobalExclude(_id,this._dbq_onQueryGlobalExcludes,this);
             this.showSuccessAlert("URL has been deleted.");
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _dbq_onQueryGlobalExcludes: function (transact, resultSet) {
@@ -429,6 +449,8 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
             formBaseId: "ks-usm",
             instance: this
         };
+        
+        KSUserScriptsManagerForm.id = this._formIdObj.id;
         
         $super(this._formIdObj);
         
@@ -512,7 +534,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         try {
             db.disableUserScript(_metaId, this._dbq_onDisableRequest, this);
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _dbq_onDisableRequest: function (transact, resultSet) {
@@ -531,7 +553,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
         try {
             db.enableUserScript(_metaId, this._dbq_onEnableRequest, this);
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _dbq_onEnableRequest: function (transact, resultSet) {
@@ -574,7 +596,7 @@ var KSUserScriptsManagerForm = Class.create(KSContentManager, {
                 db.deleteUserScriptFile(_usId, _this._dbq_onDeleteUserScriptFile, _this);
                 db.deleteRequireFilesByUserScriptId(_usId);
             } catch (e) {
-                _this.showFailureAlert(e.getMessage());
+                _this.showFailureAlert(e.message);
             }
         } else {
             _this.showFailureAlert("Couldn't fetch the user script id.");
@@ -643,6 +665,8 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             instance: this
         };
         
+        KSNewUserScriptForm.id = this._formIdObj.id;
+        
         $super(this._formIdObj);
         
         // CodeMirror2 ~ v0.2
@@ -678,7 +702,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             this._storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_rec[6],_script);
         } catch (e) {
             
-            this.showErrorAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _getUserScriptHeaderValues: function () {
@@ -714,7 +738,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         try {
             db.insertUserScriptFile(KSSHF_blobize(code),this._dbq_onInsertUserScriptFile,this);
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _dbq_onInsertUserScriptFile: function (transact, resultSet) {
@@ -739,7 +763,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             db.insertUserScriptMetadata(_hash, _this.sqlClean(_this._name), _this.sqlClean(_this._space), _this.sqlClean(_this._desc), _this.sqlClean(_this._includes), _this.sqlClean(_this._excludes), _this.sqlClean(_this._requires), parseInt(_row[_this._fieldName]), 0, null, null, _this.sqlClean(_this._runAt), _this._dbq_onCreateUserScriptMeta, _this);
         } else
-            _this.showErrorAlert("The user script couldn't be stored.");
+            _this.showFailureAlert("The user script couldn't be stored.");
     },
     _dbq_onCreateUserScriptMeta: function (transact, resultSet) {
         
@@ -823,6 +847,8 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
             instance: this
         };
         
+        KSUserScriptSettingsForm.id = this._formIdObj.id;
+        
         $super(this._formIdObj);
         
         this._$previousTabId = null;
@@ -860,7 +886,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         try {
             db.fetchUserScriptMetadata(metaId, this._dbq_onFetchUserScriptMetadata, this);
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _dbq_onFetchUserScriptMetadata: function (transact, resultSet) {
@@ -888,7 +914,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         try {
             db.fetchUserScriptFile(usId, this._dbq_onFetchUserScriptFile, this);
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _dbq_onFetchUserScriptFile: function (transact, resultSet) {
@@ -1161,7 +1187,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         try {
             db.updateUserScriptUserSettings(_metaId, _incls, _excls, this._dbq_onUpdateUserSettings, this);
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _getUserExclusions: function () {
@@ -1203,7 +1229,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         try {
             db.isUserScriptEnabled(_metaId, this._dbq_onQueryUserScriptEnabled, this);
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _dbq_onQueryUserScriptEnabled: function (transact, resultSet) {
@@ -1225,7 +1251,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
                 
                 var _rec = _this._getUserScriptHeaderValues();
             } catch (e) {
-                _this.showFailureAlert(e.getMessage());
+                _this.showFailureAlert(e.message);
             }
             
             _this.updateUserScriptMetadata(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_isEnabled,_rec[6]);
@@ -1265,7 +1291,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         try {
             db.updateUserScriptMetadata(_metaId, _hash, this.sqlClean(name), this.sqlClean(space), this.sqlClean(desc), this.sqlClean(includes), this.sqlClean(excludes), this.sqlClean(requires), disabled, _uincls, _uexcls, runAt, this._dbq_onUpdateMetadata, this);
         } catch (e) {
-            this.showFailureAlert(e.getMessage());
+            this.showFailureAlert(e.message);
         }
     },
     _dbq_onUpdateMetadata: function (transact, resultSet) {
@@ -1279,7 +1305,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
             
             db.updateUserScriptFile(_usId, KSSHF_blobize(_usStr), _this._dbq_onUpdateUserScriptFile, _this);
         } catch (e) {
-            _this.showFailureAlert(e.getMessage());
+            _this.showFailureAlert(e.message);
         }
     },
     _dbq_onUpdateUserScriptFile: function (transact, resultSet) {
@@ -1436,6 +1462,8 @@ var KSAboutProjectForm = Class.create(KSContentManager, {
             instance: this
         };
         
+        KSAboutProjectForm.id = this._formIdObj.id;
+        
         $super(this._formIdObj);
     },
     convertMdTxt: function () {
@@ -1446,9 +1474,6 @@ var KSAboutProjectForm = Class.create(KSContentManager, {
         this.$('#ks-abt-html-txt').html(_html);
     }
 });
-
-
-
 
 
 var KSLoaderTreeNode = {
@@ -1498,6 +1523,13 @@ var KSLoader = Class.create(_Utils, {
             }
         }
     },
+    isKitScriptExtz: function (url) {
+        
+        if (/^safari\-extension\:\/\/com\.cyb3rca\.safari\.kitScript\-NB87APP947(.*)/.test(url) === true) {
+            return true;
+        }
+        return false;
+    },
     isUserScript: function (url) {
         
         if (/^.*\.user\.js$/gi.test(url) === true) {
@@ -1532,7 +1564,7 @@ var KSLoader = Class.create(_Utils, {
         try {
             db.fetchAllUserScriptsMetadata(0, 1000, this._dbq_onFetchUserScriptsMetadata, this);
         } catch (e) {
-            this._a("KitScript Loader Error: Couldn't load user scripts metadata ("+e.getMessage()+").");
+            this._a("KitScript Loader Error: Couldn't load user scripts metadata ("+e.message+").");
         }
     },
     _dbq_onFetchUserScriptsMetadata: function (transact, resultSet) {
@@ -1616,7 +1648,7 @@ var KSLoader = Class.create(_Utils, {
         try {
             db.fetchAllGlobalExcludes(0,1000,_this._dbq_onFetchGlobalExcludes,_this);
         } catch (e) {
-            alert("KitScript Loader Error: Couldn't load global excludes ("+e.getMessage()+").");
+            alert("KitScript Loader Error: Couldn't load global excludes ("+e.message+").");
         }
     },
     _dbq_onFetchGlobalExcludes: function (transact,resultSet) {
@@ -1740,9 +1772,9 @@ var KitScript = Class.create(_Utils, {
         
         this._isEnabled = true;
         
-        this.gmmd = new KSGreasemonkeyMetadata();
+        Object.getPrototypeOf(this).gmmd = new KSGreasemonkeyMetadata();
         
-        this.mainContainer = new KSMainContainer();
+        Object.getPrototypeOf(this).mainContainer = new KSMainContainer();
         
         this.mainContainer.contentManager = new KSContentManager();
         this.mainContainer.globalSettingsForm = new KSGlobalSettingsForm();
@@ -1758,6 +1790,13 @@ var KitScript = Class.create(_Utils, {
         return this._version;
     },
     
+    toggleEnable: function () {
+        
+        if (this.isEnabled() === true)
+            this.setDisabled();
+        else
+            this.setEnabled();
+    },
     isEnabled: function () {
         
         return this._isEnabled;
@@ -1858,28 +1897,87 @@ var KitScript = Class.create(_Utils, {
  *  =======================================================
  */
 
+ function KSSEFH_CloseTabHandler(event) {
+
+     ks.mainContainer.setTabClosed();
+ }
+
+function KSSEFH_ValidateHandler(event) {
+    
+    switch (event.command) {
+        
+        case "open_tab":
+        //
+        break;
+    }
+}
+
+
+function KSSEFH_MenuHandler(event) {
+    
+    // Get Running Scripts And Add Them Dynamicaly On The Menu
+    //ks.loader.getRunningScripts();
+}
+
 function KSSEFH_CommandHandler(event) {
     
     switch (event.command)
     {
         case "open_tab":
-            ks.mainContainer.openTab();
+        case 'KS_TI1':
+            if (ks.mainContainer.isTabOpen() === false)
+                ks.mainContainer.openTab();
+            
             ks.mainContainer.setTabPage(ks.mainContainer.defaultPage);
             break;
-    }
-}
-
-function KSSEFH_ValidateHandler(event) {
-    
-    switch (event.command)
-    {
-        case "open_tab":
-            //
+        case "toggle_enable":
+        case 'KS_MI1':
+            //ks.toggleEnable();
+            break;
+        case "open_nus":
+        case 'KS_MI3':
+            if (ks.mainContainer.isTabOpen() === false) {
+                
+                ks.mainContainer.openTab();
+                ks.mainContainer.setTabPage(ks.mainContainer.defaultPage);
+            }
+            
+            //alert(ks.mainContainer.defaultPage+'#'+KSNewUserScriptForm.id);
+            //ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSNewUserScriptForm.id);
+            
+            //ks.mainContainer.contentManager.transitContent(KSNewUserScriptForm.id);
+            //jQuery("#ks-topmenu-nav-new-userscript a[href='#new-userscript']").click();
+            break;
+        case "open_mus":
+        case 'KS_MI4':
+            if (ks.mainContainer.isTabOpen() === false) {
+                
+                ks.mainContainer.openTab();
+                ks.mainContainer.setTabPage(ks.mainContainer.defaultPage);
+            }
+            
+            //alert(ks.mainContainer.defaultPage+'#'+KSUserScriptsManagerForm.id);
+            //ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSUserScriptsManagerForm.id);
+            
+            ks.mainContainer.contentManager.transitContent(KSUserScriptsManagerForm.id);
+            break;
+        case "open_gs":
+        case 'KS_MI5':
+            if (ks.mainContainer.isTabOpen() === false) {
+                
+                ks.mainContainer.openTab();
+                ks.mainContainer.setTabPage(ks.mainContainer.defaultPage);
+            }
+            
+            //alert(ks.mainContainer.defaultPage+'#'+KSGlobalSettingsForm.id);
+            //ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSGlobalSettingsForm.id);
+            
+            ks.mainContainer.contentManager.transitContent(KSGlobalSettingsForm.id);
             break;
     }
 }
 
-function KSSEFH_NavigateHandler(event) {
+function KSSEFH_BeforeNavigateHandler(event) {
     
     if (ks.loader.isValidScheme(event.target.url) === true) {
         
@@ -1892,6 +1990,37 @@ function KSSEFH_NavigateHandler(event) {
     }
 }
 
-safari.application.addEventListener("command", KSSEFH_CommandHandler, false);
-safari.application.addEventListener("validate", KSSEFH_ValidateHandler, false);
-safari.application.addEventListener("navigate", KSSEFH_NavigateHandler, false);
+function KSSEFH_NavigateHandler(event) {
+    
+    var _url = event.target.url;
+    
+    if (ks.loader.isValidScheme(_url) === true) {
+        
+        // To Load User Scripts From Location ~ v0.2
+        if (ks.loader.isUserScript(_url)) {
+            
+            // Ask to add to manager ~ v0.2
+            //ks.dialog.newUserScriptDialog.open();
+        }
+    } else if (ks.loader.isKitScriptExtz(_url)) {
+        
+        if (_url.indexOf('#') >= 0) {
+            
+            ks.mainContainer.contentManager.transitContent(_url.substr(_url.indexOf('#')));
+        }
+    }
+}
+
+safari.application.addEventListener("validate", KSSEFH_ValidateHandler, true);
+safari.application.addEventListener("menu", KSSEFH_MenuHandler, true);
+safari.application.addEventListener("command", KSSEFH_CommandHandler, true);
+
+safari.application.addEventListener("beforeNavigate", KSSEFH_BeforeNavigateHandler, true);
+safari.application.addEventListener("navigate", KSSEFH_NavigateHandler, true);
+
+function KSSEFH_ProxyMessage(event) {
+    
+    
+}
+
+safari.application.addEventListener("message", KSSEFH_ProxyMessage, false);
