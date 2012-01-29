@@ -28,15 +28,23 @@ jQuery(document).ready(function ($) {
     // ks KitScript Root Object
     ks = new KitScript();
     
+    //Object.getPrototypeOf(safari).ks = ks;
+    
     // db Database Root Object
     db = new KSStorage();
     
     // Connect Db
     try {
         db.connect();
-        db.createTables();
+        
+        // Create Tables If Not Exists
+        try {
+            db.createTables();
+        } catch (e) {
+            alert("Cannot create tables: "+e.message+".");
+        }
     } catch (e) {
-        db._a("Cannot connect to the Database: "+e.getMessage()+".");
+        alert("Cannot connect to the Database: "+e.message+".");
     }
     
     // Debug Verbosity: 0=Silenced,1=Console,2=BrowserAlert
