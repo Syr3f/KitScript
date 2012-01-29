@@ -15,10 +15,21 @@
 
 
 
+
 /**
- *  _Utils Class
- *
- *  Offers basic methods & Objects for child classes.
+ *  Prototyping String.trim()
+ */
+if(!String.prototype.trim)
+  String.prototype.trim = function () {
+    return this.replace(/^\s+|\s+$/g,'');
+  };
+
+
+
+
+
+/**
+ *  _Utils (KitScript Utilitary Class)
  */
 var _Utils = Class.create({
 
@@ -70,9 +81,3 @@ var _Utils = Class.create({
 });
 
 _Utils.vl = 0;
-
-if(!String.prototype.trim) {  
-  String.prototype.trim = function () {  
-    return this.replace(/^\s+|\s+$/g,'');  
-  };  
-}  
