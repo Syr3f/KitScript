@@ -24,9 +24,8 @@ var _Utils = Class.create({
 
     initialize: function () {
         
-        this.$ = jQuery;
-        this.md = window.markdown;
-        this.console = console;
+        Object.getPrototypeOf(this).$ = jQuery;
+        Object.getPrototypeOf(this).md = window.markdown;
     },
     /**
      *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
@@ -55,7 +54,7 @@ var _Utils = Class.create({
     },
     _l: function (msg) {
         
-        this.console.log(msg);
+        console.log(msg);
     },
     escQuote: function (str) {
         
