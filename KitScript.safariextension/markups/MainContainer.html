@@ -61,6 +61,9 @@
     <!-- script src="../scripts/lib/CodeMirror2/lib/codemirror.js" type="text/javascript" charset="utf-8"></script -->
     <!-- script src="../scripts/lib/CodeMirror2/mode/javascript/javascript.js" type="text/javascript" charset="utf-8"></script -->
     
+    <!-- = History.js = -->
+    <!-- script src="../scripts/lib/history.js/jquery.history.js" type="text/javascript" charset="utf-8"></script -->
+    
     <!-- = Misc. = -->
     <script src="../scripts/lib/Base64.js" type="text/javascript" charset="utf-8"></script>
     <script src="../scripts/lib/Markdown.js" type="text/javascript" charset="utf-8"></script>
@@ -83,13 +86,12 @@
     <!-- = Local Script = -->
     <script type="text/javascript">
     
-    // Circumventing A Bug With Command Event Function Handler
     jQuery(document).ready(function () {
-      
-      //
-      //  Parsing location.href For Page Requests (Circumventing A Bug Or 
-      //  Misknowledge Of Safari Extension API)
-      //
+      //* ////////////////////////////////////////////////////////////////////////
+      //* Local Dispatching
+      //* ////////////////////////////////////////////////////////////////////////
+      ks.request.tokenizeURI();
+      while (ks.request.isReady()===false) {;}
       ks.request.dispatch();
     });
     
