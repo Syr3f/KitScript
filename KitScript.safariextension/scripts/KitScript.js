@@ -1801,6 +1801,9 @@ var KSRouteNode = {
 
 
 
+/**
+ *  KSRoutes (KitScript Routing Class)
+ */
 var KSRoutes = Class.create(_Utils, {
     
     initialize: function ($super) {
@@ -2103,7 +2106,10 @@ var KSRequest = Class.create(_Utils, {
 
 
 
-var KSController = Class.create({
+/**
+ *  KSBaseController (KitScript Base Controller Class)
+ */
+var KSBaseController = Class.create({
     
     initialize: function () {
         
