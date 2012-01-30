@@ -53,60 +53,62 @@ jQuery(document).ready(function ($) {
     // Declare On UI If Enabled Or Disabled
     ks.declareEnabled();
     
-    // Routes Registration
+    // ===============
+    // Routes Registry
+    // ===============
     
-    // Dynamic Routing - Not Implemented
-    //ks.routes.add('genericRoute','MainContainer.html#:contentId',function (request) {
+    // Dynamic Routing - Not Implemented Yet
+    //ks.routes.add('genericRoute','MainContainer.html#:contentId?:key1=:param1',function (request) {
     //    if (request.hasHash()===true)
     //        ks.mainContainer.contentManager.transitContent(request.route.getSymbol('contentId'));
     //});
     
-    ks.routes.add('globalSettingsForm','MainContainer.html#global-settings',function (request) {
-        if (request.hasHash()===true)
-            ks.mainContainer.contentManager.transitContent(request.getHash());
+    // Global Settings View Route
+    ks.routes.add('globalSettingsRoute','MainContainer.html#global-settings',function (request) {
+        ks.mainContainer.contentManager.transitContent(request.getHash());
     });
-    ks.routes.add('defaultForm','MainContainer.html');
-    ks.routes.add('userScriptsManagerForm',/MainContainer\.html(#userscript-manager)?/,function (request) {
-        if (request.hasHash()===true)
-            ks.mainContainer.contentManager.transitContent(request.getHash());
-        else
-            ks.mainContainer.contentManager.transitContent('userscript-manager');
+    
+    // Default Form ~ User Script Manager View Route
+    ks.routes.add('defaultRoute','MainContainer.html',function (request) {
+        ks.mainContainer.contentManager.transitContent('userscript-manager');
     });
-    ks.routes.add('newUserScriptForm','MainContainer.html#new-userscript',function (request) {
-        
-        if (request.hasHash()===true)
-            ks.mainContainer.contentManager.transitContent(request.getHash());
+    
+    // User Script Manager View Route
+    ks.routes.add('userScriptsManagerRoute',/MainContainer\.html#userscript-manager/,function (request) {
+        ks.mainContainer.contentManager.transitContent(request.getHash());
     });
-    ks.routes.add('installUserScript',/MainContainer\.html#new-userscript\?_loaduserscriptfromurl=(.*)$/g,function (request) {
+    
+    // User Script Settings View Route
+    ks.routes.add('userScriptSettingsRoute','MainContainer.html#userscript-settings',function (request) {
+        ks.mainContainer.contentManager.transitContent(request.getHash());
+    });
+    
+    // New User Script View Route
+    ks.routes.add('newUserScriptRoute','MainContainer.html#new-userscript',function (request) {
+        ks.mainContainer.contentManager.transitContent(request.getHash());
+    });
+    
+    // Install User Script By URL View Route
+    //ks.routes.add('installUserScriptRoute',/MainContainer\.html#new-userscript\?_loaduserscriptfromurl=(?:.*)/,function (request) {
+    ks.routes.add('installUserScriptRoute',/MainContainer\.html#new-userscript\?_loaduserscriptfromurl=.*/,function (request) {
+        ks.mainContainer.contentManager.transitContent(request.getHash());
         
-        if (request.hasHash()===true)
-            ks.mainContainer.contentManager.transitContent(request.getHash());
+        var _k1='_loaduserscriptfromurl';
         
-        alert(request.getHash());
-        
-        // If Has Question Mark: Parse Request String
-        if (request.hasQueryString()===true) {
+        if (request.hasParam(_k1)===true) {
+            var _v1 = request.getParamVal(_k1);
             
-            // Set Request Keys Here
-            var _k1='_loaduserscriptfromurl';
-            
-            // Parse Request Keys Here
-            if (request.hasParam(_k1)===true) {
-                var _v1 = request.getParamVal(_k1);  alert('param: ['+_v1+']');
-                ks.mainContainer.newUserScriptForm.loadURL(_v1);
-            }
+            ks.mainContainer.newUserScriptForm.loadURL(_v1);
         }
     });
-    ks.routes.add('aboutKitScriptForm','MainContainer.html#about',function (request) {
-        if (request.hasHash())
-            ks.mainContainer.contentManager.transitContent(request.getHash());
-    });
-    ks.routes.add('userScriptSettingsForm','MainContainer.html#userscript-settings',function (request) {
+    
+    // About KitScript View Route
+    ks.routes.add('aboutKitScriptRoute','MainContainer.html#about',function (request) {
         if (request.hasHash())
             ks.mainContainer.contentManager.transitContent(request.getHash());
     });
     
-    // Reinitialize Request Object
-    ks.request.tokenizeURI();
+    // Controller/View Dispatch Example
+    //ks.routes.add('aboutKitScriptRoute','MainContainer.html#about','DefaultController','aboutView');
 });
 
