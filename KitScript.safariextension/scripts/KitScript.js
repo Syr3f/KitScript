@@ -94,6 +94,11 @@ var KSBase = Class.create(_Utils, {
     getTab: function () {
         
         return this._tab;
+    },
+    reloadActiveTab: function () {
+        
+        var _url = safari.application.activeBrowserWindow.activeTab.url;
+        safari.application.activeBrowserWindow.activeTab.url = _url;
     }
 });
 
@@ -818,11 +823,6 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             url: scriptUrl,
             context: this,
             success: function (responseText, textStatus, XMLHttpRequest) {
-                
-                //debugger;
-                
-                //var _u = new _Utils();
-                //document.getElementById('ks-aus-script').innerHTML = _u.escQuote(responseText);
                 
                 this.setScriptCode(responseText);
             }
@@ -1565,12 +1565,7 @@ var KSLoader = Class.create(_Utils, {
     },
     isUserScript: function (url) {
         
-        if (/^.*\.user\.js$/gi.test(url) === true) {
-            
-            //this._a(url+": isUserScript() == true");
-            
-            return true;
-        }
+        if (/^.*\.user\.js$/gi.test(url)===true) return true;
     },
     load: function () {
         
@@ -1799,11 +1794,7 @@ var KSRouteNode = {
     key: '',
     type: undefined,
     route: undefined,
-    callback: undefined//,
-    //symbols: [],
-    //getSymbol: function () {
-    //    
-    //}
+    callback: undefined
 };
 
 
@@ -1831,13 +1822,13 @@ var KSRoutes = Class.create(_Utils, {
         
         if (typeof route === 'string') {
             
-            if (/([#?=&\/]{1}:)+/.test(route)===true) {
+            if (/([#?=&\/]{1}:[\-_a-zA-Z0-9]*)/.test(route)===true) {
                 _type = this.TYPE_DYNAMIC;
                 // Not To Be Implemented Yet
                 //var _matches = /([^&=?#/]?:\w)*(([&=?#/]{1}:[\-_a-zA-Z]*)*(?:[^&=?#/]*:))*/g.exec(route);
             } else
                 _type = this.TYPE_STATIC
-        } else
+        } else if (typeof route === 'object')
             _type = this.TYPE_REGEXP;
         
         var _rte = Object.create(KSRouteNode);
@@ -1845,8 +1836,7 @@ var KSRoutes = Class.create(_Utils, {
         _rte.key = name,
         _rte.type = _type,
         _rte.route = route,
-        _rte.callback = _fn;//,
-        //_rte.symbols= this._getSymbols();
+        _rte.callback = _fn;
         
         this._routes.push(_rte);
     },
@@ -1860,45 +1850,45 @@ var KSRoutes = Class.create(_Utils, {
     getRouteByMatch: function (uri) {
         
         var _u = this._stripBaseURI(uri);
-        var _rte = undefined;
+        var _is = false;
         
-        for (var _i=0; _i<ks.routes.count(); _i++) {
+        for (var i=0; i<this._routes.length; i++) {
             
-            this._currentRteObj = ks.routes.getRouteByIndex(_i);
+            var __rte = this._routes[i];
             
-            switch (this._currentRteObj.type) {
+            switch (__rte.type) {
                 case this.TYPE_STATIC:
-                    _rte = this._getRouteMatchStatic(_u,this._currentRteObj);
+                    _is = this._hasRouteMatchStatic(_u,__rte);
                     break;
                 case this.TYPE_REGEXP:
-                    _rte = this._getRouteMatchRegExp(_u,this._currentRteObj);
+                    _is = this._hasRouteMatchRegExp(_u,__rte);
                     break;
                 case this.TYPE_DYNAMIC:
                     throw new Error('Route type TYPE_DYNAMIC is not implemented.');
-                    //_rte = this._getRouteMatchDynamic(_u,this._currentRteObj);
+                    //_rte = this._hasRouteMatchDynamic(_u,__rte);
                     break;
                 default:
-                    throw new Error('Route type is not valid: '+this._currentRteObj.type+'.');
+                    throw new Error('Route type is not valid: '+__rte.type+'.');
             }
             
-            if (_rte!==undefined) return _rte;
+            if (_is===true) return __rte;
         }
     },
-    _getRouteMatchStatic: function (uri,rte) {
+    _hasRouteMatchStatic: function (uri,rte) {
         
-        if (uri === rte.route)
-            return rte;
-        else
-            return undefined;
+        if (uri===rte.route)
+            return true;
+        return false;
     },
-    _getRouteMatchRegExp: function (uri,rte) {
+    _hasRouteMatchRegExp: function (uri,rte) {
         
         var _ptrn = rte.route;
-        
-        if (/_ptrn/.test(uri) === true)
-            return rte;
-        else
-            return undefined;
+        if (_ptrn.test(uri) === true)
+            return true;
+        return false;
+    },
+    _hasRouteMatchDynamic: function (uri,rte) {
+        // Not Implemented Yet
     },
     _stripBaseURI: function (uri) {
         
@@ -1979,10 +1969,13 @@ var KSRequest = Class.create(_Utils, {
         // _s : uri string, _ba : begin at, _ne : next equal sign, _na : next ampersand sign
         var _s=this._u, _ba=this._pq+1, _ne=_s.indexOf(this._e,_ba), _na=_s.indexOf(this._a,_ne);
         
-        for (var i=0;i<_s.length; i++) {
+        _ne=(_ne===-1?_s.length:_ne);
+        _na=(_na===-1?_s.length:_na);
+        
+        for (var i=_ba;i<_s.length; i+=_ba) {
             
-            var _k=_s.substr(_ba,_ne-_ba-1);
-            var _v=_s.substr(_ne+1,_na-_ne-1);
+            var _k=_s.substr(_ba,_ne-_ba);
+            var _v=_s.substr(_ne+1,_na-_ne);
             
             var _param = Object.create(KSParamNode);
             
@@ -1993,10 +1986,7 @@ var KSRequest = Class.create(_Utils, {
             
             _ba=_na+1, _ne=_s.indexOf(this._e,_ba), _na=_s.indexOf(this._a,_ne);
             
-            // _u : location href, k : request key, _l : key string length, _p : position of request key, _n : next ampersand, _v : request value
-            //var _l=k.length, _p=this._getPos(k), _n=this._getPos(this._a,_p);
-            //var _v=_u.substr(_p+_l+1,(_n>=0?_n-_l-1:this._ln-_p-1));
-            //return _v;
+            //if (_ba>=_s.length) break;
         }
     },
     isReady: function () {
@@ -2015,6 +2005,8 @@ var KSRequest = Class.create(_Utils, {
                 
                 if (typeof _rte.callback === 'function')
                     _rte.callback(this);
+                else
+                    this._l('Warning! [KSRequest.dispatch] _rte.callback is not a function: '+(typeof _rte.callback)+'.');
             } else
                 throw new Error('There\'s no registered routes.');
         }
@@ -2035,13 +2027,18 @@ var KSRequest = Class.create(_Utils, {
     getHash: function () {
         return this._hash;
     },
-    hasParam: function (param) {
-        return (/param/g.test(this._u));
+    hasParam: function (key) {
+        
+        for (var i=0;i<this._params.length;i++) {
+            if (this._params[i].key===key)
+                return true;
+        }
+        return false;
     },
     getParamVal: function (key) {
         for (var _i=0; _i<this._params.length; _i++) {
-            if (this.params[_i].key===key)
-                return this.params[_i].val;
+            if (this._params[_i].key===key)
+                return this._params[_i].val;
         }
     },
     getParamByIndex: function (idx) {
@@ -2074,6 +2071,31 @@ var KSRequest = Class.create(_Utils, {
     },
     hasQueryString: function () {
         return (this._pq>=0);
+    },
+    test: function () {
+        
+        alert('[getPage]:'+this.getPage()+"\n"+
+                '[getHash]:'+this.getHash()+"\n"+
+                '[hasParam]:'+this.hasParam(_k1)+"\n"+
+                '[getParamVal]:'+this.getParamVal(_k1)+"\n"+
+                '[getParamsCount]:'+this.getParamsCount()+"\n"+
+                '[getURI]:'+this.getURI()+"\n"+
+                '[getQueryString]:'+this.getQueryString()+"\n"+
+                '[getURILength]:'+this.getURILength()+"\n"+
+                '[hasHash]:'+this.hasHash()+"\n"+
+                '[hasQueryString]:'+this.hasQueryString()+"\n");
+        
+        var _m1=this.getParamByIndex(0);
+        alert('[getParamByIndex]: [key]:'+_m1.key+' [val]:'+_m1.val+"\n");
+        
+        var _m2=this.getParams(),_s2='';
+        for (var i2=0;i2<_m2.length;i2++) {_s2+='['+_m2[i2].key+']:'+_m2[i2].val+','}
+        alert('[getParams]:'+_s2+"\n");
+        
+        var _m3=this.getParamsKeys(),_s3='';
+        for (var i3=0;i3<_m3.length;i3++) {_s3+=_m3[i3]+','}
+        alert('[getParamsKeys]:'+_s3+"\n");
+        
     }
 });
 
@@ -2091,6 +2113,292 @@ var KSController = Class.create({
 
 
 
+
+/**
+ *  KSEventException (KitScript Event Exception Class)
+ */
+var KSEventException = Class.create({
+    
+    initialize: function (message) {
+        
+        this.message = message;
+    }
+});
+
+
+
+
+
+/**
+ *  KSEventNode (KitScript Event Node Definition)
+ */
+var KSEventNode = {
+    id: undefined,
+    command: undefined,
+    eventObj: null,
+    callback: undefined
+};
+
+
+
+
+
+/**
+ *  KSTriggerNode (KitScript Trigger Node Definition)
+ */
+var KSTriggerNode = {
+    id: undefined,
+    count: 0,
+    triggered: false,
+    triggerSrc: undefined,
+    callback: undefined
+};
+
+
+
+
+
+/**
+ *  KSNavigateEvent (KitScript Navigate Event Class)
+ */
+var KSNavigateEvent = Class.create({
+    
+    initialize: function () {
+        
+        this._singleEvts = [];
+        this._triggers = [];
+        
+        this._triggerDelay = 750;
+    },
+    
+    setSingletonCommandEvent: function (id,command,eventObj,callback) {
+        
+        // Event Must Be Unique For id & command
+        if (this.hasSingletonCommandEvent(id,command)===true) {
+            
+            var _idx = this.getSingletonCommandEventIndex(id,command);
+            
+            // Only Update Event Object
+            this._singleEvts[_idx].eventObj = eventObj;
+        } else {
+            
+            var _evt = Object.create(KSEventNode);
+            
+            _evt.id = id;
+            _evt.command = command;
+            _evt.eventObj = eventObj;
+            _evt.callback = callback;
+            
+            this._singleEvts.push(_evt);
+        }
+        
+        // Trigger Must Be Unique For id
+        if (this.isTriggerRegistered(id)===false) {
+            
+            var _trig = Object.create(KSTriggerNode);
+            
+            _trig.id = id;
+            _trig.callback = callback;
+            
+            this._triggers.push(_trig);
+        }
+    },
+    getSingletonCommandEventsById: function (id) {
+        
+        var _evts = [];
+        
+        for (var i=0; i<this._singleEvts.length; i++) {
+            
+            if (this._singleEvts[i].id===id)
+                _evts.push(this._singleEvts[i]);
+        }
+        
+        return _evts;
+    },
+    hasSingletonCommandEvent: function (id,command) {
+        
+        for (var i=0; i<this._singleEvts.length; i++) {
+            
+            if (this._singleEvts[i].id===id&&this._singleEvts[i].command===command)
+                return true;
+        }
+        return false;
+    },
+    getSingletonCommandEvent: function (id,command) {
+        
+        for (var i=0; i<this._singleEvts.length; i++) {
+            
+            if (this._singleEvts[i].id===id&&this._singleEvts[i].command===command)
+                return this._singleEvts[i];
+        }
+        return undefined;
+    },
+    getSingletonCommandEventIndex: function (id,command) {
+        
+        for (var i=0; i<this._singleEvts.length; i++) {
+            
+            if (this._singleEvts[i].id===id&&this._singleEvts[i].command===command)
+                return i;
+        }
+        return 0;
+    },
+    
+    isTriggerRegistered: function (id) {
+        
+        for (var i=0; i<this._triggers.length; i++) {
+            
+            if (this._triggers[i].id===id)
+                return true;
+        }
+        return false;
+    },
+    incrementTriggerCall: function (id) {
+        
+        for (var i=0; i<this._triggers.length; i++) {
+            
+            if (this._triggers[i].id===id) {
+                this._triggers[i].count++;
+            }
+        }
+    },
+    getTriggerCount: function (id) {
+        
+        for (var i=0; i<this._triggers.length; i++) {
+            
+            if (this._triggers[i].id===id)
+                return this._triggers[i].count;
+        }
+    },
+    hasTriggered: function (id) {
+        
+        for (var i=0; i<this._triggers.length; i++) {
+            
+            if (this._triggers[i].id===id)
+                return this._triggers[i].triggered;
+        }
+    },
+    getTriggerSrc: function (id) {
+        
+        for (var i=0; i<this._triggers.length; i++) {
+            
+            if (this._triggers[i].id===id) {
+                return this._triggers[i].triggerSrc;
+            }
+        }
+    },
+    resetTrigger: function (id,command) {
+        
+        for (var i=0; i<this._triggers.length; i++) {
+            
+            if (this._triggers[i].id===id&&this._triggers[i].triggerSrc===command) {
+                this._triggers[i].count = 0;
+                this._triggers[i].triggered = false;
+                this._triggers[i].triggerSrc = undefined;
+                break;
+            }
+        }
+    },
+    trigger: function (id,command) {
+        
+        for (var i=0; i<this._triggers.length; i++) {
+            
+            if (this._triggers[i].id===id) {
+                
+                var _evts = this.getSingletonCommandEventsById(id);
+                
+                var _fn = this._triggers[i].callback;
+                
+                window.setTimeout(_fn,this._triggerDelay,_evts);
+                
+                this._triggers[i].triggered = true;
+                this._triggers[i].triggerSrc = command;
+                break;
+            }
+        }
+    },
+    
+    registerSingletonEvent: function (id,command,eventObj,callback) {
+        
+        if (eventObj!==undefined)
+            this.setSingletonCommandEvent(id,command,eventObj,callback);
+            
+        // Attempt Trigger Reset
+        if (this.hasTriggered(id)===true)
+            this.resetTrigger(id,command);
+    },
+    triggerSingletonCallback: function (id,command) {
+        
+        this.incrementTriggerCall(id);
+        
+        if (this.hasTriggered(id)===false)
+            this.trigger(id,command);
+    }
+});
+
+
+
+
+
+/**
+ *  KSUserScriptHistory (KitScript User Script URL Navigation History Class)
+ */
+var KSUserScriptHistory = Class.create(_Utils, {
+    
+    initialize: function ($super) {
+        
+        $super();
+        
+        this._urls = [];
+        this._maxTotal = 25;
+        this._setAttempts = 0;
+        this._totalAttempts = 0;
+    },
+    setURL: function (url) {
+        
+        if (ks.loader.isUserScript(url)) {
+            this._l('User Script History ['+this.getSuccessIndex()+']: '+url);
+            this._urls.push(url);
+        }
+        
+        if (this._urls.length>=this._maxTotal) {
+            this._urls.shift();
+            this._setAttempts--;
+        }
+    },
+    getLast: function () {
+        return this._urls[this._urls.length-1];
+    },
+    isListed: function (url) {
+        
+        for (var i=this._urls.length-1; i>=0; i--) {
+            
+            if (this._urls[i]===url) return true;
+        }
+        return false;
+    },
+    getCount: function () {
+        return this._urls.length;
+    },
+    attemptInsert: function (url) {
+        
+        this._setAttemps++;
+        this._totalAttempts++;
+        
+        if (url!==undefined && url!==this.getLast()) {
+            this.setURL(url);
+            return true;
+        }
+        return false;
+    },
+    getSuccessIndex: function () {
+        return ((this._setAttempts-this._urls.length)/this._totalAttempts*100).toFixed(2)+'%';
+    }
+});
+
+
+
+
+
 /**
  *  KitScript Class
  */
@@ -2103,6 +2411,10 @@ var KitScript = Class.create(_Utils, {
         this._version = "0.2";
         
         this._isEnabled = true;
+        
+        
+        Object.getPrototypeOf(this).userScriptHistory = new KSUserScriptHistory();
+        Object.getPrototypeOf(this).navigateEvent = new KSNavigateEvent();
         
         Object.getPrototypeOf(this).routes = new KSRoutes();
         
@@ -2227,6 +2539,59 @@ var KitScript = Class.create(_Utils, {
 
 
 /**
+ *  ====================================
+ *  KSEXFH_* (KitScript Extra Functions)
+ *  ====================================
+ */
+function KSEXF_installUserScriptByURL(events) {
+    
+    var _evt, _url, _tab;
+    
+    if (events.length>0)
+        _url=events[0].eventObj.target.url;
+    
+    for (var i=0; i<events.length; i++) {
+        _evt = events[i].eventObj;
+        _url = _url || _evt.url || _evt.target.url;
+        if (typeof _url === 'string') break;
+    }
+    
+    if (_url===undefined)
+        // Must Be A Way To Reload Target
+        //ks.mainContainer.reloadTarget(_tab);
+        ks._l('Warning! URL is undefined.');
+    else {
+        if (ks.loader.isValidScheme(_url) === true) {
+            
+            if (ks.loader.isUserScript(_url)) {
+                
+                if (ks.mainContainer.isTabOpen() === false)
+                    ks.mainContainer.openTab();
+                
+                var _page = ks.mainContainer.defaultPage+'#'+KSNewUserScriptForm.id+'?_loaduserscriptfromurl='+_url;
+                
+                ks.mainContainer.setTabPage(_page);
+            }
+        }
+    }
+}
+
+function KSEXF_registerNavigation(event) {
+    
+    if (event.type==='navigate' || event.type==='beforeNavigate')
+        var _url = event.url || event.target.url || event.currentTarget.url;
+    
+    // Attempt Reload Evented Page If undefined
+    //if (ks.userScriptHistory.attemptInsert(_url)===false)
+    //    throw new Error('Target Reload Attempt Failed: [event.type]:'+event.type+' [url]:'+_url);
+    ks.userScriptHistory.attemptInsert(_url);
+}
+
+
+
+
+
+/**
  *  =======================================================
  *  KSSEFH_* (KitScript Safari Extension Function Handlers)
  *  =======================================================
@@ -2294,46 +2659,25 @@ function KSSEFH_CommandHandler(event) {
 
 function KSSEFH_BeforeNavigateHandler(event) {
     
-    var _url = event.target.url;
+    var _command = 'beforeNavigate';
     
-    // To Prevent Loading of User Scripts
-    if (ks.loader.isUserScript(_url)) {
-        
-        // Don't Load User Script Anywhere
-        //event.preventDefault();
-    }
+    ks.navigateEvent.registerSingletonEvent('installUserScript',_command,event,KSEXF_installUserScriptByURL);
+    
+    ks.navigateEvent.triggerSingletonCallback('installUserScript',_command);
 }
 
 function KSSEFH_NavigateHandler(event) {
     
-    var _url = event.target.url;
+    var _command = 'navigate';
     
-    if (ks.loader.isValidScheme(_url) === true) {
-        
-        // To Load User Scripts From URL
-        if (ks.loader.isUserScript(_url)) {
-            
-            // Don't Load User Script Anywhere
-            //event.preventDefault();
-            
-            // Open Tab Or Transit To New User Script Form
-            if (ks.mainContainer.isTabOpen() === false)
-                ks.mainContainer.openTab();
-            
-            ks.mainContainer.setTabPage(ks.mainContainer.defaultPage+'#'+KSNewUserScriptForm.id+'?_loaduserscriptfromurl='+_url);
-            
-            // Show User Script Installer Dialog (It Loads The User Script)
-            //ks.mainContainer.newUserScriptForm.loadURL(_url);
-        }
-    }
+    ks.navigateEvent.registerSingletonEvent('installUserScript',_command,event,KSEXF_installUserScriptByURL);
+    
+    ks.navigateEvent.triggerSingletonCallback('installUserScript',_command);
 }
 
-//ks.mainContainer.getTab().addEventListener("close", KSSEFH_CloseHandler, true);
-
-safari.application.addEventListener("validate", KSSEFH_ValidateHandler, true);
-safari.application.addEventListener("menu", KSSEFH_MenuHandler, true);
-safari.application.addEventListener("command", KSSEFH_CommandHandler, true);
-
+safari.application.addEventListener("validate", KSSEFH_ValidateHandler, false);
+safari.application.addEventListener("menu", KSSEFH_MenuHandler, false);
+safari.application.addEventListener("command", KSSEFH_CommandHandler, false);
 safari.application.addEventListener("beforeNavigate", KSSEFH_BeforeNavigateHandler, false);
 safari.application.addEventListener("navigate", KSSEFH_NavigateHandler, false);
 
@@ -2343,3 +2687,8 @@ function KSSEFH_ProxyMessage(event) {
 }
 
 safari.application.addEventListener("message", KSSEFH_ProxyMessage, false);
+
+// For User Script Load History
+safari.application.addEventListener('beforeNavigate',KSEXF_registerNavigation, false)
+safari.application.addEventListener('navigate',KSEXF_registerNavigation, false);
+
