@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Seraf Dos Santos</string>
 	<key>Builder Version</key>
-	<string>7534.52.7</string>
+	<string>7534.53.10</string>
 	<key>CFBundleDisplayName</key>
 	<string>KitScript</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>0.2</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
@@ -102,7 +102,7 @@
 				<key>Menu</key>
 				<string>KS_M1</string>
 				<key>Palette Label</key>
-				<string>KitScript</string>
+				<string>Open KitScript</string>
 				<key>Popover</key>
 				<string></string>
 				<key>Tool Tip</key>
