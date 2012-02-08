@@ -37,7 +37,7 @@ var _Utils = Class.create({
         
         Object.getPrototypeOf(this).$ = jQuery;
         Object.getPrototypeOf(this).md = window.markdown;
-        //Object.getPrototypeOf(this).hist = window.History;
+        Object.getPrototypeOf(this).history = window.History;
     },
     /**
      *  @param int verboseLevel (0=Silenced,1=Console,2=BrowserAlert)
