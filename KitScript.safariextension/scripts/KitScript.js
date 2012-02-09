@@ -2503,7 +2503,6 @@ var KitScript = Class.create(_Utils, {
         
         this._isEnabled = true;
         
-        Object.getPrototypeOf(this).history = window.History;
         Object.getPrototypeOf(this).userScriptHistory = new KSUserScriptHistory();
         Object.getPrototypeOf(this).navigateEvent = new KSNavigateEvent();
         
