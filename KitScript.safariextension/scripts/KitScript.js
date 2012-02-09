@@ -1512,6 +1512,7 @@ var KSAboutProjectForm = Class.create(KSContentManager, {
 var KSUserScriptNode = {
     metaId: 0,
     fileId: 0,
+    hashId: 0,
     userscript: "",
     u_excludes: new Array(),
     u_includes: new Array(),
@@ -1608,6 +1609,7 @@ var KSLoader = Class.create(_Utils, {
             
             _node.metaId = _row['id'];
             _node.fileId = _row['userscript_id'];
+            _node.hashId = _row['hash'];
             _node.u_excludes = _row['user_excludes'].split(',');
             _node.u_includes = _row['user_includes'].split(',');
             _node.us_requires = new Array();
@@ -1716,6 +1718,9 @@ var KSLoader = Class.create(_Utils, {
                     
                     // Run at
                     var _ra = _ut.us_run_at;
+                    
+                    // Inject User Script Node ~ Valuable For Proxy Identification
+                    var _injurl = safari.extension.addContentScript('var KSInstance = '+JSON.strignify(_ut), _wl, _bl, false);
                     
                     // Inject Require Files
                     for (var rf=0; rf<_ut.us_requires.length; rf++) {

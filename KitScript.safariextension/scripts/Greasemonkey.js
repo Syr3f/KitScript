@@ -56,6 +56,11 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         this._md_excludes = [];
         this._md_version = '';
         this._md_runat = KSGreasemonkeyMetadata.RUNAT_END;
+        
+        this._md_icon = '';
+        this._md_matches = [];
+        this._md_resources = [];
+        this._md_hasUnwrap = false;
     },
     loadScript: function (scriptStr) {
         
@@ -83,40 +88,46 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
             
             if (/^[\/]{2} \@name (.*)$/gi.test(_line) === true) {
                 
-                this._md_name = /^[\/]{2} \@name (.*)$/gi.exec(_line)[1].trim();
-            } else if (/^[\/]{2} \@namespace (.*)$/gi.test(_line) === true) {
+                this._md_name = /^[\/]{2}\s+\@name\s+(.*)$/gi.exec(_line)[1].trim();
+            } else if (/^[\/]{2}\s+\@namespace\s+(.*)$/gi.test(_line) === true) {
                 
-                this._md_namespace = /^[\/]{2} \@namespace (.*)$/gi.exec(_line)[1].trim();
-            } else if (/^[\/]{2} \@description (.*)$/gi.test(_line) === true) {
+                this._md_namespace = /^[\/]{2}\s+\@namespace\s+(.*)$/gi.exec(_line)[1].trim();
+            } else if (/^[\/]{2}\s+\@description\s+(.*)$/gi.test(_line) === true) {
                 
-                this._md_description = /^[\/]{2} \@description (.*)$/gi.exec(_line)[1].trim();
-            } else if (/^[\/]{2} \@require (.*)$/gi.test(_line) === true) {
+                this._md_description = /^[\/]{2}\s+\@description\s+(.*)$/gi.exec(_line)[1].trim();
+            } else if (/^[\/]{2}\s+\@require\s+(.*)$/gi.test(_line) === true) {
                 
-                this._md_requires.push(/^[\/]{2} \@require (.*)$/gi.exec(_line)[1].trim());
-            } else if (/^[\/]{2} \@include (.*)$/gi.test(_line) === true) {
+                this._md_requires.push(/^[\/]{2}\s+\@require\s+(.*)$/gi.exec(_line)[1].trim());
+            } else if (/^[\/]{2}\s+\@include\s+(.*)$/gi.test(_line) === true) {
                 
-                this._md_includes.push(/^[\/]{2} \@include (.*)$/gi.exec(_line)[1].trim());
-            } else if (/^[\/]{2} \@exclude (.*)$/gi.test(_line) === true) {
+                this._md_includes.push(/^[\/]{2}\s+\@include\s+(.*)$/gi.exec(_line)[1].trim());
+            } else if (/^[\/]{2}\s+\@exclude\s+(.*)$/gi.test(_line) === true) {
                 
-                this._md_excludes.push(/^[\/]{2} \@exclude (.*)$/gi.exec(_line)[1].trim());
-            } else if (/^[\/]{2} \@version (.*)$/gi.test(_line) === true) {
+                this._md_excludes.push(/^[\/]{2}\s+\@exclude\s+(.*)$/gi.exec(_line)[1].trim());
+            } else if (/^[\/]{2}\s+\@version\s+(.*)$/gi.test(_line) === true) {
                 
-                this._md_version = /^[\/]{2} \@version (.*)$/gi.exec(_line)[1].trim();
-            } else if (/^[\/]{2} \@run\-at (.*)$/gi.test(_line) === true) {
+                this._md_version = /^[\/]{2}\s+\@version\s+(.*)$/gi.exec(_line)[1].trim();
+            } else if (/^[\/]{2}\s+\@run\-at\s+(.*)$/gi.test(_line) === true) {
                 
-                this._md_runat = /^[\/]{2} \@run\-at (.*)$/gi.exec(_line)[1].trim();
+                this._md_runat = /^[\/]{2}\s+\@run\-at\s+(.*)$/gi.exec(_line)[1].trim();
+            } else if (/^[\/]{2}\s+\@icon\s+(.*)$/gi.test(_line) === true) {
+                
+                this._md_icon = /^[\/]{2}\s+\@icon\s+(.*)$/gi.exec(_line)[1].trim();
+            } else if (/^[\/]{2}\s+\@match\s+(.*)$/gi.test(_line) === true) {
+                
+                this._md_matches.push(/^[\/]{2}\s+\@match\s+(.*)$/gi.exec(_line)[1].trim());
+            } else if (/^[\/]{2}\s+\@resource\s+(.*)\s+(.*)$/gi.test(_line) === true) {
+                
+                var _matches = /^[\/]{2}\s+\@resource\s+(.*)\s+(.*)$/gi.exec(_line);
+                var _name = matches[1].trim();
+                var _res = matches[2].trim()
+                this._md_resources.push({"name":_name,"resource":_res});
+            } else if (/^[\/]{2}\s+\@unwrap$/gi.test(_line) === true) {
+                
+                this._md_hasUnwrap = true;
             }
         }
     },
-    
-    
-    
-    /**
-     *  =========================== SUPPORTED IN v0.1 ==========================
-     *  === v === v === v === v === v === v === v === v === v === v === v === v 
-     */
-    
-    
     
     /**
      *  @name string – KS Mandatory
@@ -214,16 +225,6 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
         else
             return KSGreasemonkeyMetadata.RUNAT_END;
     },
-    
-    
-    
-    /**
-     *  =========================== SUPPORTED IN v0.2 ==========================
-     *  === v === v === v === v === v === v === v === v === v === v === v === v 
-     */
-    
-    
-    
     /**
      *  @icon url
      *
@@ -231,9 +232,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getIcon: function () {
         
-        var matches = /[\/]{2} \@icon (.*)/gi.exec(this._script);
-        
-        return matches[1];
+        return this._md_icon;
     },
     /**
      *  @match pattern
@@ -242,16 +241,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getMatches: function () {
         
-        var _matches = [];
-        
-        var matches = /[\/]{2} \@match (.*)/gi.exec(this._script);
-        
-        for (var i = 1; i < matches.length; i++) {
-            
-            _matches.push(matches[i]);
-        }
-        
-        return _matches;
+        return this._md_matches;
     },
     /**
      *  @resource name url
@@ -260,16 +250,7 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     getResources: function () {
         
-        var _resources = [];
-        
-        var matches = /[\/]{2} \@resource (.*) (.*)/gi.exec(this._script);
-        
-        for (var i = 1; i < matches.length; i++) {
-            
-            _resources.push(new Array(matches[i], matches[i+1]));
-        }
-        
-        return _resources;
+        return this._md_resources;
     },
     /**
      *  @unwrap void
@@ -280,13 +261,9 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
      */
     hasUnwrap: function () {
         
-        var _hasUnwrap = /[\/]{2} \@unwrap (.*)/gi.test(this._script);
-        
-        return _hasUnwrap;
+        return this._md_hasUnwrap;
     }
 });
-
-
 
 KSGreasemonkeyMetadata.RUNAT_END = 'document-end';
 KSGreasemonkeyMetadata.RUNAT_START = 'document-start';
@@ -298,11 +275,171 @@ KSGreasemonkeyMetadata.RUNAT_START = 'document-start';
 /**
  *  KSGreasemonkeyAPI (KitScript Greasemonkey API Class)
  */
-var KSGreasemonkeyAPI = Class.create(_Utils, {
+var KSGreasemonkeyAPI = Class.create(KSGreasemonkeyMetadata, {
     
     initialize: function ($super) {
         
         $super();
+        
+        this._currentUserScriptHashId = '';
+    },
+    
+    loadScript: function ($super) {
+        
+        $super();
+        
+        this._currentUserScriptHashId;
+    },
+    
+    // Values
+    /**
+     *  GM_deleteValue(name)
+     *
+     *  This deletes a value from chrome that was previously set.
+     *
+     *  @param string name
+     */
+    deleteValue: function () {
+        
+    },
+    /**
+     *  GM_getValue(name, defaultVal)
+     *
+     *  A function intended to get stored values, see GM_setValue below.
+     *
+     *  @param string name
+     *  @param mixed defaultVal Default result to be returned
+     */
+    getValue: function () {
+        
+    },
+    /**
+     *  GM_listValues()
+     *
+     *  This API method retrieves an array of names that are stored with the
+     *  script's hash id.
+     */
+    listValues: function () {
+        
+    },
+    /**
+     *  GM_setValue(name, value)
+     *
+     *  A function that accepts the name and value to store, persistently. This 
+     *  value can be retrieved later, even on a different invocation of the script,
+     *  with GM_getValue.
+     *
+     *  @param string name
+     *  @param string value
+     */
+    setValue: function (name, value) {
+        var _data = localStorage.getItem(this._currentUserScriptHashId);
+        _data[name] = value;
+        localStorage.setItem(this._currentUserScriptHashId,JSON.strignify(_data));
+    },
+    
+    // Resources
+    /**
+     *  GM_getResourceText(resource)
+     *
+     *  Given a defined @resource, this method returns it as a string.
+     *
+     *  @param string resource Resource name
+     */
+    getResourceText: function (resourceName) {
+        var _resrcs = this.getResources();
+        for (var i=0; i<_resrcs.length; i++) {
+            var _resrc = _resrcs[i];
+            if (_resrc.name===resourceName)
+                return _resrc.resource;
+        }
+    },
+    /**
+     *  GM_getResourceURL(resource)
+     *
+     *  Given a defined @resource, this method returns it as a URL.
+     *
+     *  @param string resource Resource name
+     */
+    getResourceURL: function (resourceName) {
+        var _resrcs = this.getResources();
+        for (var i=0; i<_resrcs.length; i++) {
+            var _resrc = _resrcs[i];
+            if (_resrc.name===resourceName) break;
+        }
+        // get current injected userscript hashid
+        // load resource by hashid and name
+        // assemble base64 data: URL
+        // return data
+    },
+    // Common Task Helpers
+    /**
+     *  GM_addStyle(css)
+     *
+     *  @param string css String of CSS
+     */
+    addStyle: function (css) {
+        $('head').append('<style type="css/text" rel="stylesheet">'+css+'</style>');
+        return true;
+    },
+    /**
+     *  GM_xmlhttpRequest(binary,data,headers,method,onAbort,onError,onLoad,onProgress,onReadyStateChange,overideMimeType,password,synchronous,upload,url,user)
+     *
+     *  @param boolean binary
+     *  @param string data
+     *  @param object headers
+     *  @param string method
+     *  @param function onAbort
+     *  @param function onError
+     *  @param function onLoad
+     *  @param function onProgress
+     *  @param function onReadyStateChange
+     *  @param string overideMimeType
+     *  @param string password
+     *  @param boolean synchronous
+     *  @param object upload
+     *  @param string url
+     *  @param string user
+     */
+    xmlhttpRequest: function (binary,data,headers,method,onAbort,onError,onLoad,onProgress,onReadyStateChange,overideMimeType,password,synchronous,upload,url,user) {
+        
+    },
+    /**
+     *  Unsupported
+     */
+    unsafeWindow: function () {
+        
+    },
+    
+    // Other
+    /**
+     *  GM_log(message)
+     *
+     *  @param string message
+     */
+    log: function (message) {
+        console.log(message);
+        return true;
+    },
+    /**
+     *  GM_openInTab(url)
+     *
+     *  @param string url
+     */
+    openInTab: function (url) {
+        var _tab = safari.application.activeBrowserWindow.openTab('foreground');
+        _tab.url = url;
+        return true;
+    },
+    /**
+     *  GMregisterMenuCommand(caption,commandFunc,accessKey)
+     *
+     *  @param string caption
+     *  @param function commandFunc
+     *  @param string accessKey
+     */
+    registerMenuCommand: function () {
+        
     }
 });
 
@@ -311,111 +448,214 @@ var KSGreasemonkeyAPI = Class.create(_Utils, {
 
 
 /**
- *  ============================================================================
- *  ======================== Greasemonkey API Functions ========================
- *  ======================== Supported In Futur Versions =======================
- *  ============================================================================
+ *  KSGreasemonkeyProxyAPI (KitScript Greasemonkey Proxy API Class)
  */
+var KSGreasemonkeyProxyAPI = Class.create(KSGreasemonkeyAPI, {
+    
+    initialize: function ($super) {
+        
+        $super();
+    },
+    
+    // Values
+    /**
+     *  GM_deleteValue(name)
+     *  @param string name
+     */
+    proxyDeleteValue: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.deleteValue(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    /**
+     *  GM_getValue(name, defaultVal)
+     *  @param string name
+     *  @param mixed defaultVal Default result to be returned
+     */
+    proxyGetValue: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.getValue(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    /**
+     *  GM_listValues()
+     */
+    proxyListValues: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.listValues();
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    /**
+     *  GM_setValue(name, value)
+     *  @param string name
+     *  @param string value
+     */
+    proxySetValue: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.setValue(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    
+    // Resources
+    /**
+     *  GM_getResourceText(resource)
+     *  @param string resource Resource name
+     */
+    proxyGetResourceText: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.getResourceText(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    /**
+     *  GM_getResourceURL(resource)
+     *  @param string resource Resource name
+     */
+    proxyGetResourceURL: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.getResourceURL(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    // Common Task Helpers
+    /**
+     *  GM_addStyle(css)
+     *  @param string css String of CSS
+     */
+    proxyAddStyle: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.addStyle(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    /**
+     *  GM_xmlhttpRequest(binary,data,headers,method,onAbort,onError,onLoad,onProgress,onReadyStateChange,overideMimeType,password,synchronous,upload,url,user)
+     *  @param boolean binary
+     *  @param string data
+     *  @param object headers
+     *  @param string method
+     *  @param function onAbort
+     *  @param function onError
+     *  @param function onLoad
+     *  @param function onProgress
+     *  @param function onReadyStateChange
+     *  @param string overideMimeType
+     *  @param string password
+     *  @param boolean synchronous
+     *  @param object upload
+     *  @param string url
+     *  @param string user
+     */
+    proxyXmlhttpRequest: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.xmlhttpRequest(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    /**
+     *  Unsupported
+     */
+    proxyUnsafeWindow: function (event) {
+        //this.dispatchResponse('',);
+    },
+    
+    // Other
+    /**
+     *  GM_log(message)
+     *  @param string message
+     */
+    proxyLog: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.log(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    /**
+     *  GM_openInTab(url)
+     *  @param string url
+     */
+    proxyOpenInTab: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.openInTab(eval(event.message.join(',')));
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    /**
+     *  GMregisterMenuCommand(caption,commandFunc,accessKey)
+     *  @param string caption
+     *  @param function commandFunc
+     *  @param string accessKey
+     */
+    proxyRegisterMenuCommand: function (event) {
+        var _reqId = event.message.shift();
+        var _ret = this.registerMenuCommand(eval(event.message.join(',')))
+        _ret.unshift(_reqId);
+        this.dispatchResponse(event.name,_ret);
+    },
+    
+    dispatchResponse: function (name, value) {
+        
+        event.target.page.dispatchMessage(name, value);
+    }
+});
+
+
+
+
 
 /**
- *  @param string name
+ *  KSGMAPIMF_* (KitScript Greasemonkey API Messaging Function Handlers)
  */
-function GM_deleteValue(name) {
-    
-    
+function KSGMAPIMFH_processAPIRequest(event) {
+    switch (event.name) {
+        case "GM_deleteValue":
+            gmapi.proxyDeleteValue(event);
+            break;
+        case "GM_getValue":
+            gmapi.proxyGetValue(event);
+            break;
+        case "GM_listValues":
+            gmapi.proxyListValues(event);
+            break;
+        case "GM_setValue":
+            gmapi.proxySetValue(event);
+            break;
+        
+        case "GM_getResourceText":
+            gmapi.proxyGetResourceText(event);
+            break;
+        case "GM_getResourceURL":
+            gmapi.proxyGetResourceURL(event);
+            break;
+        
+        case "GM_addStyle":
+            gmapi.proxyAddStyle(event);
+            break;
+        case "GM_log":
+            gmapi.proxyLog(event);
+            break;
+        case "GM_openInTab":
+            gmapi.proxyOpenInTab(event);
+            break;
+        
+        case "GM_registerMenuCommand":
+            gmapi.proxyRegisterMenuCommand(event);
+            break;
+        case "GM_xmlhttpRequest":
+            gmapi.proxyXmlhttpRequest(event);
+            break;
+        
+        //case "unsafeWindow":
+            //gmapi.proxy(event);
+            //break;
+        
+        default:
+            throw new Error("Unknown Greasemonkey API: "+event.name);
+    }
 }
 
-/**
- *  @param string name
- *  @param mixed defaultVal Default result to be returned
- */
-function GM_getValue(name, defaultVal) {
-    
-    
-}
-
-function GM_listValues() {
-    
-    
-}
-
-/**
- *  @param string name
- *  @param string value
- */
-function GM_setValues(name, value) {
-    
-    
-}
-
-/**
- *  @param string resource Resource name
- */
-function GM_getResourceText(resource) {
-    
-    
-}
-
-/**
- *  @param string resource Resource name
- */
-function GM_getResourceURL(resource) {
-    
-    
-}
-
-/**
- *  @param string css String of CSS
- */
-function GM_addStyle(css) {
-    
-    
-}
-
-/**
- *  @param boolean binary
- *  @param string data
- *  @param object headers
- *  @param string method
- *  @param function onAbort
- *  @param function onError
- *  @param function onLoad
- *  @param function onProgress
- *  @param function onReadyStateChange
- *  @param string overideMimeType
- *  @param string password
- *  @param boolean synchronous
- *  @param object upload
- *  @param string url
- *  @param string user
- */
-function GM_xmlhttpRequest(binary,data,headers,method,onAbort,onError,onLoad,onProgress,onReadyStateChange,overideMimeType,password,synchronous,upload,url,user) {
-    
-    
-}
-
-/**
- *  @param string message
- */
-function GM_log(message) {
-    
-    
-}
-
-/**
- *  @param string url
- */
-function GM_openInTab(url) {
-    
-    
-}
-
-/**
- *  @param string caption
- *  @param function commandFunc
- *  @param string accessKey
- */
-function GMregisterMenuCommand(caption,commandFunc,accessKey) {
-    
-    
-}
+safari.application.activeBrowserWindow.addEventListener("message", KSGMAPIMFH_processAPIRequest, false);
