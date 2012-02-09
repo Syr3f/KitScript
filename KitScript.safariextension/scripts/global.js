@@ -22,13 +22,8 @@ window.ks = null, window.db = null;
 // Basic Initial Calls For The Extension
 jQuery(document).ready(function ($) {
     
-    // Let $ Be To Prototype And ks.$ To jQuery 
-    //$.noConflict();
-    
     // ks KitScript Root Object
     ks = new KitScript();
-    
-    //Object.getPrototypeOf(safari).ks = ks;
     
     // db Database Root Object
     db = new KSStorage();
@@ -55,8 +50,6 @@ jQuery(document).ready(function ($) {
     
     // Bind History to StateChange Event
     window.onpopstate = function () {
-        //var State = ks.history.getState(); // Note: We are using History.getState() instead of event.state
-        //ks.history.log(State.data, State.title, State.url);
         ks.request.dispatch();
     }
 });
