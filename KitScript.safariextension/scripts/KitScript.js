@@ -1806,9 +1806,11 @@ var KSRouteNode = {
  */
 var KSRoutes = Class.create(_Utils, {
     
-    initialize: function ($super) {
+    initialize: function ($super, baseURI) {
         
         $super();
+        
+        this._baseURI = baseURI;
         
         this.TYPE_STATIC = 'static';
         this.TYPE_REGEXP = 'regexp';
@@ -1895,7 +1897,7 @@ var KSRoutes = Class.create(_Utils, {
     },
     _stripBaseURI: function (uri) {
         
-        return uri.replace(safari.extension.baseURI+'markups/','');
+        return uri.replace(this._baseURI,'');
     }
 });
 
@@ -2425,7 +2427,7 @@ var KitScript = Class.create(_Utils, {
         Object.getPrototypeOf(this).userScriptHistory = new KSUserScriptHistory();
         Object.getPrototypeOf(this).navigateEvent = new KSNavigateEvent();
         
-        Object.getPrototypeOf(this).routes = new KSRoutes();
+        Object.getPrototypeOf(this).routes = new KSRoutes(safari.extension.baseURI+'markups/');
         
         Object.getPrototypeOf(this).gmmd = new KSGreasemonkeyMetadata();
         
