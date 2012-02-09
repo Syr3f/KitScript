@@ -31,6 +31,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         this._isDbExistant = false;
         
+        this._dbTableResourceFiles = "ResourceFiles";
         this._dbTableRequireFiles = "RequireFiles";
         this._dbTableUserScriptFiles = "UserScriptFiles";
         this._dbTableUserScriptsMetadata = "UserScriptsMetadata";
@@ -78,6 +79,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         if (doDrop === true) {
             
+            sqlArray.push(this, 'DROP TABLE '+this._dbTableResourceFiles+';', new Array(), _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableRequireFiles+';', new Array(), _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', new Array(), _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptsMetadata+';', new Array(), _sC, SFH_errorHandler);
@@ -87,6 +89,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         _sC1 = function () { console.log("Table created."); };
         
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableResourceFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript_id INTEGER NOT NULL, file BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableRequireFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript_id INTEGER NOT NULL, file BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NULL, requires TEST NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0, user_includes TEXT NULL, user_excludes TEXT NULL, run_at TEXT NOT NULL);', new Array(), _sC1, SFH_errorHandler);
@@ -123,6 +126,68 @@ var KSStorage = Class.create(AsyncStorage, {
 
             _this.transact(sqlArray, null, null);
         }
+    },
+    /**
+     *  ============
+     *  Resource File
+     *  ============
+     */
+    insertResourceFile: function (usId, blob, statementCallback, obj) {
+        
+        var _sC = statementCallback || function () { console.log("Resource file inserted."); };
+        
+        var sqlArray = new AsyncSQLStatementsArray();
+        
+        sqlArray.push((obj||this), "INSERT INTO "+this._dbTableResourceFiles+" (userscript_id, file) VALUES (?, ?);", [usId, blob], _sC, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+        
+    },
+    updateResourceFile: function (id, usId, blob, statementCallback, obj) {
+        
+        var _sC = statementCallback || function () { console.log("Resource file updated."); };
+        
+        var sqlArray = new AsyncSQLStatementsArray();
+        
+        sqlArray.push((obj||this), "UPDATE "+this._dbTableResourceFiles+" SET userscript_id = ?, file = ? WHERE id = ?;", [usId, blob, id], _sC, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+    },
+    fetchResourceFile: function (id, statementCallback, obj) {
+        
+        var sqlArray = new AsyncSQLStatementsArray();
+        
+        sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableResourceFiles+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+    },
+    fetchResourceFilesByUserScriptId: function (usId, statementCallback, obj) {
+        
+        var sqlArray = new AsyncSQLStatementsArray();
+        
+        sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableResourceFiles+" WHERE userscript_id = ?;", [usId], statementCallback, SFH_errorHandler);
+        
+        this.transact(sqlArray, null, null);
+    },
+    deleteResourceFile: function (id, statementCallback, obj) {
+        
+        var _sC = statementCallback || function () { console.log("Resource file deleted."); };
+        
+        var sqlArray = new AsyncSQLStatementsArray();
+        
+        sqlArray.push((obj||this), "DELETE FROM "+this._dbTableResourceFiles+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
+        
+        this.transact(sqlArray, null, null);
+    },
+    deleteResourceFilesByUserScriptId: function (usId, statementCallback, obj) {
+        
+        var _sC = statementCallback || function () { console.log("Resource file deleted."); };
+        
+        var sqlArray = new AsyncSQLStatementsArray();
+        
+        sqlArray.push((obj||this), "DELETE FROM "+this._dbTableResourceFiles+" WHERE userscript_id = ?;", [usId], _sC, SFH_killTransaction);
+        
+        this.transact(sqlArray, null, null);
     },
     /**
      *  ============
