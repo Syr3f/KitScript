@@ -88,11 +88,7 @@
     <script type="text/javascript">
     
     jQuery(document).ready(function () {
-      //* ////////////////////////////////////////////////////////////////////////
-      //* Local Dispatching
-      //* ////////////////////////////////////////////////////////////////////////
-      ks.request.tokenizeURI();
-      while (ks.request.isReady()===false) {;}
+      
       ks.request.dispatch();
     });
     

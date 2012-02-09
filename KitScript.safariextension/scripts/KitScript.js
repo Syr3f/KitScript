@@ -1988,8 +1988,6 @@ var KSRequest = Class.create(_Utils, {
             this._params.push(_param);
             
             _ba=_na+1, _ne=_s.indexOf(this._e,_ba), _na=_s.indexOf(this._a,_ne);
-            
-            //if (_ba>=_s.length) break;
         }
     },
     isReady: function () {
@@ -2000,7 +1998,11 @@ var KSRequest = Class.create(_Utils, {
     },
     dispatch: function () {
         
-        if (this.isReady()) {
+        this.tokenizeURI();
+        
+        while (this.isReady()===false) {;}
+        
+        if (this.isReady()===true) {
             
             if (ks.routes.count()>0) {
                 
@@ -2009,10 +2011,11 @@ var KSRequest = Class.create(_Utils, {
                 if (typeof _rte.callback === 'function')
                     _rte.callback(this);
                 else
-                    this._l('Warning! [KSRequest.dispatch] _rte.callback is not a function: '+(typeof _rte.callback)+'.');
+                    this._a('Warning! [KSRequest.dispatch] _rte.callback is not a function: '+(typeof _rte.callback)+'.');
             } else
                 throw new Error('There\'s no registered routes.');
         }
+        this.expirate();
     },
     
     _hasLoc: function (search,startPos) {
@@ -2418,7 +2421,7 @@ var KitScript = Class.create(_Utils, {
         
         this._isEnabled = true;
         
-        
+        Object.getPrototypeOf(this).history = window.History;
         Object.getPrototypeOf(this).userScriptHistory = new KSUserScriptHistory();
         Object.getPrototypeOf(this).navigateEvent = new KSNavigateEvent();
         
@@ -2695,6 +2698,6 @@ function KSSEFH_ProxyMessage(event) {
 safari.application.addEventListener("message", KSSEFH_ProxyMessage, false);
 
 // For User Script Load History
-safari.application.addEventListener('beforeNavigate',KSEXF_registerNavigation, false)
-safari.application.addEventListener('navigate',KSEXF_registerNavigation, false);
+//safari.application.addEventListener('beforeNavigate',KSEXF_registerNavigation, false)
+//safari.application.addEventListener('navigate',KSEXF_registerNavigation, false);
 

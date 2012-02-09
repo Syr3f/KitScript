@@ -131,8 +131,11 @@ jQuery(document).ready(function ($) {
                 ks.setDisable();
                 break;
             default:
-                if (_href !== '#')
-                    ks.mainContainer.contentManager.transitContent(_href);
+                //if (_href !== '#') {
+                    //ks.request.dispatch();
+                    //ks.mainContainer.contentManager.transitContent(_href);
+                    //document.location.href='MainContainer.html'+_href
+                //}
         }
     });
     

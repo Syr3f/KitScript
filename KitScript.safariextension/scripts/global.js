@@ -17,7 +17,7 @@
 
 
 // Global KitScript Root Variables
-ks = null, db = null;
+window.ks = null, window.db = null;
 
 // Basic Initial Calls For The Extension
 jQuery(document).ready(function ($) {
@@ -52,5 +52,12 @@ jQuery(document).ready(function ($) {
         
     // Declare On UI If Enabled Or Disabled
     ks.declareEnabled();
+    
+    // Bind History to StateChange Event
+    window.onpopstate = function () {
+        //var State = ks.history.getState(); // Note: We are using History.getState() instead of event.state
+        //ks.history.log(State.data, State.title, State.url);
+        ks.request.dispatch();
+    }
 });
 
