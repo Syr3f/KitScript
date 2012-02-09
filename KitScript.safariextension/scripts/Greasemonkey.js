@@ -119,8 +119,8 @@ var KSGreasemonkeyMetadata = Class.create(_Utils, {
             } else if (/^[\/]{2}\s+\@resource\s+(.*)\s+(.*)$/gi.test(_line) === true) {
                 
                 var _matches = /^[\/]{2}\s+\@resource\s+(.*)\s+(.*)$/gi.exec(_line);
-                var _name = matches[1].trim();
-                var _res = matches[2].trim()
+                var _name = _matches[1].trim();
+                var _res = _matches[2].trim()
                 this._md_resources.push({"name":_name,"resource":_res});
             } else if (/^[\/]{2}\s+\@unwrap$/gi.test(_line) === true) {
                 
