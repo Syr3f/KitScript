@@ -705,7 +705,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             
             var _rec = this._getUserScriptHeaderValues();
             
-            this._storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_rec[6],_script);
+            this._storeUserScript(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_rec[6],_rec[7],_script);
         } catch (e) {
             
             this.showFailureAlert(e.message);
@@ -719,6 +719,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         var _incs = ks.gmmd.getIncludes();
         var _excs = ks.gmmd.getExcludes();
         var _reqs = ks.gmmd.getRequires();
+        var _rsrcs = ks.gmmd.getResources();
         var _rnat = ks.gmmd.getRunAt();
         
         if (_name.length == 0 && _space.length == 0) {
@@ -726,9 +727,9 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             throw new KSGMException("KitScript needs a @name and @namespace in the metadata block.");
         }
         
-        return [_name,_space,_desc,_incs.join(','),_excs.join(','),_reqs.join(','),_rnat];
+        return [_name,_space,_desc,_incs.join(','),_excs.join(','),_reqs.join(','),_rsrcs,_rnat];
     },
-    _storeUserScript: function (name, space, desc, includes, excludes, requires, runAt, code) {
+    _storeUserScript: function (name, space, desc, includes, excludes, requires, resources, runAt, code) {
         
         this._fieldName = 'LastInsertId';
         this._name = name;
@@ -737,9 +738,8 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         this._includes = includes;
         this._excludes = excludes;
         this._requires = requires;
+        this._resources = resources;
         this._runAt = runAt;
-        
-        
         
         try {
             db.insertUserScriptFile(KSSHF_blobize(code),this._dbq_onInsertUserScriptFile,this);
@@ -792,8 +792,29 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
                 url: _requires[i],
                 context: _this,
                 success: function (responseText, textStatus, XMLHttpRequest) {
-                    
-                    db.insertRequireFile(_this._usId, KSSHF_blobize(responseText), _this._dbq_onInsertRequireFile, _this);
+                    db.insertRequireFile(this._usId, KSSHF_blobize(responseText), this._dbq_onInsertRequireFile, this);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    this.showFailureAlert(errorThrown);
+                }
+            });
+        }
+        
+        var _resources = _this._resources;
+        
+        for (var j=0; j<_resources.length; j++) {
+            
+            var _res = _resources[j];
+            
+            // Absolute URLs Only
+            _this.$.ajax({
+                url: _res.resource,
+                context: _this,
+                success: function (responseText, textStatus, XMLHttpRequest) {
+                    db.insertResourceFile(this._usId, KSSHF_blobize(responseText), this._dbq_onInsertResourceFile, this);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    this.showFailureAlert(errorThrown);
                 }
             });
         }
@@ -813,6 +834,17 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         delete _this._excludes;
         delete _this._requires;
         delete _this._runAt;
+        
+        ks.loader.reload();
+    },
+    _dbq_onInsertResourceFile: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        delete transact.objInstance;
+        
+        _this._l("Resource file stored.");
+        
+        delete _this._resources;
         
         ks.loader.reload();
     },
@@ -852,7 +884,6 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     }
 });
 
-KSNewUserScriptForm.persistRequireFile
 
 
 
@@ -1281,7 +1312,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
                 _this.showFailureAlert(e.message);
             }
             
-            _this.updateUserScriptMetadata(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_isEnabled,_rec[6]);
+            _this.updateUserScriptMetadata(_rec[0],_rec[1],_rec[2],_rec[3],_rec[4],_rec[5],_rec[6],_isEnabled,_rec[7]);
         } else {
             _this.showFailureAlert("Couldn't update the user script.");
         }
@@ -1294,6 +1325,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         var _incs = ks.gmmd.getIncludes();
         var _excs = ks.gmmd.getExcludes();
         var _reqs = ks.gmmd.getRequires();
+        var _rsrcs = ks.gmmd.getResources();
         var _rnat = ks.gmmd.getRunAt();
         
         if (_name.length == 0 && _space.length == 0) {
@@ -1301,14 +1333,15 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
             throw new KSGMException("KitScript needs a @name and @namespace in the metadata block.");
         }
         
-        return [_name,_space,_desc,_incs.join(','),_excs.join(','),_reqs.join(','),_rnat];
+        return [_name,_space,_desc,_incs.join(','),_excs.join(','),_reqs.join(','),_rsrcs,_rnat];
     },
-    updateUserScriptMetadata: function (name, space, desc, includes, excludes, requires, disabled, runAt) {
+    updateUserScriptMetadata: function (name, space, desc, includes, excludes, requires, resources, disabled, runAt) {
         
         var _metaId = this.getLoadedMetaId();
         var _usId = this.getLoadedScriptId();
         
         this.reacquireRequireFiles(requires);
+        this.reacquireResourceFiles(resources);
         
         var _uexcls = this._getUserExclusions();
         var _uincls = this._getUserInclusions();
@@ -1361,7 +1394,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         _this._l("Require files deleted.");
         
         var _requires = _this._requires.split(',');
-        var _usId = _this.getLoadedScriptId();
+        _this._usId = _this.getLoadedScriptId();
         
         for (var i=0; i<_requires.length; i++) {
             
@@ -1370,8 +1403,7 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
                 url: _requires[i],
                 context: _this,
                 success: function (responseText, textStatus, XMLHttpRequest) {
-                    
-                    db.insertRequireFile(_usId, KSSHF_blobize(responseText), _this._dbq_onInsertRequireFile, _this);
+                    db.insertRequireFile(this.usId, KSSHF_blobize(responseText), this._dbq_onInsertRequireFile, this);
                 }
             });
         }
@@ -1384,6 +1416,49 @@ var KSUserScriptSettingsForm = Class.create(KSContentManager, {
         delete transact.objInstance;
         
         _this._l("Require file inserted.");
+        
+        ks.loader.reload();
+    },
+    reacquireResourceFiles: function (resources) {
+        
+        this._resources = resources;
+        
+        var _usId = this.getLoadedScriptId();
+        
+        db.deleteResourceFilesByUserScriptId(_usId, this._dbq_onDeleteResourceFiles, this);
+    },
+    _dbq_onDeleteResourceFiles: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        delete transact.objInstance;
+        
+        _this._l("Resource files deleted.");
+        
+        _this._usId = _this.getLoadedScriptId();
+        
+        for (var i=0; i<_resources.length; i++) {
+            
+            var _res = _resources[i];
+            
+            // Absolute URLs Only
+            _this.$.ajax({
+                url: _res.resource,
+                context: _this,
+                success: function (responseText, textStatus, XMLHttpRequest) {
+                    
+                    db.insertResourceFile(this.usId, KSSHF_blobize(responseText), this._dbq_onInsertRequireFile, this);
+                }
+            });
+        }
+        
+        delete _this._resources;
+    },
+    _dbq_onInsertResourceFile: function (transact, resultSet) {
+        
+        var _this = transact.objInstance;
+        delete transact.objInstance;
+        
+        _this._l("Resource file inserted.");
         
         ks.loader.reload();
     },
@@ -1720,7 +1795,7 @@ var KSLoader = Class.create(_Utils, {
                     var _ra = _ut.us_run_at;
                     
                     // Inject User Script Node ~ Valuable For Proxy Identification
-                    var _injurl = safari.extension.addContentScript('var KSInstance = '+JSON.strignify(_ut), _wl, _bl, false);
+                    var _injurl = safari.extension.addContentScript('var KSInstance = '+JSON.stringify(_ut), _wl, _bl, false);
                     
                     // Inject Require Files
                     for (var rf=0; rf<_ut.us_requires.length; rf++) {
@@ -2691,18 +2766,11 @@ function KSSEFH_NavigateHandler(event) {
     ks.navigateEvent.triggerSingletonCallback('installUserScript',_command);
 }
 
-safari.application.addEventListener("validate", KSSEFH_ValidateHandler, false);
-safari.application.addEventListener("menu", KSSEFH_MenuHandler, false);
-safari.application.addEventListener("command", KSSEFH_CommandHandler, false);
-safari.application.addEventListener("beforeNavigate", KSSEFH_BeforeNavigateHandler, false);
-safari.application.addEventListener("navigate", KSSEFH_NavigateHandler, false);
-
 function KSSEFH_ProxyMessage(event) {
     
     
 }
 
-safari.application.addEventListener("message", KSSEFH_ProxyMessage, false);
 
 // For User Script Load History
 //safari.application.addEventListener('beforeNavigate',KSEXF_registerNavigation, false)
