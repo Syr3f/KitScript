@@ -113,7 +113,14 @@
 	<key>Content</key>
 	<dict>
 		<key>Scripts</key>
-		<dict/>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>preinjected/Global-Injected.js</string>
+				<string>preinjected/GreasemonkeyAPI-Injected.js</string>
+				<string>preinjected/KitScript-Injected.js</string>
+			</array>
+		</dict>
 	</dict>
 	<key>Description</key>
 	<string>A User Script Manager For Safari.</string>
