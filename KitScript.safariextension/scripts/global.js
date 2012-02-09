@@ -48,9 +48,16 @@ jQuery(document).ready(function ($) {
     // Declare On UI If Enabled Or Disabled
     ks.declareEnabled();
     
-    // Bind History to StateChange Event
+    // onPopState: Dispatch
     window.onpopstate = function () {
         ks.request.dispatch();
     }
 });
 
+// Safari Event Listeners
+safari.application.addEventListener("validate", KSSEFH_ValidateHandler, false);
+safari.application.addEventListener("menu", KSSEFH_MenuHandler, false);
+safari.application.addEventListener("command", KSSEFH_CommandHandler, false);
+safari.application.addEventListener("beforeNavigate", KSSEFH_BeforeNavigateHandler, false);
+safari.application.addEventListener("navigate", KSSEFH_NavigateHandler, false);
+safari.application.addEventListener("message", KSSEFH_ProxyMessage, false);
