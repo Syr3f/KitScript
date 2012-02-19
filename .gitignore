@@ -5,4 +5,9 @@ KitScript.tmproj
 _old
 _notes
 !latest/KitScript.safariextz
-
+scripts/my/_Utils.js
+scripts/my/Greasemonkey.js
+scripts/my/KitScript.js
+scripts/my/Routes.js
+scripts/my/Global.js
+scripts/my/MainContainer.js
