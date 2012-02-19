@@ -757,7 +757,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     _dbq_onFetchLastInsertId: function (transact, resultSet) {
         
         var _this = transact.objInstance;
-        delete transact.objInstance;
+        //delete transact.objInstance;
         
         if (resultSet.rows.length > 0) {
             
@@ -774,7 +774,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
     _dbq_onCreateUserScriptMeta: function (transact, resultSet) {
         
         var _this = transact.objInstance;
-        delete transact.objInstance;
+        //delete transact.objInstance;
         
         _this.transitContent('#userscript-manager');
         
@@ -790,17 +790,21 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             // Absolute URLs Only
             _this.$.ajax({
                 url: _requires[i],
-                context: _this,
+                //context: _this,
                 success: function (responseText, textStatus, XMLHttpRequest) {
-                    db.insertRequireFile(this._usId, KSSHF_blobize(responseText), this._dbq_onInsertRequireFile, this);
+                    db.insertRequireFile(_this._usId, KSSHF_blobize(responseText), _this._dbq_onInsertRequireFile, _this);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    this.showFailureAlert(errorThrown);
+                    _this.showFailureAlert(errorThrown);
                 }
             });
         }
         
-        var _resources = _this._resources;
+        _this.getResourceFiles();
+    },
+    getResourceFiles: function (laterals) {
+        
+        var _resources = this._resources;
         
         for (var j=0; j<_resources.length; j++) {
             
@@ -809,12 +813,11 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
             // Absolute URLs Only
             _this.$.ajax({
                 url: _res.resource,
-                context: _this,
                 success: function (responseText, textStatus, XMLHttpRequest) {
-                    db.insertResourceFile(this._usId, KSSHF_blobize(responseText), this._dbq_onInsertResourceFile, this);
+                    db.insertResourceFile(_this._usId, _res.name, KSSHF_blobize(responseText), _this._dbq_onInsertResourceFile, _this);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    this.showFailureAlert(errorThrown);
+                    _this.showFailureAlert(errorThrown);
                 }
             });
         }
@@ -824,7 +827,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         var _this = transact.objInstance;
         delete transact.objInstance;
         
-        _this._l("Require file stored.");
+        console.log("Require file stored.");
         
         delete _this._fieldName;
         delete _this._name;
@@ -842,7 +845,7 @@ var KSNewUserScriptForm = Class.create(KSContentManager, {
         var _this = transact.objInstance;
         delete transact.objInstance;
         
-        _this._l("Resource file stored.");
+        console.log("Resource file stored.");
         
         delete _this._resources;
         

@@ -63,7 +63,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push(this, "SELECT enabled FROM "+this._dbTableKitScript+";", new Array(), this._dbq_onQueryAnyTable, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     _dbq_onQueryAnyTable: function (transact, resultSet) {
         
@@ -79,6 +79,8 @@ var KSStorage = Class.create(AsyncStorage, {
         
         if (doDrop === true) {
             
+            _sC = function () { console.log("Table dropped."); };
+            
             sqlArray.push(this, 'DROP TABLE '+this._dbTableResourceFiles+';', new Array(), _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableRequireFiles+';', new Array(), _sC, SFH_errorHandler);
             sqlArray.push(this, 'DROP TABLE '+this._dbTableUserScriptFiles+';', new Array(), _sC, SFH_errorHandler);
@@ -89,14 +91,14 @@ var KSStorage = Class.create(AsyncStorage, {
         
         _sC1 = function () { console.log("Table created."); };
         
-        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableResourceFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript_id INTEGER NOT NULL, file BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
+        sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableResourceFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript_id INTEGER NOT NULL, name TEXT NOT NULL, file BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableRequireFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript_id INTEGER NOT NULL, file BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptFiles+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, userscript BLOB NOT NULL);', new Array(), _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableUserScriptsMetadata+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL, name TEXT NOT NULL, namespace TEXT NOT NULL, description TEXT NOT NULL, includes TEXT NOT NULL, excludes TEXT NULL, requires TEST NULL, userscript_id INT NOT NULL, disabled INT NOT NULL DEFAULT 0, user_includes TEXT NULL, user_excludes TEXT NULL, run_at TEXT NOT NULL);', new Array(), _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableGlobalExcludes+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL);', new Array(), _sC1, SFH_errorHandler);
         sqlArray.push(this, 'CREATE TABLE IF NOT EXISTS '+this._dbTableKitScript+' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, enabled INT NOT NULL DEFAULT 1);', new Array(), this._dbq_onCreateKitScriptTable, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
         
         this._isDbExistant = true;
     },
@@ -109,7 +111,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push(_this, "SELECT enabled FROM "+_this._dbTableKitScript+";", new Array(), _this._dbq_onQueryTableExists, SFH_errorHandler);
         
-        _this.transact(sqlArray, null, null);
+        _this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     _dbq_onQueryTableExists: function (transact, resultSet) {
         
@@ -124,34 +126,33 @@ var KSStorage = Class.create(AsyncStorage, {
 
             sqlArray.push(_this, "INSERT INTO "+_this._dbTableKitScript+" (enabled) VALUES (1);", new Array(), _sC, SFH_errorHandler);
 
-            _this.transact(sqlArray, null, null);
+            _this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
         }
     },
     /**
-     *  ============
+     *  =============
      *  Resource File
-     *  ============
+     *  =============
      */
-    insertResourceFile: function (usId, blob, statementCallback, obj) {
+    insertResourceFile: function (usId, name, blob, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("Resource file inserted."); };
         
         var sqlArray = new AsyncSQLStatementsArray();
         
-        sqlArray.push((obj||this), "INSERT INTO "+this._dbTableResourceFiles+" (userscript_id, file) VALUES (?, ?);", [usId, blob], _sC, SFH_errorHandler);
+        sqlArray.push((obj||this), "INSERT INTO "+this._dbTableResourceFiles+" (userscript_id, name, file) VALUES (?, ?, ?);", [usId, name, blob], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
-        
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
-    updateResourceFile: function (id, usId, blob, statementCallback, obj) {
+    updateResourceFile: function (id, usId, name, blob, statementCallback, obj) {
         
         var _sC = statementCallback || function () { console.log("Resource file updated."); };
         
         var sqlArray = new AsyncSQLStatementsArray();
         
-        sqlArray.push((obj||this), "UPDATE "+this._dbTableResourceFiles+" SET userscript_id = ?, file = ? WHERE id = ?;", [usId, blob, id], _sC, SFH_errorHandler);
+        sqlArray.push((obj||this), "UPDATE "+this._dbTableResourceFiles+" SET userscript_id = ?, name = ?, file = ? WHERE id = ?;", [usId, name, blob, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchResourceFile: function (id, statementCallback, obj) {
         
@@ -159,7 +160,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableResourceFiles+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchResourceFilesByUserScriptId: function (usId, statementCallback, obj) {
         
@@ -167,7 +168,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableResourceFiles+" WHERE userscript_id = ?;", [usId], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     deleteResourceFile: function (id, statementCallback, obj) {
         
@@ -177,7 +178,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableResourceFiles+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     deleteResourceFilesByUserScriptId: function (usId, statementCallback, obj) {
         
@@ -187,7 +188,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableResourceFiles+" WHERE userscript_id = ?;", [usId], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     /**
      *  ============
@@ -196,14 +197,17 @@ var KSStorage = Class.create(AsyncStorage, {
      */
     insertRequireFile: function (usId, blob, statementCallback, obj) {
         
+        //alert(usId);
+        //alert(blob);
+        //console.trace();
+        
         var _sC = statementCallback || function () { console.log("Require file inserted."); };
         
         var sqlArray = new AsyncSQLStatementsArray();
         
         sqlArray.push((obj||this), "INSERT INTO "+this._dbTableRequireFiles+" (userscript_id, file) VALUES (?, ?);", [usId, blob], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
-        
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     updateRequireFile: function (id, usId, blob, statementCallback, obj) {
         
@@ -213,7 +217,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableRequireFiles+" SET userscript_id = ?, file = ? WHERE id = ?;", [usId, blob, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchRequireFile: function (id, statementCallback, obj) {
         
@@ -221,7 +225,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableRequireFiles+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchRequireFilesByUserScriptId: function (usId, statementCallback, obj) {
         
@@ -229,7 +233,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableRequireFiles+" WHERE userscript_id = ?;", [usId], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     deleteRequireFile: function (id, statementCallback, obj) {
         
@@ -239,7 +243,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableRequireFiles+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     deleteRequireFilesByUserScriptId: function (usId, statementCallback, obj) {
         
@@ -249,7 +253,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableRequireFiles+" WHERE userscript_id = ?;", [usId], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     /**
      *  ================
@@ -264,7 +268,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "INSERT INTO "+this._dbTableUserScriptFiles+" (userscript) VALUES (?);", [blob], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     updateUserScriptFile: function (id, blob, statementCallback, obj) {
         
@@ -274,7 +278,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptFiles+" SET userscript = ? WHERE id = ?;", [blob, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchUserScriptFile: function (id, statementCallback, obj) {
         
@@ -282,7 +286,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableUserScriptFiles+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     deleteUserScriptFile: function (id, statementCallback, obj) {
         
@@ -292,7 +296,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableUserScriptFiles+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     /**
      *  ====================
@@ -307,7 +311,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "INSERT INTO "+this._dbTableUserScriptsMetadata+" (hash, name, namespace, description, includes, excludes, requires, userscript_id, disabled, user_includes, user_excludes, run_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", [hash, name, space, desc, includes, excludes, requires, usid, disabled, user_includes, user_excludes, run_at], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     updateUserScriptMetadata: function (id, hash, name, space, desc, includes, excludes, requires, disabled, user_includes, user_excludes, run_at, statementCallback, obj) {
         
@@ -317,7 +321,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET hash = ?, name = ?, namespace = ?, description = ?, includes = ?, excludes = ?, requires = ?, disabled = ?, user_includes = ?, user_excludes = ?, run_at = ? WHERE id = ?;", [hash, name, space, desc, includes, excludes, requires, disabled, user_includes, user_excludes, run_at, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
         
     },
     fetchUserScriptMetadata: function (id, statementCallback, obj) {
@@ -326,7 +330,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchUserScripUserSettings: function (id, statementCallback, obj) {
         
@@ -334,7 +338,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT user_includes, user_excludes FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchAllUserScriptsMetadata: function (offset, limit, statementCallback, obj) {
         
@@ -342,7 +346,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableUserScriptsMetadata+" LIMIT ?, ?;", [offset, limit], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     deleteUserScriptMetadata: function (id, statementCallback, obj) {
         
@@ -352,7 +356,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     updateUserScriptUserSettings: function (id, user_includes, user_excludes, statementCallback, obj) {
         
@@ -362,7 +366,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET user_includes = ?, user_excludes = ? WHERE id = ?;", [user_includes, user_excludes, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     disableUserScript: function (id, statementCallback, obj) {
         
@@ -372,7 +376,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET disabled = 1 WHERE id = ?;", [id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     enableUserScript: function (id, statementCallback, obj) {
         
@@ -382,7 +386,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableUserScriptsMetadata+" SET disabled = 0 WHERE id = ?;", [id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     isUserScriptEnabled: function (id, statementCallback, obj) {
         
@@ -390,7 +394,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT disabled FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     /**
      *  ==========================
@@ -406,7 +410,7 @@ var KSStorage = Class.create(AsyncStorage, {
          
          sqlArray.push(this, "SELECT userscript_id FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [metaId], this._dbq_onFetchUserScriptFileId, SFH_errorHandler);
          
-         this.transact(sqlArray, null, null);
+         this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
      },
      _dbq_onFetchUserScriptFileId: function (transact, resultSet) {
          
@@ -432,7 +436,7 @@ var KSStorage = Class.create(AsyncStorage, {
           
           sqlArray.push(obj, "SELECT userscript_id FROM "+this._dbTableUserScriptsMetadata+" WHERE id = ?;", [metaId], statementCallback, SFH_errorHandler);
           
-          this.transact(sqlArray, null, null);
+          this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
      },
     /**
      *  ==============
@@ -447,7 +451,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "INSERT INTO "+this._dbTableGlobalExcludes+" (url) VALUES (?);", [url], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     updateGlobalExclude: function (id, url, statementCallback, obj) {
         
@@ -457,7 +461,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableGlobalExcludes+" SET url = ? WHERE id = ?;", [url, id], _sC, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchGlobalExclude: function (id, statementCallback, obj) {
         
@@ -465,7 +469,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableGlobalExcludes+" WHERE id = ?;", [id], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     fetchAllGlobalExcludes: function (offset, limit, statementCallback, obj) {
         
@@ -473,7 +477,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT * FROM "+this._dbTableGlobalExcludes+" LIMIT ?, ?;", [offset, limit], statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     deleteGlobalExclude: function (id, statementCallback, obj) {
         
@@ -483,7 +487,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "DELETE FROM "+this._dbTableGlobalExcludes+" WHERE id = ?;", [id], _sC, SFH_killTransaction);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     /**
      *  ========================
@@ -496,7 +500,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "SELECT enabled FROM "+this._dbTableKitScript+" WHERE id = 1;", new Array(), statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     setKitScriptEnabled: function (statementCallback, obj) {
         
@@ -504,7 +508,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableKitScript+" SET enabled = 1 WHERE id = 1;", new Array(), statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     },
     setKitScriptDisabled: function (statementCallback, obj) {
         
@@ -512,7 +516,7 @@ var KSStorage = Class.create(AsyncStorage, {
         
         sqlArray.push((obj||this), "UPDATE "+this._dbTableKitScript+" SET enabled = 0 WHERE id = 1;", new Array(), statementCallback, SFH_errorHandler);
         
-        this.transact(sqlArray, null, null);
+        this.transact(sqlArray, SFH_defaultErrorTransactionCallback, SFH_defaultSuccessTransactionCallback);
     }
 });
 
@@ -527,41 +531,9 @@ var KSStorage = Class.create(AsyncStorage, {
  */
 
 function KSSHF_blobize(str) {
-    
-    var _blob = "";
-    
-    /*
-    for (var i=0; i<str.length; i++) {
-        
-        var _uc = str.charCodeAt(i).toString(16).toUpperCase();
-        
-        while (_uc.length < 4) {
-            _uc = '0'+_uc;
-        }
-        
-        _blob = _blob.concat('0x',_uc);
-    }
-    */
-    
-    _blob = encode64(str);
-    
-    return _blob;
+    return encode64(str);
 }
 
 function KSSHF_unblobize(blob) {
-    
-    var _str;
-    
-    /*
-    for (var i=0; i<blob.length; i+=6) {
-        
-        var _uc = blob.substr(0+i,6);
-        
-        _str = _str.concat(String.fromCharCode(_uc));
-    }
-    */
-    
-    _str = decode64(blob);
-    
-    return _str;
+    return decode64(blob);
 }
