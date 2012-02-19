@@ -3,9 +3,12 @@ fs = require 'fs'
 {print} = require 'util'
 {spawn} = require 'child_process'
 
-build = (callback) ->
+_fpsrc = 'src/scripts/my'
+_fpdest = 'KitScript.safariextension/scripts/my'
+
+task 'build', 'Build '+_fpdest+' from '+_fpsrc, (callback) ->
   
-  coffee = spawn 'coffee', ['-c', '-o', 'scripts/my', 'src/scripts/my']
+  coffee = spawn 'coffee', ['-c', '-o', _fpdest, _fpsrc]
   
   coffee.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
@@ -15,10 +18,8 @@ build = (callback) ->
 
   callback?() if code is 0
 
-task 'build', 'Build scripts/my/ from src/scripts/my', -> build()
-
-task 'watch', 'Watch src/scripts/my/ for changes', -> 
-  coffee = spawn 'coffee', ['-w', '-c', '-o', 'scripts/my', 'src/scripts/my']
+task 'watch', 'Watch '+_fpsrc+' for changes', -> 
+  coffee = spawn 'coffee', ['-w', '-c', '-o', _fpdest, _fpsrc]
 
   coffee.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
