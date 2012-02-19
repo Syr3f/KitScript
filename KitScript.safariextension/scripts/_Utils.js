@@ -52,7 +52,7 @@ var _Utils = Class.create({
             case 2:
                 alert(msg);
             case 1:
-                this.console.log(msg);
+                console.log(msg);
                 break;
             case 0:
             default:
