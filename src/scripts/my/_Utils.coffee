@@ -12,7 +12,7 @@
 
 
 
-if not String.prototype.trim then
+if not String.prototype.trim
   String.prototype.trim = ->
     return this.replace /^\s+|\s+$/g,''
 
@@ -22,7 +22,7 @@ if not String.prototype.trim then
 
 class _Utils
 
-  constructor: =>
+  constructor: ->
         
     @$ = jQuery
     @md = window.markdown
