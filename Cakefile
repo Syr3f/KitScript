@@ -15,15 +15,14 @@ build = (callback) ->
 
   callback?() if code is 0
 
-watch = ->
+task 'build', 'Build scripts/my/ from src/scripts/my', -> build()
+
+task 'watch', 'Watch src/scripts/my/ for changes', -> 
   coffee = spawn 'coffee', ['-w', '-c', '-o', 'scripts/my', 'src/scripts/my']
-  
+
   coffee.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
-  
+
   coffee.stdout.on 'data', (data) ->
     print data.toString()
 
-task 'build', 'Build scripts/my/ from src/scripts/my', -> build()
-
-task 'watch', 'Watch src/scripts/my/ for changes', -> watch()
