@@ -215,13 +215,12 @@ var AsyncStorage = Class.create({
     },
     transact: function (asyncSqlStmntsArray, onTransactionErrorCallback, onTransactionSuccessCallback) {
         
-        var _feH = onTransactionErrorCallback || this._dbq_onTransactionError;
-        var _fsH = onTransactionSuccessCallback || this._dbq_onTransactionSuccess;
+        var _feH = onTransactionErrorCallback || SFH_defaultErrorTransactionCallback;
+        var _fsH = onTransactionSuccessCallback || SFH_defaultSuccessTransactionCallback;
         
         var _sqls = asyncSqlStmntsArray.getArray();
         
         this._DB.transaction(function (transaction) {
-            //"use strict";
             
             eval("Object.getPrototypeOf(transaction).objInstance = _sqls[0][0];");
             
@@ -234,14 +233,6 @@ var AsyncStorage = Class.create({
             
             eval(_js);
         }, _feH, _fsH);
-    },
-    _dbq_onTransactionError: function () {
-        
-        throw new StorageException("Transaction error.");
-    },
-    _dbq_onTransactionSuccess: function () {
-        
-        console.log("Transaction successful.");
     },
     getLastInsertRowId: function (columnAliasName, statementCallback, obj) {
         
@@ -372,6 +363,14 @@ var SyncStorage = Class.create({
  *  SFH_* (Storage Function Handlers)
  *  =============================================
  */
+
+function SFH_defaultSuccessTransactionCallback(transaction) {
+    console.log("Successful transaction.")
+}
+
+function SFH_defaultErrorTransactionCallback(error) {
+    console.log("Error on transaction.")
+}
 
 function SFH_errorHandler(transaction, error) {
     
