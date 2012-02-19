@@ -23,7 +23,7 @@ class KSGMException
 
 
 
-class KSGreasemonkeyMetadata extends _Utils
+class KSGreasemonkeyMetadata extends C_Utils
   
   constructor: ->
     super()

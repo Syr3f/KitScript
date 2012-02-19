@@ -12,7 +12,3 @@
 
 
 
-## Run on load
-jQuery(document).ready ($) =>
-  
-
