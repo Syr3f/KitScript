@@ -12,22 +12,53 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
-class window.M_KitScriptPreferencesModel extends Backbone.Model
+class window.V_PanelContainer extends Backbone.View
   
+  initialize: ->
+    @id = "panelcontainer"
+    @el = "#panelcontainer"
+    @tagname = "div"
+    @classname = "container"
+    
+    @topOffset = 200
+    @bottomOffset = 50
+    @prevPanelId = null
+    @currPanelId = KSApp.initPanelId
+    @prevNavItemId = null
+    @currNavItemId = NavBarContainer.menuItemBaseId+KSApp.initPanelId
+  
+  render: =>
+    $('#'+@prevPanelId).hide()
+    $('#'+@currPanelId).show()
+    $('#'+@prevNavItemId).removeClass 'active'
+    $('#'+@currNavItemId).addClass 'active'
+    @setTabTitle()
+    @
+  
+  setTabTitle: =>
+    document.title = KSApp.getLocaleDictKey('app','name')+' • '+KSApp.getLocaleDictKey(@currPanelId,'title')
+  
+  transitTo: (toPanelId) =>
+    @prevPanelId = @currPanelId
+    @currPanelId = toPanelId
+    @prevNavItemId = @currNavItemId
+    @currNavItemId = NavBarContainer.menuItemBaseId+toPanelId
+    @render()
+  
+  getAvailContentHeight: =>
+    _offset = $(@el).offset()
+    KSApp.getWindowHeight()-_offset.top-@topOffset-@bottomOffset
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+
+class window.M_KitScriptPreferencesModel extends Backbone.Model
+
   localStorage: "KitScript"
   
   initialize: ->
     
-
-class window.V_KitScriptPreferencesPanel extends Backbone.View
-  
-  initialize: ->
-    
-  
-  render: =>
-    
-    @
-
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
@@ -35,7 +66,10 @@ class window.V_KitScriptPreferencesPanel extends Backbone.View
 class window.V_GlobalSettingsPanel extends Backbone.View
   
   initialize: ->
-    
+    @id = "globalsettings"
+    @el = "#globalsettings"
+    @tagname = "section"
+    @classname = "content"
   
   render: =>
     @setContentHeight()
@@ -50,8 +84,11 @@ class window.V_GlobalSettingsPanel extends Backbone.View
 
 class window.V_UserScriptManagerPanel extends Backbone.View
   
-  initialize: ->
-    
+  initialize: =>
+    @id = "userscriptmanager"
+    @el = "#userscriptmanager"
+    @tagname = "section"
+    @classname = "content"
   
   render: =>
     @setContentHeight()
@@ -67,7 +104,10 @@ class window.V_UserScriptManagerPanel extends Backbone.View
 class window.V_UserScriptSettingsPanel extends Backbone.View
   
   initialize: ->
-    
+    @id = "userscriptsettings"
+    @el = "#userscriptsettings"
+    @tagname = "section"
+    @classname = "content"
   
   render: =>
     @setContentHeight()
@@ -83,7 +123,31 @@ class window.V_UserScriptSettingsPanel extends Backbone.View
 class window.V_NewUserScriptPanel extends Backbone.View
   
   initialize: ->
+    @id = "newuserscript"
+    @el = "#newuserscript"
+    @tagname = "section"
+    @classname = "content"
+  
+  render: =>
+    @setContentHeight()
+    @
+  
+  setContentHeight: =>
+    $(@el).css "height", PanelContainer.getAvailContentHeight()+"px"
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+
+class window.V_KitScriptPreferencesPanel extends Backbone.View
+  
+  initialize: ->
+    @id = "preferences"
+    @el = "#preferences"
+    @tagname = "section"
+    @classname = "content"
     
+    @initLocaleId = 'en_US'
   
   render: =>
     @setContentHeight()
@@ -99,7 +163,10 @@ class window.V_NewUserScriptPanel extends Backbone.View
 class window.V_AboutKitScriptPanel extends Backbone.View
   
   initialize: ->
-    
+    @id = "aboutkitscript"
+    @el = "#aboutkitscript"
+    @tagname = "section"
+    @classname = "content"
   
   render: =>
     @setContentHeight()
@@ -113,10 +180,10 @@ class window.V_AboutKitScriptPanel extends Backbone.View
 
 
 class window.O_PanelsCollection
-  
+
   constructor: (@views) ->
     
-  
+
   getPanelInstanceById: (panelId) =>
     for _v in @views
       return _v if _v.id is panelId
@@ -125,56 +192,20 @@ class window.O_PanelsCollection
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
-class window.V_PanelContainer extends Backbone.View
-  
-  initialize: ->
-    @topOffset = 200
-    @bottomOffset = 50
-    
-    @prevPanelId = null
-    @currPanelId = KSApp.initPanelId
-    @prevNavItemId = null
-    @currNavItemId = NavBarContainer.menuItemBaseId+KSApp.initPanelId
-  
-  render: =>
-    $('#'+@prevPanelId).hide()
-    $('#'+@currPanelId).show()
-    $('#'+@prevNavItemId).removeClass 'active'
-    $('#'+@currNavItemId).addClass 'active'
-    @setTabTitle()
-    _p = PanelsCollection.getPanelInstanceById @currPanelId
-    _p.render()
-    NavBarContainer.render()
-    @
-  
-  setTabTitle: () =>
-    document.title = KSApp.getLocaleDictKey('app','name')+' | '+KSApp.getLocaleDictKey(@currPanelId,'title')
-  
-  transitTo: (toPanelId) =>
-    @pop "transitTo"
-    @prevPanelId = @currPanelId
-    @currPanelId = toPanelId
-    @prevNavItemId = @currNavItemId
-    @currNavItemId = NavBarContainer.menuItemBaseId+toPanelId
-    @render()
-  
-  getAvailContentHeight: =>
-    _offset = $(@el).offset()
-    KSApp.getWindowHeight()-_offset.top-@topOffset-@bottomOffset
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
-
 class window.V_NavBarContainer extends Backbone.View
   
   initialize: ->
+    @id = "topmenucontainer"
+    @el = "#topmenucontainer"
+    @tagname = "nav"
+    @classname = "container"
+    
     @menuItemBaseId = 'topmenu-nav-'
   
   render: =>
     templata =
-      app_name:           KSApp.getLocaleDictKey 'app', 'name'
-      app_version:        KSApp.getLocaleDictKey 'app', 'version'
+      app_name:           KSApp.getLocaleDictKey KSApp.id, 'name'
+      app_version:        KSApp.getLocaleDictKey KSApp.id, 'version'
       gs_link_face:       KSApp.getLocaleDictKey GlobalSettingsPanel.id, 'name'
       usm_link_face:      KSApp.getLocaleDictKey UserScriptManagerPanel.id, 'name'
       nus_link_face:      KSApp.getLocaleDictKey NewUserScriptPanel.id, 'name'
@@ -193,6 +224,10 @@ class window.V_KitScriptApp extends Backbone.View
   #  'toolbarClick':       "onOpenApp"
   
   initialize: ->
+    @id = 'app'
+    @el = 'body'
+    @tagname = 'body'
+    
     @windowHeight = $(window).height()
     @windowWidth = $(window).width()
     @screenHeight = screen.height
@@ -202,20 +237,26 @@ class window.V_KitScriptApp extends Backbone.View
     
     @initPanelId = 'userscriptmanager'
     @initFile = @rootHtmlFolder+'MainContainer.html'
-    @initLocaleId = 'en_US'
     
     @on 'toolbarClick', @onOpenApp, @
   
+  render: =>
+    # Render Both Containers
+    PanelsCollection.getPanelInstanceById(PanelContainer.currPanelId).render()
+    NavBarContainer.render()
+    # Render Footer
+    @
+  
   onOpenApp: =>
     SEController.openTab @initFile
-    AppRouter.navigate @initPanelId, {trigger: true}
+    @render()
   
   getLocaleDictKey: (viewId, key) =>
-    _locId = @getCurrentLocaleId
+    _locId = @getCurrentLocaleId()
     I18nLexicon.getDictKeyValue _locId, viewId, key
   
   getCurrentLocaleId: =>
-    @initLocaleId
+    KSPreferencesPanel.initLocaleId
   
   getCurrentPanelId: =>
     @initPanelId
