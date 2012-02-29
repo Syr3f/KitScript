@@ -37,7 +37,7 @@
 						<key>Identifier</key>
 						<string>KS_MI1</string>
 						<key>Title</key>
-						<string>Enabled</string>
+						<string>{{ks_enabled}}</string>
 					</dict>
 					<dict>
 						<key>Identifier</key>
@@ -47,29 +47,29 @@
 					</dict>
 					<dict>
 						<key>Command</key>
-						<string>open_nus</string>
+						<string>show_nus</string>
 						<key>Disabled</key>
 						<false/>
 						<key>Identifier</key>
 						<string>KS_MI3</string>
 						<key>Title</key>
-						<string>Add New User Script...</string>
+						<string>{{add_new_userscript}}</string>
 					</dict>
 					<dict>
 						<key>Command</key>
-						<string>open_mus</string>
+						<string>show_mus</string>
 						<key>Identifier</key>
 						<string>KS_MI4</string>
 						<key>Title</key>
-						<string>Manage User Scripts...</string>
+						<string>{{manage_userscripts}}</string>
 					</dict>
 					<dict>
 						<key>Command</key>
-						<string>open_gs</string>
+						<string>show_gs</string>
 						<key>Identifier</key>
 						<string>KS_MI5</string>
 						<key>Title</key>
-						<string>Global Settings...</string>
+						<string>{{global_settings}}</string>
 					</dict>
 					<dict>
 						<key>Identifier</key>
@@ -78,12 +78,16 @@
 						<true/>
 					</dict>
 					<dict>
+						<key>Checked State</key>
+						<real>0.0</real>
+						<key>Command</key>
+						<string>toggle_running</string>
 						<key>Disabled</key>
 						<true/>
 						<key>Identifier</key>
 						<string>KS_MI7</string>
 						<key>Title</key>
-						<string>No User Scripts For This Page</string>
+						<string>{{enable_running_userscripts}}</string>
 					</dict>
 				</array>
 			</dict>
