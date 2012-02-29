@@ -9,7 +9,7 @@
 # extension.
 
 
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
 class window.M_KitScriptPreferencesModel extends Backbone.Model
@@ -29,7 +29,7 @@ class window.V_KitScriptPreferencesPanel extends Backbone.View
     @
 
 
-# # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
 class window.V_GlobalSettingsPanel extends Backbone.View
@@ -45,7 +45,7 @@ class window.V_GlobalSettingsPanel extends Backbone.View
     $(@el).css "height", PanelContainer.getAvailContentHeight()+"px"
 
 
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
 class window.V_UserScriptManagerPanel extends Backbone.View
@@ -61,7 +61,7 @@ class window.V_UserScriptManagerPanel extends Backbone.View
     $(@el).css "height", PanelContainer.getAvailContentHeight()+"px"
 
 
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
 class window.V_UserScriptSettingsPanel extends Backbone.View
@@ -77,7 +77,7 @@ class window.V_UserScriptSettingsPanel extends Backbone.View
     $(@el).css "height", PanelContainer.getAvailContentHeight()+"px"
 
 
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
 class window.V_NewUserScriptPanel extends Backbone.View
@@ -93,7 +93,7 @@ class window.V_NewUserScriptPanel extends Backbone.View
     $(@el).css "height", PanelContainer.getAvailContentHeight()+"px"
 
 
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
 class window.V_AboutKitScriptPanel extends Backbone.View
@@ -109,17 +109,18 @@ class window.V_AboutKitScriptPanel extends Backbone.View
     $(@el).css "height", PanelContainer.getAvailContentHeight()+"px"
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
-
-class window.O_PanelsCollection extends Backbone.Collection
+class window.O_PanelsCollection
   
-  initialize: ->
+  constructor: (@views) ->
     
   
   getPanelInstanceById: (panelId) =>
-    for _p in @models
-      _p if _p.id is panelId
+    for _v in @views
+      return _v if _v.id is panelId
+
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
@@ -141,15 +142,16 @@ class window.V_PanelContainer extends Backbone.View
     $('#'+@prevNavItemId).removeClass 'active'
     $('#'+@currNavItemId).addClass 'active'
     @setTabTitle()
-    PanelsCollection.getPanelInstanceById(@currPanelId).render()
-    PanelsCollection.getPanelInstanceById(NavBarContainer.id).render()
+    _p = PanelsCollection.getPanelInstanceById @currPanelId
+    _p.render()
+    NavBarContainer.render()
     @
   
   setTabTitle: () =>
-    document.title = KSApp.getDictKeyValue('app','name')+' | '+KSApp.getDictKeyValue(@currPanelId,'title')
+    document.title = KSApp.getLocaleDictKey('app','name')+' | '+KSApp.getLocaleDictKey(@currPanelId,'title')
   
   transitTo: (toPanelId) =>
-    @pop 1
+    @pop "transitTo"
     @prevPanelId = @currPanelId
     @currPanelId = toPanelId
     @prevNavItemId = @currNavItemId
@@ -158,10 +160,10 @@ class window.V_PanelContainer extends Backbone.View
   
   getAvailContentHeight: =>
     _offset = $(@el).offset()
-    KSApp.windowHeight-_offset.top-@topOffset-@bottomOffset
+    KSApp.getWindowHeight()-_offset.top-@topOffset-@bottomOffset
 
 
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
 class window.V_NavBarContainer extends Backbone.View
@@ -171,13 +173,13 @@ class window.V_NavBarContainer extends Backbone.View
   
   render: =>
     templata =
-      app_name:           KSApp.getDictKeyValue 'app', 'name'
-      app_version:        KSApp.getDictKeyValue 'app', 'version'
-      gs_link_face:       KSApp.getDictKeyValue GlobalSettingsPanel.id, 'name'
-      usm_link_face:      KSApp.getDictKeyValue UserScriptManagerPanel.id, 'name'
-      nus_link_face:      KSApp.getDictKeyValue NewUserScriptPanel.id, 'name'
-      pref_link_face:     KSApp.getDictKeyValue KSPreferencesPanel.id, 'name'
-      aks_link_face:      KSApp.getDictKeyValue AboutKSPanel.id, 'name'
+      app_name:           KSApp.getLocaleDictKey 'app', 'name'
+      app_version:        KSApp.getLocaleDictKey 'app', 'version'
+      gs_link_face:       KSApp.getLocaleDictKey GlobalSettingsPanel.id, 'name'
+      usm_link_face:      KSApp.getLocaleDictKey UserScriptManagerPanel.id, 'name'
+      nus_link_face:      KSApp.getLocaleDictKey NewUserScriptPanel.id, 'name'
+      pref_link_face:     KSApp.getLocaleDictKey KSPreferencesPanel.id, 'name'
+      aks_link_face:      KSApp.getLocaleDictKey AboutKSPanel.id, 'name'
     $(@el).Macho templata
     @
 
@@ -214,6 +216,24 @@ class window.V_KitScriptApp extends Backbone.View
   
   getCurrentLocaleId: =>
     @initLocaleId
+  
+  getCurrentPanelId: =>
+    @initPanelId
+  
+  getCurrentFile: =>
+    @initFile
+  
+  getWindowHeight: =>
+    @windowHeight
+  
+  getWindowWidth: =>
+    @windowWidth
+  
+  getScreenHeight: =>
+    @screenHeight
+  
+  getScreenWidth: =>
+    @screenWidth
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
