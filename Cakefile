@@ -20,6 +20,9 @@ task 'build', 'Build '+_fpdest+' from '+_fpsrc, (callback) ->
 
 task 'watch', 'Watch '+_fpsrc+' for changes', -> 
   coffee = spawn 'coffee', ['-w', '-c', '-o', _fpdest, _fpsrc]
+  
+  #for _file in _fpdest
+  #  spawn "cli-yui-compressor -o -p -s #{_file.name}"
 
   coffee.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
