@@ -70,8 +70,8 @@ lexicon =
       dict:
         name: [
           'Global Settings'
-          'Préférences globales'
-          ''
+          'Configurations globales'
+          'Configurações globais'
         ]
         title: [
           ''
@@ -90,7 +90,7 @@ lexicon =
         name: [
           'User Script Manager'
           'Gestionnaire des userscripts'
-          ''
+          'O userscript gerente'
         ]
         title: [
           'User Script Manager'
@@ -139,7 +139,7 @@ lexicon =
         name: [
           'User Script Settings'
           'Préférences du userscript'
-          ''
+          'Preferências do userscript'
         ]
         title: [
           ''
@@ -158,7 +158,7 @@ lexicon =
         name: [
           'New User Script'
           'Nouveau userscript'
-          ''
+          'Novo userscript'
         ]
         title: [
           'New User Script'
@@ -206,8 +206,8 @@ lexicon =
       dict:
         name: [
           'KitScript Preferences'
-          ''
-          ''
+          'Préférences de KitScript'
+          'Preferências do KitScript'
         ]
         title: [
           ''
@@ -226,7 +226,7 @@ lexicon =
         name: [
           'About KitScript'
           'À propos de KitScript'
-          ''
+          'Sobre o KitScript'
         ]
         title: [
           'About KitScript'
@@ -284,13 +284,11 @@ class window.C_I18nLexicon extends C_Utils
   
   getDictKeyValue: (localeId, viewId, key) =>
     _idx = @getDictIndexByLocaleId localeId
-    for _view in lexicon.views
-      if _view.id is viewId
-        for _key in _view.dict
-          return window["_view."+key+"[_idx]"]
+    _dict = @getDictByViewId viewId
+    for _key of _dict
+      return eval "_dict."+key+"[_idx]" if _key is key
   
-  getDictByViewId: (localeId, viewId) =>
-    _idx = @getDictIndexByLocaleId localeId
+  getDictByViewId: (viewId) =>
     for _view in lexicon.views
       return _view.dict if _view.id is viewId
 
