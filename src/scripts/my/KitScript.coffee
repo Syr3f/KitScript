@@ -22,6 +22,7 @@ class window.V_PanelContainer extends Backbone.View
     
     @topOffset = 200
     @bottomOffset = 50
+    
     @prevPanelId = null
     @currPanelId = KSApp.initPanelId
     @prevNavItemId = null
@@ -32,11 +33,12 @@ class window.V_PanelContainer extends Backbone.View
     $('#'+@currPanelId).show()
     $('#'+@prevNavItemId).removeClass 'active'
     $('#'+@currNavItemId).addClass 'active'
-    @setTabTitle()
+    PanelsCollection.getPanelInstanceById(@currPanelId).render()
     @
   
-  setTabTitle: =>
-    document.title = KSApp.getLocaleDictKey('app','name')+' • '+KSApp.getLocaleDictKey(@currPanelId,'title')
+  getAvailContentHeight: =>
+    _offset = $(@el).offset()
+    KSApp.getWindowHeight()-_offset.top-@topOffset-@bottomOffset
   
   transitTo: (toPanelId) =>
     @prevPanelId = @currPanelId
@@ -44,10 +46,6 @@ class window.V_PanelContainer extends Backbone.View
     @prevNavItemId = @currNavItemId
     @currNavItemId = NavBarContainer.menuItemBaseId+toPanelId
     @render()
-  
-  getAvailContentHeight: =>
-    _offset = $(@el).offset()
-    KSApp.getWindowHeight()-_offset.top-@topOffset-@bottomOffset
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -220,9 +218,6 @@ class window.V_NavBarContainer extends Backbone.View
 
 class window.V_KitScriptApp extends Backbone.View
   
-  #events:
-  #  'toolbarClick':       "onOpenApp"
-  
   initialize: ->
     @id = 'app'
     @el = 'body'
@@ -241,10 +236,13 @@ class window.V_KitScriptApp extends Backbone.View
     @on 'toolbarClick', @onOpenApp, @
   
   render: =>
-    # Render Both Containers
-    PanelsCollection.getPanelInstanceById(PanelContainer.currPanelId).render()
+    ## Render Both Containers
+    PanelContainer.render()
     NavBarContainer.render()
-    # Render Footer
+    @setTabTitle()
+    #Footer.render()
+    ## Last
+    SEController.forceRender(@initFile)
     @
   
   onOpenApp: =>
@@ -275,6 +273,9 @@ class window.V_KitScriptApp extends Backbone.View
   
   getScreenWidth: =>
     @screenWidth
+  
+  setTabTitle: =>
+    document.title = @getLocaleDictKey(@id,'name')+' • '+@getLocaleDictKey(PanelContainer.currPanelId,'title')
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -289,6 +290,11 @@ class window.C_SafariExtensionController extends C_Utils
   
   openTab: (filePath) =>
     @tab = @s.application.activeBrowserWindow.openTab 'foreground', -1
+    @tab.url = "about:blank"
+    @tab.url = @s.extension.baseURI+filePath
+  
+  forceRender: (filePath) =>
+    @tab.url = "about:blank"
     @tab.url = @s.extension.baseURI+filePath
   
   regEventListeners: =>
