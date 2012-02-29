@@ -25,27 +25,21 @@ class window.R_AppRouter extends Backbone.Router
     "aboutkitscript":               "onTransitToAboutKitScript"         # MainContainer.html#aboutkitscript
   
   onTransitToGlobalSettings: =>
-    @pop 0
     PanelContainer.transitTo GlobalSettingsPanel.id
   
   onTransitToUserScriptManager: =>
-    @pop "onTransitToUserScriptManager"
     PanelContainer.transitTo UserScriptManagerPanel.id
   
   onTransitToNewUserScript: =>
-    @pop 0
     PanelContainer.transitTo NewUserScriptPanel.id
   
   onTransitToUserScriptSettings: =>
-    @pop 0
     PanelContainer.transitTo UserScriptSettingsPanel.id
   
   onTransitToKitScriptPreferences: =>
-    @pop 0
     PanelContainer.transitTo KSPreferencesPanel.id
   
   onTransitToAboutKitScript: =>
-    @pop 0
     PanelContainer.transitTo AboutKSPanel.id
   
   test: =>
